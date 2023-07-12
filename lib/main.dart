@@ -10,7 +10,6 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 ///////////////////////////ADMIN OPCIO
-///
 //////version 2 administrado////////////////////////////////
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
