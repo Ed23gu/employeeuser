@@ -215,7 +215,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-/////////////tomar foto y subir//////////////
+/////////////tomar foto y subir////////
   Future uploadFile() async {
     var pickedFile = _imagescom1;
     try {
