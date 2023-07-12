@@ -69,6 +69,7 @@ class AttendanceService extends ChangeNotifier {
         .eq('date', todayDate);
     if (result.isNotEmpty) {
       attendanceModel = AttendanceModel.fromJson(result.first);
+
     }
     notifyListeners();
   }
@@ -128,7 +129,6 @@ class AttendanceService extends ChangeNotifier {
         })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
-        print('yessss');
       } else if (attendanceModel?.checkOut == null) {
         await _supabase
             .from(Constants.attendancetable)
@@ -200,6 +200,10 @@ class AttendanceService extends ChangeNotifier {
       getTodayAttendance();
     }
   }
+
+
+
+
   Future<List<AttendanceModel>> getAttendanceHistory() async {
     final List data = await _supabase
         .from(Constants.attendancetable)

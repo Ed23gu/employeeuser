@@ -62,7 +62,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               children: [
                 TextField(
                   decoration: const InputDecoration(
-                    label: Text("ID email Usuario"),
+                    label: Text("Email"),
                     prefixIcon: Icon(Icons.person),
                     border: OutlineInputBorder(),
                   ),
