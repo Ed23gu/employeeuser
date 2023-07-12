@@ -10,19 +10,20 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbService extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   UserModel? userModel;
-  UserModel? userModeldep;
   DepartmentModel? depModel2;
   DepartmentModel? depModel;
   DepartmentModel? departmentModel;
   List<DepartmentModel> allDepartments = [];
+  List<UserModel> allempleados = [];
   int? employeeDepartment;
+  String empleadolista = 'abb73b57-f573-44b7-81cb-bf952365688b';
 
   String generateRandomEmployeeId() {
     final random = Random();
     const allChars = "faangFAANG0123456789";
     final randomString =
-        List.generate(8, (index) => allChars[random.nextInt(allChars.length)])
-            .join();
+    List.generate(8, (index) => allChars[random.nextInt(allChars.length)])
+        .join();
     return randomString;
   }
 
@@ -48,17 +49,32 @@ class DbService extends ChangeNotifier {
     employeeDepartment == null
         ? employeeDepartment = userModel?.department
         : null;
-    return userModel!;
+    return
+      userModel!;
   }
 
   Future<void> getAllDepartments() async {
     final List result =
-        await _supabase.from(Constants.departmentTable).select();
+    await _supabase.from(Constants.departmentTable).select();
     allDepartments = result
         .map((department) => DepartmentModel.fromJson(department))
         .toList();
     notifyListeners();
   }
+
+
+  Future<void> getAllempleados() async {
+    final List result =
+    await _supabase.from(Constants.employeeTable).select();
+    allempleados = result
+        .map((empleados) => UserModel.fromJson(empleados))
+        .toList();
+    notifyListeners();
+  }
+
+
+  ////////
+
 
   Future updateProfile(String name, BuildContext context) async {
     await _supabase.from(Constants.employeeTable).update({
@@ -70,24 +86,15 @@ class DbService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<DepartmentModel> getTodaydep() async {
-    final userData = await _supabase
-        .from(Constants.employeeTable)
-        .select()
-        .eq('id', _supabase.auth.currentUser!.id)
-        .single();
-    userModeldep= UserModel.fromJson(userData);
-    employeeDepartment == null
-        ? employeeDepartment = userModeldep?.department
-        : null;
+  Future<DepartmentModel?> getTodaydep() async {
     final List result = await _supabase
         .from(Constants.departmentTable)
         .select()
-        .eq("id", employeeDepartment);
+        .eq("id", userModel?.department);
     if (result.isNotEmpty) {
       depModel = DepartmentModel.fromJson(result.first);
     }
-    return depModel!;
+    return depModel;
   }
 
 }

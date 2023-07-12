@@ -1,6 +1,7 @@
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
@@ -101,7 +102,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
                                   Expanded(
                                     child: Column(children: [
-                                      /*   Container(
+                                   /*   Container(
                                         height: 20,
                                         child: Row(
                                             mainAxisAlignment:
@@ -212,8 +213,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn
-                                                            ?.toString() ??
+                                                    attendanceData.checkIn?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
@@ -297,8 +297,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               ),
                                             ),
                                             Text(
-                                              attendanceData.obra2
-                                                      ?.toString() ??
+                                              attendanceData.obra2?.toString() ??
                                                   '--/--',
                                               style: TextStyle(
                                                 fontSize: 12,
@@ -343,9 +342,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn2
-                                                            ?.toString() ??
-                                                        '--/--',
+                                                    attendanceData.checkIn2?.toString() ??
+                                                      '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
                                                       color: Theme.of(context)
@@ -432,6 +430,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     color: Colors.grey,
                   );
                 })),
+
       ],
     );
   }
