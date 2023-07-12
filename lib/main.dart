@@ -9,7 +9,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-///////////////////////////ADMIN OPCION//////
+///////////////////////////ADMIN OPCIO
+///
 //////version 2 administrado////////////////////////////////
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
