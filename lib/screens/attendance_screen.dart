@@ -165,7 +165,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       XFile? pickedFileweb = await picker.pickImage(source: ImageSource.camera);
       if (pickedFileweb != null) {
         var f = await pickedFileweb.readAsBytes();
-        final tempDir = await getTemporaryDirectory();
+        final tempDirrtttttttt = await getTemporaryDirectory();
         // file.writeAsBytesSync(f);
         setState(() {
           isUploading = true;
