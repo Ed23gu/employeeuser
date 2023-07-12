@@ -1,16 +1,31 @@
 import 'package:employee_attendance/models/attendance_model.dart';
+import 'package:employee_attendance/models/ubi_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({super.key});
 
   @override
   State<CalenderScreen> createState() => _CalenderScreenState();
+}
+
+Future<void> _openmap(String lat, String lon) async {
+  Uri googleUrl =
+  Uri.parse('https://www.google.com.ec/maps/search/?api=1&query=$lat,$lon');
+  await canLaunchUrl(googleUrl)
+      ? await launchUrl(googleUrl)
+      : throw 'No se puede abrir $googleUrl';
+  /* Uri googleUrl = Uri.parse('geo:${lat},${lon}?q=${lat},${lon}');
+  // Uri.parse('https://www.google.com.ec/maps/search/?api=1&query=$lat,$lon');
+  await canLaunchUrl(googleUrl)
+      ? await launchUrl(googleUrl)
+      : throw 'No se puede abrir $googleUrl';*/
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
@@ -60,7 +75,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                             return Container(
                               margin: EdgeInsets.only(
                                   top: 12, left: 20, right: 20, bottom: 10),
-                              height: 110,
+                              height: 190,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).brightness ==
                                           Brightness.light
@@ -102,7 +117,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
                                   Expanded(
                                     child: Column(children: [
-                                   /*   Container(
+                                      Container(
                                         height: 20,
                                         child: Row(
                                             mainAxisAlignment:
@@ -144,7 +159,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       ),
                                       const SizedBox(
                                         child: Divider(),
-                                      ), */
+                                      ),
                                       Expanded(
                                           child: Row(children: [
                                         Expanded(
@@ -213,8 +228,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn ?.toString() ??
-                                                        '--/--',
+                                                    attendanceData.checkIn,
                                                     style: TextStyle(
                                                       fontSize: 15,
                                                       color: Theme.of(context)
@@ -224,7 +238,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                           //  color: Colors.white,
                                                           : Colors.white,
                                                     ),
-                                                  )
+                                                  ),
+                                                  IconButton(
+                                                      icon: Icon(
+                                                          Icons.location_on),
+                                                      onPressed: () {
+                                                        var lat = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkInLocation!)
+                                                            .latitude;
+                                                        var lon = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkInLocation!)
+                                                            .longitude;
+                                                           print("latitude");
+                                                        print(lat);
+                                                        print("longitude");
+                                                        print(lon);
+                                                        _openmap(lat.toString(),
+                                                            lon.toString());
+                                                      }),
                                                 ],
                                               )),
                                               Expanded(
@@ -266,7 +299,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                           //  color: Colors.white,
                                                           : Colors.white,
                                                     ),
-                                                  )
+                                                  ),
+                                                  IconButton(
+                                                      icon: Icon(
+                                                          Icons.location_on),
+                                                      onPressed: () {
+                                                        var lat = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkOutLocation!)
+                                                            .latitude;
+                                                        var lon = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkOutLocation!)
+                                                            .longitude;
+                                                        /*    print("latitude");
+                                                        print(lat);
+                                                        print("longitude");
+                                                        print(lon); */
+                                                        _openmap(lat.toString(),
+                                                            lon.toString());
+                                                      }),
                                                 ],
                                               )),
                                             ])),
@@ -297,7 +349,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               ),
                                             ),
                                             Text(
-                                              attendanceData.obra2?.toString() ??
+                                              attendanceData.obra2
+                                                      ?.toString() ??
                                                   '--/--',
                                               style: TextStyle(
                                                 fontSize: 12,
@@ -342,8 +395,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn2?.toString() ??
-                                                      '--/--',
+                                                    attendanceData.checkIn2
+                                                            ?.toString() ??
+                                                        '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
                                                       color: Theme.of(context)
@@ -353,7 +407,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                           //  color: Colors.white,
                                                           : Colors.white,
                                                     ),
-                                                  )
+                                                  ),
+                                                  IconButton(
+                                                      icon: Icon(
+                                                          Icons.location_on),
+                                                      onPressed: () {
+                                                        var lat = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkInLocation2!)
+                                                            .latitude;
+                                                        var lon = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkInLocation2!)
+                                                            .longitude;
+                                                        /*  print("latitude");
+                                                        print(lat);
+                                                        print("longitude");
+                                                        print(lon); */
+                                                        _openmap(lat.toString(),
+                                                            lon.toString());
+                                                      }),
                                                 ],
                                               )),
                                               Expanded(
@@ -395,18 +468,32 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                           //  color: Colors.white,
                                                           : Colors.white,
                                                     ),
-                                                  )
+                                                  ),
+                                                  IconButton(
+                                                      icon: Icon(
+                                                          Icons.location_on),
+                                                      onPressed: () {
+                                                        var lat = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkOutLocation2!)
+                                                            .latitude;
+                                                        var lon = UbiModel.fromJson(
+                                                                attendanceData
+                                                                    .checkOutLocation2!)
+                                                            .longitude;
+                                                        /*  print("latitude");
+                                                        print(lat);
+                                                        print("longitude");
+                                                        print(lon); */
+                                                        _openmap(lat.toString(),
+                                                            lon.toString());
+                                                      }),
                                                 ],
                                               )),
                                             ])),
                                           ],
                                         )),
                                       ])),
-
-/////////////////////////////////////////
-
-                                      ///
-//////nombre colum///////////////////////
                                     ]),
                                   ),
 ///////////////////////////
@@ -430,7 +517,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     color: Colors.grey,
                   );
                 })),
-
       ],
     );
   }
