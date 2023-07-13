@@ -58,7 +58,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Uint8List webI4 = Uint8List(8);
   final SupabaseClient supabase = Supabase.instance.client;
 
-
   Future limpiaima() async {
     _images = null;
     setState(() {});
@@ -103,17 +102,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       percentage: per,
     );
     return path;
-  }
-
-  Future<void> _refreshPage() async {
-    // Aquí puedes realizar las operaciones necesarias para recargar la página
-    // Por ejemplo, puedes hacer llamadas a una API o actualizar datos desde una base de datos
-    await Future.delayed(
-        Duration(seconds: 2)); // Simulamos una espera de 2 segundos
-    setState(() {
-      //dbServie.getUserData();// Actualiza el estado de la página
-      // Esto hará que Flutter repinte la página y muestre los cambios
-    });
   }
 
   Future<File> customCompressed3({
