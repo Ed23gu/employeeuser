@@ -275,7 +275,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         });
 
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Foto cargada correctamente ! "),
+          content: Text("Foto cargada correctamente en carga uno"),
           backgroundColor: Colors.green,
         ));
         await markasistencia();
@@ -289,7 +289,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           );
         });
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Algo ha salido mal"),
+          content: Text("Algo ha salido malen carga"),
           backgroundColor: Colors.red,
         ));
       }
