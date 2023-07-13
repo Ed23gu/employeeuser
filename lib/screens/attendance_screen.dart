@@ -651,428 +651,397 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget build(BuildContext context) {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            "ArtConsGroup",
-            style: TextStyle(fontSize: 25),
-          ),
-          actions: [
-            Row(
-              children: [
-                Icon(
-                  Icons.brightness_2_outlined,
-                  size: 18, // Icono para tema claro
-                  color:
-                      AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                          ? Colors.grey
-                          : Colors.white,
-                ),
-                Switch(
-                    value: AdaptiveTheme.of(context).mode ==
-                        AdaptiveThemeMode.light,
-                    onChanged: (bool value) {
-                      if (value) {
-                        AdaptiveTheme.of(context).setLight();
-                      } else {
-                        AdaptiveTheme.of(context).setDark();
-                      }
-                    }),
-                Icon(
-                  Icons.brightness_low_rounded,
-                  size: 20, // Icono para tema oscuro
-                  color:
-                      AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                          ? Colors.white
-                          : Colors.grey,
-                ),
-                SizedBox(width: 10)
-              ],
-            )
-          ],
+      appBar: AppBar(
+        title: Text(
+          "ArtConsGroup",
+          style: TextStyle(fontSize: 25),
         ),
-        body: RefreshIndicator(
-          onRefresh: _refreshPage,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(15),
-            child: Column(
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.blue,
-                  ),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.add,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      _refreshPage; // Lógica del botón
-                    },
-                  ),
-                ),
-                route.Consumer<DbService>(builder: (context, dbServie, child) {
-                  return FutureBuilder(
-                      future: dbServie.getUserData(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          UserModel user = snapshot.data!;
-                          return Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              user.name != ''
-                                  ? "Hola " + user.name + ","
-                                  : "Hola" + "#${user.employeeId}" + ",",
-                              style: const TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          );
-                        }
-                        return const SizedBox(
-                          width: 60,
-                          child: LinearProgressIndicator(),
-                        );
-                      });
-                }),
-                const SizedBox(
-                  child: Divider(
-                    thickness: 1,
-                  ),
-                ),
-                route.Consumer<DbService>(builder: (context, dbServie, child) {
-                  return FutureBuilder(
-                      future: dbServie.getTodaydep(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          DepartmentModel user2 = snapshot.data!;
-                          return Container(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              user2.title != "" ? user2.title.toString() : " ",
-                              style: const TextStyle(fontSize: 15),
-                            ),
-                          );
-                        }
-                        return const SizedBox(
-                          width: 60,
-                          child: LinearProgressIndicator(),
-                        );
-                      });
-                }), //
-                const SizedBox(
-                  child: Divider(
-                    thickness: 1,
-                  ),
-                ),
-                ///////////////fecha/////////////////////
-
-                StreamBuilder(
-                    stream: Stream.periodic(const Duration(seconds: 1)),
-                    builder: (context, snapshot) {
+        actions: [
+          Row(
+            children: [
+              Icon(
+                Icons.brightness_2_outlined,
+                size: 18, // Icono para tema claro
+                color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
+                    ? Colors.grey
+                    : Colors.white,
+              ),
+              Switch(
+                  value:
+                      AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light,
+                  onChanged: (bool value) {
+                    if (value) {
+                      AdaptiveTheme.of(context).setLight();
+                    } else {
+                      AdaptiveTheme.of(context).setDark();
+                    }
+                  }),
+              Icon(
+                Icons.brightness_low_rounded,
+                size: 20, // Icono para tema oscuro
+                color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
+                    ? Colors.white
+                    : Colors.grey,
+              ),
+              SizedBox(width: 10)
+            ],
+          )
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(15),
+        child: Column(
+          children: [
+            route.Consumer<DbService>(builder: (context, dbServie, child) {
+              return FutureBuilder(
+                  future: dbServie.getUserData(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      UserModel user = snapshot.data!;
                       return Container(
-                        alignment: Alignment.center,
+                        alignment: Alignment.centerLeft,
                         child: Text(
-                          DateFormat("HH:mm:ss").format(DateTime.now()),
-                          style: const TextStyle(fontSize: 30),
+                          user.name != ''
+                              ? "Hola " + user.name + ","
+                              : "Hola" + "#${user.employeeId}" + ",",
+                          style: const TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
                         ),
                       );
-                    }),
-                Container(
-                  alignment: Alignment.center,
-                  child: Text(
-                    DateFormat("dd MMMM yyyy").format(DateTime.now()),
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                ),
-                const SizedBox(
-                  width: 90,
-                  child: Divider(
-                    thickness: 1,
-                  ),
-                ),
-                //////
+                    }
+                    return const SizedBox(
+                      width: 60,
+                      child: LinearProgressIndicator(),
+                    );
+                  });
+            }),
+            const SizedBox(
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+            route.Consumer<DbService>(builder: (context, dbServie, child) {
+              return FutureBuilder(
+                  future: dbServie.getTodaydep(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      DepartmentModel user2 = snapshot.data!;
+                      return Container(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          user2.title != "" ? user2.title.toString() : " ",
+                          style: const TextStyle(fontSize: 15),
+                        ),
+                      );
+                    }
+                    return const SizedBox(
+                      width: 60,
+                      child: LinearProgressIndicator(),
+                    );
+                  });
+            }), //
+            const SizedBox(
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+            ///////////////fecha/////////////////////
 
-                ///////////////hora/////////////////////
-                Container(
-                  padding: EdgeInsets.all(10.0),
-                  margin: EdgeInsets.only(top: 5, bottom: 5),
-                  height: 225,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.white
-                          //  color: Colors.white,
-                          : Color.fromARGB(255, 43, 41, 41),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color.fromARGB(110, 18, 148, 255),
-                            blurRadius: 5,
-                            offset: Offset(1, 1)),
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            StreamBuilder(
+                stream: Stream.periodic(const Duration(seconds: 1)),
+                builder: (context, snapshot) {
+                  return Container(
+                    alignment: Alignment.center,
+                    child: Text(
+                      DateFormat("HH:mm:ss").format(DateTime.now()),
+                      style: const TextStyle(fontSize: 30),
+                    ),
+                  );
+                }),
+            Container(
+              alignment: Alignment.center,
+              child: Text(
+                DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                style: const TextStyle(fontSize: 15),
+              ),
+            ),
+            const SizedBox(
+              width: 90,
+              child: Divider(
+                thickness: 1,
+              ),
+            ),
+            //////
+
+            ///////////////hora/////////////////////
+            Container(
+              padding: EdgeInsets.all(10.0),
+              margin: EdgeInsets.only(top: 5, bottom: 5),
+              height: 225,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      //  color: Colors.white,
+                      : Color.fromARGB(255, 43, 41, 41),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(110, 18, 148, 255),
+                        blurRadius: 5,
+                        offset: Offset(1, 1)),
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Ingreso:  ",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    /*color: Colors.black5*/
-                                  ),
-                                ),
-                                Text(
-                                  attendanceService.attendanceModel?.checkIn ??
-                                      '--/--',
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                              ],
+                            const Text(
+                              "Ingreso:  ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                /*color: Colors.black5*/
+                              ),
                             ),
-                            const SizedBox(
-                              height: 2,
-                              width: 80,
-                              child: Divider(),
+                            Text(
+                              attendanceService.attendanceModel?.checkIn ??
+                                  '--/--',
+                              style: TextStyle(fontSize: 17),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                (_images == null &&
-                                        attendanceService
-                                                .attendanceModel?.checkIn ==
-                                            null)
-                                    ? IconButton(
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 2,
+                          width: 80,
+                          child: Divider(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            (_images == null &&
+                                    attendanceService
+                                            .attendanceModel?.checkIn ==
+                                        null)
+                                ? IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () {
+                                      choiceImage();
+                                      disableButton5();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled5,
+                                    child: IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage();
                                           disableButton5();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled5,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage();
-                                              disableButton5();
-                                            }),
-                                      ),
-                                attendanceService.attendanceModel?.checkIn ==
-                                        null
-                                    ? IconButton(
+                                        }),
+                                  ),
+                            attendanceService.attendanceModel?.checkIn == null
+                                ? IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      limpiaima();
+                                      // disableButton();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled5,
+                                    child: IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima();
-                                          // disableButton();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled5,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.red,
-                                            onPressed: () {
-                                              limpiaima();
-                                              disableButton5();
-                                            }),
-                                      ),
-                              ],
-                            ),
-                            Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_in ==
-                                        null)
-                                    ? _images == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI, height: 120)
-                                            : Image.file(
-                                                _images!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService
-                                            .attendanceModel?.pic_in as String,
-                                        height: 120))
-
-                            //container
+                                          disableButton5();
+                                        }),
+                                  ),
                           ],
-                        )), //expanded
+                        ),
+                        Container(
+                            child: (attendanceService.attendanceModel?.pic_in ==
+                                    null)
+                                ? _images == null
+                                    ? Icon(Icons.photo)
+                                    : kIsWeb == true
+                                        ? Image.memory(webI, height: 120)
+                                        : Image.file(
+                                            _images!,
+                                            height: 120,
+                                          )
+                                : Image.network(
+                                    attendanceService.attendanceModel?.pic_in
+                                        as String,
+                                    height: 120))
 
-                        Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        //container
+                      ],
+                    )), //expanded
+
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Salida:  ",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    /*color: Colors.black5*/
-                                  ),
-                                ),
-                                Text(
-                                  attendanceService.attendanceModel?.checkOut ??
-                                      '--/--',
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                              ],
+                            const Text(
+                              "Salida:  ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                /*color: Colors.black5*/
+                              ),
                             ),
-                            const SizedBox(
-                              height: 2,
-                              width: 80,
-                              child: Divider(),
+                            Text(
+                              attendanceService.attendanceModel?.checkOut ??
+                                  '--/--',
+                              style: TextStyle(fontSize: 17),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                (_images2 == null &&
-                                            attendanceService.attendanceModel
-                                                    ?.checkOut ==
-                                                null) &&
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 2,
+                          width: 80,
+                          child: Divider(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            (_images2 == null &&
                                         attendanceService
-                                                .attendanceModel?.checkIn !=
-                                            null
-                                    ? IconButton(
+                                                .attendanceModel?.checkOut ==
+                                            null) &&
+                                    attendanceService
+                                            .attendanceModel?.checkIn !=
+                                        null
+                                ? IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () {
+                                      choiceImage2();
+                                      disableButton2();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled2,
+                                    child: IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage2();
                                           disableButton2();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled2,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage2();
-                                              disableButton2();
-                                            })),
-                                attendanceService.attendanceModel?.checkOut ==
-                                        null
-                                    ? IconButton(
+                                        })),
+                            attendanceService.attendanceModel?.checkOut == null
+                                ? IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      limpiaima2();
+                                      // disableButton();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled2,
+                                    child: IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima2();
-                                          // disableButton();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled2,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.red,
-                                            onPressed: () {
-                                              limpiaima2();
-                                              disableButton2();
-                                            }),
-                                      ),
-                              ],
-                            ),
-                            Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_out ==
-                                        null)
-                                    ? _images2 == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI2, height: 120)
-                                            : Image.file(
-                                                _images2!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService
-                                            .attendanceModel?.pic_out as String,
-                                        height: 120))
+                                          disableButton2();
+                                        }),
+                                  ),
                           ],
-                        )),
-                      ]),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  child: Builder(builder: (context) {
-                    return SlideAction(
-                      text: (attendanceService.attendanceModel?.checkIn !=
-                                  null &&
-                              attendanceService.attendanceModel?.checkOut !=
-                                  null)
-                          ? "Registro Exitoso. Gracias"
-                          : (attendanceService.attendanceModel?.checkIn == null)
-                              ? "Registrar el ingreso"
-                              : "Registrar la salida",
-                      //alignment: Alignment.topCenter,
+                        ),
+                        Container(
+                            child: (attendanceService
+                                        .attendanceModel?.pic_out ==
+                                    null)
+                                ? _images2 == null
+                                    ? Icon(Icons.photo)
+                                    : kIsWeb == true
+                                        ? Image.memory(webI2, height: 120)
+                                        : Image.file(
+                                            _images2!,
+                                            height: 120,
+                                          )
+                                : Image.network(
+                                    attendanceService.attendanceModel?.pic_out
+                                        as String,
+                                    height: 120))
+                      ],
+                    )),
+                  ]),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              child: Builder(builder: (context) {
+                return SlideAction(
+                  text: (attendanceService.attendanceModel?.checkIn != null &&
+                          attendanceService.attendanceModel?.checkOut != null)
+                      ? "Registro Exitoso. Gracias"
+                      : (attendanceService.attendanceModel?.checkIn == null)
+                          ? "Registrar el ingreso"
+                          : "Registrar la salida",
+                  //alignment: Alignment.topCenter,
 
-                      textStyle: TextStyle(
-                          fontSize: 16,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white),
-                      outerColor:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.white
-                              : Color(0xFF2B2929),
-                      innerColor: Colors.blue,
-                      key: key,
-                      onSubmit: () async {
-                        if (attendanceService.attendanceModel?.checkIn !=
-                                null &&
-                            attendanceService.attendanceModel?.checkOut !=
-                                null) {
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
-                            title: ' ',
-                            text: 'Registro Completado',
-                          );
-                        } else if (attendanceService.attendanceModel?.checkIn ==
-                                null &&
-                            _images != null &&
-                            attendanceService.attendanceModel?.pic_in == null) {
-                          uploadFile();
-                          if (attendanceService.attendanceModel?.pic_in !=
-                              null) {
-                            await attendanceService.markAttendance(context);
-                          }
-                          //await attendanceService.markAttendance(context);
-                        } else if (attendanceService.attendanceModel?.checkIn ==
-                            null) {
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
-                            title: 'Suba',
-                            text: 'una foto por favor',
-                          );
-                        } else if (_images2 != null) {
-                          uploadFile2();
-                          await attendanceService.markAttendance(context);
-                        } else {
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
-                            title: 'Suba',
-                            text: 'una foto por favor',
-                          );
-                        }
-                        key.currentState!.reset();
-                      },
-                      /*onSubmit: () async {
+                  textStyle: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white),
+                  outerColor: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Color(0xFF2B2929),
+                  innerColor: Colors.blue,
+                  key: key,
+                  onSubmit: () async {
+                    if (attendanceService.attendanceModel?.checkIn != null &&
+                        attendanceService.attendanceModel?.checkOut != null) {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.warning,
+                        title: ' ',
+                        text: 'Registro Completado',
+                      );
+                    } else if (attendanceService.attendanceModel?.checkIn ==
+                            null &&
+                        _images != null &&
+                        attendanceService.attendanceModel?.pic_in == null) {
+                      uploadFile();
+                      if (attendanceService.attendanceModel?.pic_in != null) {
+                        await attendanceService.markAttendance(context);
+                      }
+                      //await attendanceService.markAttendance(context);
+                    } else if (attendanceService.attendanceModel?.checkIn ==
+                        null) {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.warning,
+                        title: 'Suba',
+                        text: 'una foto por favor',
+                      );
+                    } else if (_images2 != null) {
+                      uploadFile2();
+                      await attendanceService.markAttendance(context);
+                    } else {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.warning,
+                        title: 'Suba',
+                        text: 'una foto por favor',
+                      );
+                    }
+                    key.currentState!.reset();
+                  },
+                  /*onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn != null &&
                         attendanceService.attendanceModel?.checkOut != null) {
                       QuickAlert.show(
@@ -1110,13 +1079,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     }
                     key.currentState!.reset();
                   },*/
-                    );
-                  }),
-                ),
-                Container(
-                  height: 10,
-                ),
-                /*  Container(
+                );
+              }),
+            ),
+            Container(
+              height: 10,
+            ),
+            /*  Container(
               alignment: Alignment.center,
               margin: const EdgeInsets.only(top: 10),
               child: const Text(
@@ -1124,285 +1093,273 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 style: TextStyle(fontSize: 18),
               ),
             ),*/
-                Container(
-                  padding: EdgeInsets.all(10.0),
-                  margin: EdgeInsets.only(top: 5, bottom: 10),
-                  height: 225,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.white
-                          //  color: Colors.white,
-                          : Color.fromARGB(255, 43, 41, 41),
-                      boxShadow: [
-                        BoxShadow(
-                            color: Color.fromARGB(110, 18, 148, 255),
-                            blurRadius: 5,
-                            offset: Offset(1, 1)),
-                      ],
-                      borderRadius: BorderRadius.all(Radius.circular(10))),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+            Container(
+              padding: EdgeInsets.all(10.0),
+              margin: EdgeInsets.only(top: 5, bottom: 10),
+              height: 225,
+              decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      //  color: Colors.white,
+                      : Color.fromARGB(255, 43, 41, 41),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(110, 18, 148, 255),
+                        blurRadius: 5,
+                        offset: Offset(1, 1)),
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Entrada:  ",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    /*color: Colors.black5*/
-                                  ),
-                                ),
-                                Text(
-                                  attendanceService.attendanceModel?.checkIn2 ??
-                                      '--/--',
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                              ],
+                            const Text(
+                              "Entrada:  ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                /*color: Colors.black5*/
+                              ),
                             ),
-                            const SizedBox(
-                              height: 2,
-                              width: 80,
-                              child: Divider(),
+                            Text(
+                              attendanceService.attendanceModel?.checkIn2 ??
+                                  '--/--',
+                              style: TextStyle(fontSize: 17),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                (_images3 == null &&
-                                            attendanceService.attendanceModel
-                                                    ?.checkIn2 ==
-                                                null) &&
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 2,
+                          width: 80,
+                          child: Divider(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            (_images3 == null &&
                                         attendanceService
-                                                .attendanceModel?.checkOut !=
-                                            null
-                                    ? IconButton(
+                                                .attendanceModel?.checkIn2 ==
+                                            null) &&
+                                    attendanceService
+                                            .attendanceModel?.checkOut !=
+                                        null
+                                ? IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () {
+                                      choiceImage3();
+                                      disableButton3();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled3,
+                                    child: IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage3();
                                           disableButton3();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled3,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage3();
-                                              disableButton3();
-                                            }),
-                                      ),
-                                attendanceService.attendanceModel?.checkIn2 ==
-                                        null
-                                    ? IconButton(
+                                        }),
+                                  ),
+                            attendanceService.attendanceModel?.checkIn2 == null
+                                ? IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      limpiaima3();
+                                      // disableButton();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled3,
+                                    child: IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima3();
-                                          // disableButton();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled3,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.red,
-                                            onPressed: () {
-                                              limpiaima3();
-                                              disableButton3();
-                                            }),
-                                      ),
-                              ],
-                            ),
-                            Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_in2 ==
-                                        null)
-                                    ? _images3 == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI3, height: 120)
-                                            : Image.file(
-                                                _images3!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService
-                                            .attendanceModel?.pic_in2 as String,
-                                        height: 120))
+                                          disableButton3();
+                                        }),
+                                  ),
                           ],
-                        )),
-                        Expanded(
-                            child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        ),
+                        Container(
+                            child: (attendanceService
+                                        .attendanceModel?.pic_in2 ==
+                                    null)
+                                ? _images3 == null
+                                    ? Icon(Icons.photo)
+                                    : kIsWeb == true
+                                        ? Image.memory(webI3, height: 120)
+                                        : Image.file(
+                                            _images3!,
+                                            height: 120,
+                                          )
+                                : Image.network(
+                                    attendanceService.attendanceModel?.pic_in2
+                                        as String,
+                                    height: 120))
+                      ],
+                    )),
+                    Expanded(
+                        child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const Text(
-                                  "Salida:  ",
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    /*color: Colors.black5*/
-                                  ),
-                                ),
-                                Text(
-                                  attendanceService
-                                          .attendanceModel?.checkOut2 ??
-                                      '--/--',
-                                  style: TextStyle(fontSize: 17),
-                                ),
-                              ],
+                            const Text(
+                              "Salida:  ",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                /*color: Colors.black5*/
+                              ),
                             ),
-                            const SizedBox(
-                              height: 2,
-                              width: 80,
-                              child: Divider(),
+                            Text(
+                              attendanceService.attendanceModel?.checkOut2 ??
+                                  '--/--',
+                              style: TextStyle(fontSize: 17),
                             ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                (_images4 == null &&
-                                            attendanceService.attendanceModel
-                                                    ?.checkOut2 ==
-                                                null) &&
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 2,
+                          width: 80,
+                          child: Divider(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            (_images4 == null &&
                                         attendanceService
-                                                .attendanceModel?.checkIn2 !=
-                                            null
-                                    ? IconButton(
+                                                .attendanceModel?.checkOut2 ==
+                                            null) &&
+                                    attendanceService
+                                            .attendanceModel?.checkIn2 !=
+                                        null
+                                ? IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () {
+                                      choiceImage4();
+                                      disableButton4();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled4,
+                                    child: IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage4();
                                           disableButton4();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled4,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage4();
-                                              disableButton4();
-                                            }),
-                                      ),
-                                attendanceService.attendanceModel?.checkOut2 ==
-                                        null
-                                    ? IconButton(
+                                        }),
+                                  ),
+                            attendanceService.attendanceModel?.checkOut2 == null
+                                ? IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.red,
+                                    onPressed: () {
+                                      limpiaima4();
+                                      // disableButton2();
+                                    })
+                                : AbsorbPointer(
+                                    absorbing: buttonDisabled4,
+                                    child: IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima4();
-                                          // disableButton2();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled4,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.red,
-                                            onPressed: () {
-                                              limpiaima4();
-                                              disableButton4();
-                                            }),
-                                      ),
-                              ],
-                            ),
-                            Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_out2 ==
-                                        null)
-                                    ? _images4 == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI4, height: 120)
-                                            : Image.file(
-                                                _images4!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService.attendanceModel
-                                            ?.pic_out2 as String,
-                                        height: 120))
+                                          disableButton4();
+                                        }),
+                                  ),
                           ],
-                        )),
-                      ]),
-                ),
-                ///////////////////////////////////fotos//////////////
-                Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  child: Builder(builder: (context) {
-                    return SlideAction(
-                      text: (attendanceService.attendanceModel?.checkIn2 !=
-                                  null &&
-                              attendanceService.attendanceModel?.checkOut2 !=
-                                  null)
-                          ? "Registro Exitoso Gracias"
-                          : (attendanceService.attendanceModel?.checkIn2 ==
-                                  null)
-                              ? "Registrar el ingreso"
-                              : "Registrar la salida",
-                      //alignment: Alignment.topCenter,
+                        ),
+                        Container(
+                            child: (attendanceService
+                                        .attendanceModel?.pic_out2 ==
+                                    null)
+                                ? _images4 == null
+                                    ? Icon(Icons.photo)
+                                    : kIsWeb == true
+                                        ? Image.memory(webI4, height: 120)
+                                        : Image.file(
+                                            _images4!,
+                                            height: 120,
+                                          )
+                                : Image.network(
+                                    attendanceService.attendanceModel?.pic_out2
+                                        as String,
+                                    height: 120))
+                      ],
+                    )),
+                  ]),
+            ),
+            ///////////////////////////////////fotos//////////////
+            Container(
+              margin: const EdgeInsets.only(top: 5),
+              child: Builder(builder: (context) {
+                return SlideAction(
+                  text: (attendanceService.attendanceModel?.checkIn2 != null &&
+                          attendanceService.attendanceModel?.checkOut2 != null)
+                      ? "Registro Exitoso Gracias"
+                      : (attendanceService.attendanceModel?.checkIn2 == null)
+                          ? "Registrar el ingreso"
+                          : "Registrar la salida",
+                  //alignment: Alignment.topCenter,
 
-                      textStyle: TextStyle(
-                          fontSize: 16,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? Colors.black
-                                  : Colors.white),
-                      outerColor:
-                          Theme.of(context).brightness == Brightness.light
-                              ? Colors.white
-                              : Color(0xFF2B2929),
-                      innerColor: Colors.blue,
-                      key: key2,
-                      onSubmit: () async {
-                        if (attendanceService.attendanceModel?.checkIn2 !=
-                                null &&
-                            attendanceService.attendanceModel?.checkOut2 !=
-                                null) {
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
-                            title: ' ',
-                            text: 'Registro Completado',
-                          );
-                        } else if (attendanceService
-                                    .attendanceModel?.checkIn2 ==
-                                null &&
-                            _images3 != null) {
-                          uploadFile3();
-                          await attendanceService.markAttendance2(context);
-                        } else if (attendanceService
-                                .attendanceModel?.checkIn2 ==
-                            null) {
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
-                            title: 'Suba',
-                            text: 'una foto por favor',
-                          );
-                        } else if (_images4 != null) {
-                          uploadFile4();
-                          await attendanceService.markAttendance2(context);
-                        } else {
-                          QuickAlert.show(
-                            context: context,
-                            type: QuickAlertType.warning,
-                            title: 'Suba',
-                            text: 'una foto por favor',
-                          );
-                        }
-                        key2.currentState!.reset();
-                      },
-                      /* onSubmit: () async {
+                  textStyle: TextStyle(
+                      fontSize: 16,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white),
+                  outerColor: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Color(0xFF2B2929),
+                  innerColor: Colors.blue,
+                  key: key2,
+                  onSubmit: () async {
+                    if (attendanceService.attendanceModel?.checkIn2 != null &&
+                        attendanceService.attendanceModel?.checkOut2 != null) {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.warning,
+                        title: ' ',
+                        text: 'Registro Completado',
+                      );
+                    } else if (attendanceService.attendanceModel?.checkIn2 ==
+                            null &&
+                        _images3 != null) {
+                      uploadFile3();
+                      await attendanceService.markAttendance2(context);
+                    } else if (attendanceService.attendanceModel?.checkIn2 ==
+                        null) {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.warning,
+                        title: 'Suba',
+                        text: 'una foto por favor',
+                      );
+                    } else if (_images4 != null) {
+                      uploadFile4();
+                      await attendanceService.markAttendance2(context);
+                    } else {
+                      QuickAlert.show(
+                        context: context,
+                        type: QuickAlertType.warning,
+                        title: 'Suba',
+                        text: 'una foto por favor',
+                      );
+                    }
+                    key2.currentState!.reset();
+                  },
+                  /* onSubmit: () async {
                      if (attendanceService.attendanceModel?.checkIn2 != null &&
                         attendanceService.attendanceModel?.checkOut2 != null) {
                       QuickAlert.show(
@@ -1440,13 +1397,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     }
                     key2.currentState!.reset();
                   },*/
-                    );
-                  }),
-                ),
-              ],
+                );
+              }),
             ),
-          ),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }
 
