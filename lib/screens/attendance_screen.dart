@@ -273,11 +273,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading = false;
         });
-        await markasistencia();
+
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Foto cargada correctamente ! "),
           backgroundColor: Colors.green,
         ));
+        await markasistencia();
       } catch (e) {
         //print("ERRROR : $e");
         setState(() {
