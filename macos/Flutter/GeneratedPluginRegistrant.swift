@@ -6,7 +6,6 @@ import FlutterMacOS
 import Foundation
 
 import app_links
-import file_selector_macos
 import location
 import open_document
 import path_provider_foundation
@@ -17,7 +16,6 @@ import url_launcher_macos
 
 func RegisterGeneratedPlugins(registry: FlutterPluginRegistry) {
   AppLinksMacosPlugin.register(with: registry.registrar(forPlugin: "AppLinksMacosPlugin"))
-  FileSelectorPlugin.register(with: registry.registrar(forPlugin: "FileSelectorPlugin"))
   LocationPlugin.register(with: registry.registrar(forPlugin: "LocationPlugin"))
   OpenDocumentPlugin.register(with: registry.registrar(forPlugin: "OpenDocumentPlugin"))
   PathProviderPlugin.register(with: registry.registrar(forPlugin: "PathProviderPlugin"))
