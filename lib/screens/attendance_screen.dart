@@ -238,13 +238,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Future<void> markasistencia() async {
-    final attendanceService = route.Provider.of<AttendanceService>(context);
+    final attendanceService2 = route.Provider.of<AttendanceService>(context);
     try {
-      attendanceService.markAttendance(context);
+      print("okkkkkkkk");
+      await attendanceService2.markAttendance(context);
+      print("okkkkkkkk");
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: const Text("heyeyyyyyyyyyyyyyyyy")));
     }
+    return;
   }
 
 /////////////tomar foto y subir//////////////
@@ -270,18 +273,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading = false;
         });
-
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(
-              content: Text("Foto cargada correctamente ! "),
-              backgroundColor: Colors.green,
-            ))
-            .closed
-            .then((_) {
-          setState(() {
-            markasistencia();
-          });
-        });
+        await markasistencia();
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Foto cargada correctamente ! "),
+          backgroundColor: Colors.green,
+        ));
       } catch (e) {
         //print("ERRROR : $e");
         setState(() {
@@ -368,6 +364,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading2 = false;
         });
+
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Foto cargada correctamente !"),
           backgroundColor: Colors.green,
@@ -1033,9 +1030,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         _images != null &&
                         attendanceService.attendanceModel?.pic_in == null) {
                       uploadFile();
-                      if (attendanceService.attendanceModel?.pic_in != null) {
-                        await attendanceService.markAttendance(context);
-                      }
+                      // await uploadFile().then((_) async {
+                      //   await attendanceService.markAttendance(context);
+                      //   setState(() {});
+                      // });
+                      //if (attendanceService.attendanceModel?.pic_in != null) {
+                      //   await attendanceService.markAttendance(context);
+                      //  }
                       //await attendanceService.markAttendance(context);
                     } else if (attendanceService.attendanceModel?.checkIn ==
                         null) {
