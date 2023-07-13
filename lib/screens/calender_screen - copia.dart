@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({super.key});
 
@@ -17,7 +16,7 @@ class CalenderScreen extends StatefulWidget {
 
 Future<void> _openmap(String lat, String lon) async {
   Uri googleUrl =
-  Uri.parse('https://www.google.com.ec/maps/search/?api=1&query=$lat,$lon');
+      Uri.parse('https://www.google.com.ec/maps/search/?api=1&query=$lat,$lon');
   await canLaunchUrl(googleUrl)
       ? await launchUrl(googleUrl)
       : throw 'No se puede abrir $googleUrl';
@@ -228,7 +227,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn,
+                                                    attendanceData.checkIn
+                                                            ?.toString() ??
+                                                        '--/edwin--',
                                                     style: TextStyle(
                                                       fontSize: 15,
                                                       color: Theme.of(context)
@@ -251,7 +252,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                 attendanceData
                                                                     .checkInLocation!)
                                                             .longitude;
-                                                           print("latitude");
+                                                        print("latitude");
                                                         print(lat);
                                                         print("longitude");
                                                         print(lon);
