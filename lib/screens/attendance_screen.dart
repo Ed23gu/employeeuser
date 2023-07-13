@@ -58,20 +58,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Uint8List webI4 = Uint8List(8);
   final SupabaseClient supabase = Supabase.instance.client;
 
-  Future getMyFiles() async {
-    final List<FileObject> result = await supabase.storage
-        .from('imageip')
-        .list(path: supabase.auth.currentUser!.id);
-    List<Map<String, String>> myImages = [];
-
-    for (var image in result) {
-      final getUrl = supabase.storage
-          .from('imageip')
-          .getPublicUrl("${supabase.auth.currentUser!.id}/${image.name}");
-      myImages.add({'name': image.name, 'url': getUrl});
-    }
-    return myImages;
-  }
 
   Future limpiaima() async {
     _images = null;
