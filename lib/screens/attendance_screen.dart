@@ -656,6 +656,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
         .getTodayAttendance();
+        su
   }
 
   @override
