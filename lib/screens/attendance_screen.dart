@@ -154,7 +154,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
               _images!);
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
-          final getUrl = supabase.storage.from('imageip').getPublicUrl(
+          getUrl = supabase.storage.from('imageip').getPublicUrl(
               urllisto);
           await supabase.from('attendance').insert({
             'employee_id': supabase.auth.currentUser!.id,
@@ -466,7 +466,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
                 pickedFile);
         String urllisto = uploadedUrl.replaceAll("imageip/", "");
-        final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
+         getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
         await supabase
             .from('attendance')
             .update({
@@ -971,15 +971,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                      ? Icon(Icons.photo)
                                        : isUploading==true ? const CircularProgressIndicator():(Image.network(
                                        attendanceService
-                                        .attendanceModel?.pic_in as String ==null? "$getUrl" : attendanceService
+                                        .attendanceModel?.pic_in == null ? getUrl : attendanceService
                                            .attendanceModel?.pic_in as String,
-                                        fit: BoxFit.fill,
+                                        fit: BoxFit.cover,
                                          height: 120))
 
                                     :isUploading ? const CircularProgressIndicator():(Image.network(
                                         attendanceService
                                             .attendanceModel?.pic_in as String,
-                                    fit: BoxFit.fill,
+                                    fit: BoxFit.cover,
                                         height: 120))
 
 
