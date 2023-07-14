@@ -5,5 +5,6 @@
     "source.organizeImports": true
   },
   "BracketHighlighter.enableExtension": true,
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "cmake.configureOnOpen": false
 }

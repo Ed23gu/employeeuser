@@ -57,6 +57,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Uint8List webI3 = Uint8List(8);
   Uint8List webI4 = Uint8List(8);
   final SupabaseClient supabase = Supabase.instance.client;
+  final AttendanceService subirubi = AttendanceService() ;
 
   Future limpiaima() async {
     _images = null;
@@ -238,16 +239,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Future<void> markasistencia() async {
-    final attendanceService2 = route.Provider.of<AttendanceService>(context);
+    print("antesdel try");
     try {
-      print("okkkkkkkk");
-      await attendanceService2.markAttendance(context);
-      print("okkkkkkkk");
+      await subirubi.markAttendance(context);
+      print("ubicccccaioonnn");
     } catch (e) {
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: const Text("heyeyyyyyyyyyyyyyyyy")));
     }
-    return;
   }
 
 /////////////tomar foto y subir//////////////
@@ -273,12 +272,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading = false;
         });
-
+        markasistencia();
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Foto cargada correctamente en carga uno"),
           backgroundColor: Colors.green,
         ));
-        await markasistencia();
       } catch (e) {
         //print("ERRROR : $e");
         setState(() {
@@ -658,8 +656,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
         .getTodayAttendance();
-
-    super.initState();
   }
 
   @override
@@ -1030,7 +1026,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             null &&
                         _images != null &&
                         attendanceService.attendanceModel?.pic_in == null) {
-                      uploadFile();
+                     await uploadFile();
+                      print("eyyyyyyyy");
                       // await uploadFile().then((_) async {
                       //   await attendanceService.markAttendance(context);
                       //   setState(() {});
