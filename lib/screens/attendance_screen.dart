@@ -1132,10 +1132,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         _images != null &&
                         attendanceService.attendanceModel?.pic_in == null) {
                       print("antes del update");
-                      await uploadFile(context);
-
-                      await attendanceService.markAttendance3(context);
-
+                     // await uploadFile(context);
+                      await attendanceService.markAttendance(context);
                       print("despues del update");
                       // await uploadFile().then((_) async {
                       //   await attendanceService.markAttendance(context);
