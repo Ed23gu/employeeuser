@@ -138,11 +138,50 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       if (pickedFile != null) {
         _images = File(pickedFile.path);
         File? imagescom = await customCompressed(imagePathToCompress: _images);
+        _images = File(imagescom.path);
         setState(() {
           isUploading = true;
-          _imagescom1 = imagescom;
         });
+        try {
+          String fecharuta =
+          DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          DateTime now = DateTime.now();
+          String fileName =
+              DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+          String uploadedUrl = await supabase.storage.from('imageip').upload(
+              "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+              _images!);
+          String urllisto = uploadedUrl.replaceAll("imageip/", "");
+          final getUrl = supabase.storage.from('imageip').getPublicUrl(
+              urllisto);
+          await supabase.from('attendance').insert({
+            'employee_id': supabase.auth.currentUser!.id,
+            'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+            'pic_in': getUrl,
+          });
+          setState(() {
+            isUploading = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Foto cargada correctamente"),
+            backgroundColor: Colors.green,
+          ));
+        } catch (e) {
+          //print("ERRROR : $e");
+          setState(() {
+            isUploading = false;
+            Future.delayed(
+              Duration(seconds: segundos),
+                  () => key.currentState?.reset(),
+            );
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Algo ha salido, intentelo nuevamente"),
+            backgroundColor: Colors.red,
+          ));
+        }
       }
+
     } else if (kIsWeb) {
       var pickedFileweb = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
@@ -156,6 +195,42 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       }
     }
   }
+
+  // Future choiceImage() async {
+  //   if (!kIsWeb) {
+  //     var pickedFile = await picker.pickImage(
+  //         source: ImageSource.camera, imageQuality: imageq);
+  //     if (pickedFile != null) {
+  //       _images = File(pickedFile.path);
+  //       File? imagescom = await customCompressed(imagePathToCompress: _images);
+  //       setState(() {
+  //         isUploading = true;
+  //         _imagescom1 = imagescom;
+  //       });
+  //
+  //
+  //
+  //
+  //
+  //
+  //     }
+  //
+  //
+  //
+  //
+  //   } else if (kIsWeb) {
+  //     var pickedFileweb = await picker.pickImage(
+  //         source: ImageSource.camera, imageQuality: imageq);
+  //     if (pickedFileweb != null) {
+  //       var f = await pickedFileweb.readAsBytes();
+  //       _images = File('a');
+  //       setState(() {
+  //         isUploading = true;
+  //         webI = f;
+  //       });
+  //     }
+  //   }
+  // }
 
   Future choiceImage2() async {
     if (!kIsWeb) {
@@ -263,7 +338,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         });
         // await markasistencia(context);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Foto cargada correctamente en carga uno"),
+          content: Text("Foto cargada correctamente"),
           backgroundColor: Colors.green,
         ));
         await subirubi.markAttendance(context);
@@ -889,17 +964,21 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         null)
                                     ? _images == null
                                         ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI, height: 120)
-                                            : Image.file(
-                                                _images!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
+                                       :isUploading ? const CircularProgressIndicator():(Image.network(
+                                       attendanceService
+                                        .attendanceModel?.pic_in as String,
+                                        fit: BoxFit.fill,
+                                         height: 120))
+
+                                        :isUploading ? const CircularProgressIndicator():(Image.network(
                                         attendanceService
                                             .attendanceModel?.pic_in as String,
                                     fit: BoxFit.fill,
-                                        height: 120)),
+                                        height: 120))
+
+
+
+                            ),
                           ],
                         )
                         //container

@@ -44,7 +44,7 @@ dependencies:
   slide_to_act: ^2.0.1
   intl:
   simple_month_year_picker: ^1.0.5
-  location:
+  location: ^5.0.0
   image_picker: ^0.8.7+5
   html: ^0.15.3
   camera: ^0.10.5
