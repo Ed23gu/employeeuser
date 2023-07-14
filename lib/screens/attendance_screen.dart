@@ -872,7 +872,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         absorbing: buttonDisabled5,
                                         child: IconButton(
                                             icon: Icon(Icons.delete),
-                                            color: Colors.red,
+                                            color: Colors.grey,
                                             onPressed: () {
                                               limpiaima();
                                               disableButton5();
@@ -981,7 +981,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         absorbing: buttonDisabled2,
                                         child: IconButton(
                                             icon: Icon(Icons.delete),
-                                            color: Colors.blueGrey ,
+                                            color: Colors.grey ,
                                             onPressed: () {
                                               limpiaima2();
                                               disableButton2();
@@ -1031,7 +1031,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   outerColor: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Color(0xFF2B2929),
-                  innerColor: Colors.blue,
+               //   innerColor: Colors.red,
                   key: key,
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn != null &&
@@ -1225,7 +1225,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         absorbing: buttonDisabled3,
                                         child: IconButton(
                                             icon: Icon(Icons.delete),
-                                            color: Colors.red,
+                                            color: Colors.grey,
                                             onPressed: () {
                                               limpiaima3();
                                               disableButton3();
@@ -1325,7 +1325,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         absorbing: buttonDisabled4,
                                         child: IconButton(
                                             icon: Icon(Icons.delete),
-                                            color: Colors.red,
+                                            color: Colors.grey,
                                             onPressed: () {
                                               limpiaima4();
                                               disableButton4();
@@ -1376,7 +1376,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   outerColor: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Color(0xFF2B2929),
-                  innerColor: Colors.blue,
+                 // innerColor: ,
                   key: key2,
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn2 != null &&
