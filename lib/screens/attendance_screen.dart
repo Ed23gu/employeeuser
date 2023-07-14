@@ -25,6 +25,8 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
+
+  String getUrl="";
   int segundos = 1;
   bool buttonDisabled = false;
   bool buttonDisabled2 = true;
@@ -921,16 +923,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                             null)
                                     ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
-                                        onPressed: () {
-                                          choiceImage();
+                                        onPressed: () async {
+                                         await choiceImage();
                                           disableButton5();
                                         })
                                     : AbsorbPointer(
                                         absorbing: buttonDisabled5,
                                         child: IconButton(
                                             icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage();
+                                            onPressed: () async {
+                                              print("antes de");
+                                              await choiceImage();
+                                              print("despues de  de");
                                               disableButton5();
                                             }),
                                       ),
@@ -959,18 +963,20 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.all(Radius.circular(20))
                               ),
-                                child: (attendanceService
+
+                                child:  (attendanceService
                                             .attendanceModel?.pic_in ==
                                         null)
                                     ? _images == null
-                                        ? Icon(Icons.photo)
-                                       :isUploading ? const CircularProgressIndicator():(Image.network(
+                                     ? Icon(Icons.photo)
+                                       : isUploading==true ? const CircularProgressIndicator():(Image.network(
                                        attendanceService
-                                        .attendanceModel?.pic_in as String,
+                                        .attendanceModel?.pic_in as String ==null? "$getUrl" : attendanceService
+                                           .attendanceModel?.pic_in as String,
                                         fit: BoxFit.fill,
                                          height: 120))
 
-                                        :isUploading ? const CircularProgressIndicator():(Image.network(
+                                    :isUploading ? const CircularProgressIndicator():(Image.network(
                                         attendanceService
                                             .attendanceModel?.pic_in as String,
                                     fit: BoxFit.fill,
