@@ -57,7 +57,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Uint8List webI3 = Uint8List(8);
   Uint8List webI4 = Uint8List(8);
   final SupabaseClient supabase = Supabase.instance.client;
-  final AttendanceService subirubi = AttendanceService() ;
+  final AttendanceService subirubi = AttendanceService();
 
   Future limpiaima() async {
     _images = null;
@@ -656,7 +656,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
         .getTodayAttendance();
-        su
+    super.initState();
   }
 
   @override
@@ -1027,7 +1027,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             null &&
                         _images != null &&
                         attendanceService.attendanceModel?.pic_in == null) {
-                     await uploadFile();
+                      await uploadFile();
                       print("eyyyyyyyy");
                       // await uploadFile().then((_) async {
                       //   await attendanceService.markAttendance(context);

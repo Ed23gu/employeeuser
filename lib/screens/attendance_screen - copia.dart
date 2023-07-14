@@ -1,18 +1,19 @@
 import 'dart:io';
+
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/models/department_model.dart';
-import 'package:flutter/foundation.dart';
-import 'package:quickalert/quickalert.dart';
 import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
+import 'package:quickalert/quickalert.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:flutter_native_image/flutter_native_image.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -45,14 +46,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   File? _images2;
   File? _images3;
   File? _images4;
-  Uint8List webImage=Uint8List(8);
-  Uint8List webImage2=Uint8List(8);
-  Uint8List webImage3=Uint8List(8);
-  Uint8List webImage4=Uint8List(8);
-  Uint8List webI=Uint8List(8);
-  Uint8List webI2=Uint8List(8);
-  Uint8List webI3=Uint8List(8);
-  Uint8List webI4=Uint8List(8);
+  Uint8List webImage = Uint8List(8);
+  Uint8List webImage2 = Uint8List(8);
+  Uint8List webImage3 = Uint8List(8);
+  Uint8List webImage4 = Uint8List(8);
+  Uint8List webI = Uint8List(8);
+  Uint8List webI2 = Uint8List(8);
+  Uint8List webI3 = Uint8List(8);
+  Uint8List webI4 = Uint8List(8);
   final SupabaseClient supabase = Supabase.instance.client;
 
   Future getMyFiles1() async {
@@ -157,10 +158,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return path;
   }
 
-
   Future choiceImage() async {
     if (!kIsWeb) {
-      var pickedFile = await picker.pickImage(source: ImageSource.camera,imageQuality: 10);
+      var pickedFile =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFile != null) {
         _images = File(pickedFile.path);
         File? imagescom = await customCompressed(imagePathToCompress: _images);
@@ -169,8 +170,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           _imagescom1 = imagescom;
         });
       }
-    }else if (kIsWeb){
-      var pickedFileweb = await picker.pickImage(source: ImageSource.camera,  imageQuality: 10);
+    } else if (kIsWeb) {
+      var pickedFileweb =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFileweb != null) {
         var f = await pickedFileweb.readAsBytes();
         _images = File('a');
@@ -184,17 +186,20 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   Future choiceImage2() async {
     if (!kIsWeb) {
-      var pickedFile2 = await picker.pickImage(source: ImageSource.camera,imageQuality: 10);
+      var pickedFile2 =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFile2 != null) {
         _images2 = File(pickedFile2.path);
-        File? imagescom2 = await customCompressed(imagePathToCompress: _images2);
+        File? imagescom2 =
+            await customCompressed(imagePathToCompress: _images2);
         setState(() {
           isUploading2 = true;
           _imagescom2 = imagescom2;
         });
       }
-    }else if (kIsWeb){
-      var pickedFileweb2 = await picker.pickImage(source: ImageSource.camera,  imageQuality: 10);
+    } else if (kIsWeb) {
+      var pickedFileweb2 =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFileweb2 != null) {
         var f2 = await pickedFileweb2.readAsBytes();
         _images2 = File('a');
@@ -208,17 +213,20 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   Future choiceImage3() async {
     if (!kIsWeb) {
-      var pickedFile3 = await picker.pickImage(source: ImageSource.camera,imageQuality: 10);
+      var pickedFile3 =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFile3 != null) {
         _images3 = File(pickedFile3.path);
-        File? imagescom3 = await customCompressed(imagePathToCompress: _images3);
+        File? imagescom3 =
+            await customCompressed(imagePathToCompress: _images3);
         setState(() {
           isUploading3 = true;
           _imagescom3 = imagescom3;
         });
       }
-    }else if (kIsWeb){
-      var pickedFileweb3 = await picker.pickImage(source: ImageSource.camera,  imageQuality: 10);
+    } else if (kIsWeb) {
+      var pickedFileweb3 =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFileweb3 != null) {
         var f3 = await pickedFileweb3.readAsBytes();
         _images3 = File('a');
@@ -230,20 +238,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-
   Future choiceImage4() async {
     if (!kIsWeb) {
-      var pickedFile4 = await picker.pickImage(source: ImageSource.camera,imageQuality: 10);
+      var pickedFile4 =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFile4 != null) {
         _images4 = File(pickedFile4.path);
-        File? imagescom4 = await customCompressed(imagePathToCompress: _images4);
+        File? imagescom4 =
+            await customCompressed(imagePathToCompress: _images4);
         setState(() {
           isUploading4 = true;
           _imagescom4 = imagescom4;
         });
       }
-    }else if (kIsWeb){
-      var pickedFileweb4 = await picker.pickImage(source: ImageSource.camera,  imageQuality: 10);
+    } else if (kIsWeb) {
+      var pickedFileweb4 =
+          await picker.pickImage(source: ImageSource.camera, imageQuality: 10);
       if (pickedFileweb4 != null) {
         var f4 = await pickedFileweb4.readAsBytes();
         _images4 = File('a');
@@ -294,7 +304,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       // String fileName = pickedFile.name;
       DateTime now = DateTime.now();
       String fileName = DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
-      String uploadedUrl = await supabase.storage
+      String uploadedUrll = await supabase.storage
           .from('imageip')
           .upload("${supabase.auth.currentUser!.id}/$fileName", _images2!);
       setState(() {
@@ -621,7 +631,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 : Image.file(
                                     _images!,
                                     height: 130,
-
                                   )),
                       ],
                     )),
@@ -1012,7 +1021,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         text: 'Registro Completado',
                       );
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
-                        null &&
+                            null &&
                         _images3 != null) {
                       uploadFile3();
                       await attendanceService.markAttendance2(context);
@@ -1027,7 +1036,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     } else if (_images4 != null) {
                       uploadFile4();
                       await attendanceService.markAttendance2(context);
-
                     } else {
                       QuickAlert.show(
                         context: context,
@@ -1038,7 +1046,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     }
                     key2.currentState!.reset();
                   },
-                 /* onSubmit: () async {
+                  /* onSubmit: () async {
                      if (attendanceService.attendanceModel?.checkIn2 != null &&
                         attendanceService.attendanceModel?.checkOut2 != null) {
                       QuickAlert.show(
