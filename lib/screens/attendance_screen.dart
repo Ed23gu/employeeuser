@@ -295,7 +295,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         String uploadedUrl = await supabase.storage
             .from('imageip')
             .uploadBinary(
-                "${supabase.auth.currentUser!.id}/$fecharuta$fileName",
+                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
                 pickedFile);
         String urllisto = uploadedUrl.replaceAll("imageip/", "");
         final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
