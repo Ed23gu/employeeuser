@@ -148,6 +148,15 @@ class AttendanceService extends ChangeNotifier {
       getTodayAttendance();
     }
   }
+  Future markAttendance3(BuildContext context) async {
+      getTodayAttendance();
+
+  }
+
+
+
+
+
   Future markAttendance2(BuildContext context) async {
     final userData2 = await _supabase
         .from(Constants.employeeTable)

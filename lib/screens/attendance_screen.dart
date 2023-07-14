@@ -25,7 +25,7 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
-  int segundos = 3;
+  int segundos = 1;
   bool buttonDisabled = false;
   bool buttonDisabled2 = true;
   bool buttonDisabled3 = true;
@@ -36,7 +36,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading3 = false;
   bool isUploading4 = false;
   int imageq = 100;
-  int qt = 90;
+  int qt = 85;
   int per = 15;
   final picker = ImagePicker();
   File? pickedImage;
@@ -238,19 +238,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  Future<void> markasistencia() async {
-    print("antesdel try");
-    try {
-      await subirubi.markAttendance(context);
-      print("ubicccccaioonnn");
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: const Text("heyeyyyyyyyyyyyyyyyy")));
-    }
-  }
-
 /////////////tomar foto y subir//////////////
-  Future uploadFile() async {
+  Future uploadFile(BuildContext context) async {
     if (!kIsWeb) {
       var pickedFile = _imagescom1;
       try {
@@ -272,11 +261,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading = false;
         });
-        markasistencia();
+        // await markasistencia(context);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Foto cargada correctamente en carga uno"),
           backgroundColor: Colors.green,
         ));
+        await subirubi.markAttendance(context);
       } catch (e) {
         //print("ERRROR : $e");
         setState(() {
@@ -664,9 +654,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
       appBar: AppBar(
+        leading: Builder(builder: (BuildContext context) {
+          return Container(
+            child: Image(image: AssetImage('assets/icon/icon.png'), height: 20,),
+          );
+        }),
         title: Text(
           "ArtConsGroup",
-          style: TextStyle(fontSize: 25),
+          style: TextStyle(fontSize: 23),
         ),
         actions: [
           Row(
@@ -717,7 +712,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ? "Hola " + user.name + ","
                               : "Hola" + "#${user.employeeId}" + ",",
                           style: const TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
+                              fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       );
                     }
@@ -742,7 +737,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           user2.title != "" ? user2.title.toString() : " ",
-                          style: const TextStyle(fontSize: 15),
+                          style: const TextStyle(fontSize: 13),
                         ),
                       );
                     }
@@ -766,7 +761,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     alignment: Alignment.center,
                     child: Text(
                       DateFormat("HH:mm:ss").format(DateTime.now()),
-                      style: const TextStyle(fontSize: 30),
+                      style: const TextStyle(fontSize: 27),
                     ),
                   );
                 }),
@@ -774,7 +769,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               alignment: Alignment.center,
               child: Text(
                 DateFormat("dd MMMM yyyy").format(DateTime.now()),
-                style: const TextStyle(fontSize: 15),
+                style: const TextStyle(fontSize: 14),
               ),
             ),
             const SizedBox(
@@ -789,7 +784,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             Container(
               padding: EdgeInsets.all(10.0),
               margin: EdgeInsets.only(top: 5, bottom: 5),
-              height: 225,
+              height: 170,
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
@@ -835,65 +830,78 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 80,
                           child: Divider(),
                         ),
+                        const SizedBox(
+                          height: 7,
+                          width: 80,
+                        ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            (_images == null &&
-                                    attendanceService
-                                            .attendanceModel?.checkIn ==
-                                        null)
-                                ? IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () {
-                                      choiceImage();
-                                      disableButton5();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled5,
-                                    child: IconButton(
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                (_images == null &&
+                                        attendanceService
+                                                .attendanceModel?.checkIn ==
+                                            null)
+                                    ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage();
                                           disableButton5();
-                                        }),
-                                  ),
-                            attendanceService.attendanceModel?.checkIn == null
-                                ? IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      limpiaima();
-                                      // disableButton();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled5,
-                                    child: IconButton(
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled5,
+                                        child: IconButton(
+                                            icon: Icon(Icons.add_a_photo),
+                                            onPressed: () {
+                                              choiceImage();
+                                              disableButton5();
+                                            }),
+                                      ),
+                                attendanceService.attendanceModel?.checkIn ==
+                                        null
+                                    ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima();
-                                          disableButton5();
-                                        }),
-                                  ),
+                                          // disableButton();
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled5,
+                                        child: IconButton(
+                                            icon: Icon(Icons.delete),
+                                            color: Colors.red,
+                                            onPressed: () {
+                                              limpiaima();
+                                              disableButton5();
+                                            }),
+                                      ),
+                              ],
+                            ),
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(20))
+                              ),
+                                child: (attendanceService
+                                            .attendanceModel?.pic_in ==
+                                        null)
+                                    ? _images == null
+                                        ? Icon(Icons.photo)
+                                        : kIsWeb == true
+                                            ? Image.memory(webI, height: 120)
+                                            : Image.file(
+                                                _images!,
+                                                height: 120,
+                                              )
+                                    : Image.network(
+                                        attendanceService
+                                            .attendanceModel?.pic_in as String,
+                                    fit: BoxFit.fill,
+                                        height: 120)),
                           ],
-                        ),
-                        Container(
-                            child: (attendanceService.attendanceModel?.pic_in ==
-                                    null)
-                                ? _images == null
-                                    ? Icon(Icons.photo)
-                                    : kIsWeb == true
-                                        ? Image.memory(webI, height: 120)
-                                        : Image.file(
-                                            _images!,
-                                            height: 120,
-                                          )
-                                : Image.network(
-                                    attendanceService.attendanceModel?.pic_in
-                                        as String,
-                                    height: 120))
-
+                        )
                         //container
                       ],
                     )), //expanded
@@ -927,67 +935,78 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 80,
                           child: Divider(),
                         ),
+                        const SizedBox(
+                          height: 6,
+                          width: 80,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            (_images2 == null &&
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                (_images2 == null &&
+                                            attendanceService.attendanceModel
+                                                    ?.checkOut ==
+                                                null) &&
                                         attendanceService
-                                                .attendanceModel?.checkOut ==
-                                            null) &&
-                                    attendanceService
-                                            .attendanceModel?.checkIn !=
-                                        null
-                                ? IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () {
-                                      choiceImage2();
-                                      disableButton2();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled2,
-                                    child: IconButton(
+                                                .attendanceModel?.checkIn !=
+                                            null
+                                    ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage2();
                                           disableButton2();
-                                        })),
-                            attendanceService.attendanceModel?.checkOut == null
-                                ? IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      limpiaima2();
-                                      // disableButton();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled2,
-                                    child: IconButton(
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled2,
+                                        child: IconButton(
+                                            icon: Icon(Icons.add_a_photo),
+                                            onPressed: () {
+                                              choiceImage2();
+                                              disableButton2();
+                                            })),
+                                attendanceService.attendanceModel?.checkOut ==
+                                        null
+                                    ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima2();
-                                          disableButton2();
-                                        }),
-                                  ),
+                                          // disableButton();
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled2,
+                                        child: IconButton(
+                                            icon: Icon(Icons.delete),
+                                            color: Colors.blueGrey ,
+                                            onPressed: () {
+                                              limpiaima2();
+                                              disableButton2();
+                                            }),
+                                      ),
+                              ],
+                            ),
+                            Container(
+                                child: (attendanceService
+                                            .attendanceModel?.pic_out ==
+                                        null)
+                                    ? _images2 == null
+                                        ? Icon(Icons.photo)
+                                        : kIsWeb == true
+                                            ? Image.memory(webI2, height: 120)
+                                            : Image.file(
+                                                _images2!,
+                                                height: 120,
+                                              )
+                                    : Image.network(
+                                        attendanceService
+                                            .attendanceModel?.pic_out as String,
+                                        height: 120))
                           ],
                         ),
-                        Container(
-                            child: (attendanceService
-                                        .attendanceModel?.pic_out ==
-                                    null)
-                                ? _images2 == null
-                                    ? Icon(Icons.photo)
-                                    : kIsWeb == true
-                                        ? Image.memory(webI2, height: 120)
-                                        : Image.file(
-                                            _images2!,
-                                            height: 120,
-                                          )
-                                : Image.network(
-                                    attendanceService.attendanceModel?.pic_out
-                                        as String,
-                                    height: 120))
                       ],
                     )),
                   ]),
@@ -1027,8 +1046,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             null &&
                         _images != null &&
                         attendanceService.attendanceModel?.pic_in == null) {
-                      await uploadFile();
-                      print("eyyyyyyyy");
+                      print("antes del update");
+                      await uploadFile(context);
+
+                      await attendanceService.markAttendance3(context);
+
+                      print("despues del update");
                       // await uploadFile().then((_) async {
                       //   await attendanceService.markAttendance(context);
                       //   setState(() {});
@@ -1113,7 +1136,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             Container(
               padding: EdgeInsets.all(10.0),
               margin: EdgeInsets.only(top: 5, bottom: 10),
-              height: 225,
+              height: 170,
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
@@ -1158,69 +1181,76 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           height: 2,
                           width: 80,
                           child: Divider(),
+                        ),const SizedBox(
+                          height: 5,
+                          width: 80,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            (_images3 == null &&
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                (_images3 == null &&
+                                            attendanceService
+                                                    .attendanceModel?.checkIn2 ==
+                                                null) &&
                                         attendanceService
-                                                .attendanceModel?.checkIn2 ==
-                                            null) &&
-                                    attendanceService
-                                            .attendanceModel?.checkOut !=
-                                        null
-                                ? IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () {
-                                      choiceImage3();
-                                      disableButton3();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled3,
-                                    child: IconButton(
+                                                .attendanceModel?.checkOut !=
+                                            null
+                                    ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage3();
                                           disableButton3();
-                                        }),
-                                  ),
-                            attendanceService.attendanceModel?.checkIn2 == null
-                                ? IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      limpiaima3();
-                                      // disableButton();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled3,
-                                    child: IconButton(
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled3,
+                                        child: IconButton(
+                                            icon: Icon(Icons.add_a_photo),
+                                            onPressed: () {
+                                              choiceImage3();
+                                              disableButton3();
+                                            }),
+                                      ),
+                                attendanceService.attendanceModel?.checkIn2 == null
+                                    ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima3();
-                                          disableButton3();
-                                        }),
-                                  ),
+                                          // disableButton();
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled3,
+                                        child: IconButton(
+                                            icon: Icon(Icons.delete),
+                                            color: Colors.red,
+                                            onPressed: () {
+                                              limpiaima3();
+                                              disableButton3();
+                                            }),
+                                      ),
+                              ],
+                            ),
+                            Container(
+                                child: (attendanceService
+                                            .attendanceModel?.pic_in2 ==
+                                        null)
+                                    ? _images3 == null
+                                        ? Icon(Icons.photo)
+                                        : kIsWeb == true
+                                            ? Image.memory(webI3, height: 120)
+                                            : Image.file(
+                                                _images3!,
+                                                height: 120,
+                                              )
+                                    : Image.network(
+                                        attendanceService.attendanceModel?.pic_in2
+                                            as String,
+                                        height: 120)),
                           ],
-                        ),
-                        Container(
-                            child: (attendanceService
-                                        .attendanceModel?.pic_in2 ==
-                                    null)
-                                ? _images3 == null
-                                    ? Icon(Icons.photo)
-                                    : kIsWeb == true
-                                        ? Image.memory(webI3, height: 120)
-                                        : Image.file(
-                                            _images3!,
-                                            height: 120,
-                                          )
-                                : Image.network(
-                                    attendanceService.attendanceModel?.pic_in2
-                                        as String,
-                                    height: 120))
+                        )
                       ],
                     )),
                     Expanded(
@@ -1251,69 +1281,76 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           height: 2,
                           width: 80,
                           child: Divider(),
+                        ), const SizedBox(
+                          height: 5,
+                          width: 80,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            (_images4 == null &&
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                (_images4 == null &&
+                                            attendanceService
+                                                    .attendanceModel?.checkOut2 ==
+                                                null) &&
                                         attendanceService
-                                                .attendanceModel?.checkOut2 ==
-                                            null) &&
-                                    attendanceService
-                                            .attendanceModel?.checkIn2 !=
-                                        null
-                                ? IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () {
-                                      choiceImage4();
-                                      disableButton4();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled4,
-                                    child: IconButton(
+                                                .attendanceModel?.checkIn2 !=
+                                            null
+                                    ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () {
                                           choiceImage4();
                                           disableButton4();
-                                        }),
-                                  ),
-                            attendanceService.attendanceModel?.checkOut2 == null
-                                ? IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.red,
-                                    onPressed: () {
-                                      limpiaima4();
-                                      // disableButton2();
-                                    })
-                                : AbsorbPointer(
-                                    absorbing: buttonDisabled4,
-                                    child: IconButton(
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled4,
+                                        child: IconButton(
+                                            icon: Icon(Icons.add_a_photo),
+                                            onPressed: () {
+                                              choiceImage4();
+                                              disableButton4();
+                                            }),
+                                      ),
+                                attendanceService.attendanceModel?.checkOut2 == null
+                                    ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
                                           limpiaima4();
-                                          disableButton4();
-                                        }),
-                                  ),
+                                          // disableButton2();
+                                        })
+                                    : AbsorbPointer(
+                                        absorbing: buttonDisabled4,
+                                        child: IconButton(
+                                            icon: Icon(Icons.delete),
+                                            color: Colors.red,
+                                            onPressed: () {
+                                              limpiaima4();
+                                              disableButton4();
+                                            }),
+                                      ),
+                              ],
+                            ),
+                            Container(
+                                child: (attendanceService
+                                            .attendanceModel?.pic_out2 ==
+                                        null)
+                                    ? _images4 == null
+                                        ? Icon(Icons.photo)
+                                        : kIsWeb == true
+                                            ? Image.memory(webI4, height: 120)
+                                            : Image.file(
+                                                _images4!,
+                                                height: 120,
+                                              )
+                                    : Image.network(
+                                        attendanceService.attendanceModel?.pic_out2
+                                            as String,
+                                        height: 120)),
                           ],
-                        ),
-                        Container(
-                            child: (attendanceService
-                                        .attendanceModel?.pic_out2 ==
-                                    null)
-                                ? _images4 == null
-                                    ? Icon(Icons.photo)
-                                    : kIsWeb == true
-                                        ? Image.memory(webI4, height: 120)
-                                        : Image.file(
-                                            _images4!,
-                                            height: 120,
-                                          )
-                                : Image.network(
-                                    attendanceService.attendanceModel?.pic_out2
-                                        as String,
-                                    height: 120))
+                        )
                       ],
                     )),
                   ]),
