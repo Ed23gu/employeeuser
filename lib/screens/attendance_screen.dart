@@ -81,6 +81,35 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     setState(() {});
   }
 
+  Future borrar(String imageName) async {
+    _images4 = null;
+    String url2 = imageName.split('/')[9].toString();
+    String url3 = imageName.split('/')[10].toString();
+
+    try {
+      await supabase.storage
+          .from('imageip')
+          .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: const Text("Algo ha salido mal !")));
+    }
+    setState(() {});
+  }
+
+  Future<void> deleteImage(String imageName) async {
+    try {
+      await supabase.storage
+          .from('imageip')
+          .remove([supabase.auth.currentUser!.id + "/" + imageName]);
+      setState(() {});
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: const Text("Algo ha salido mal !")));
+    }
+  }
+
   Future<File> customCompressed({
     @required File? imagePathToCompress,
     quality = 100,
@@ -144,13 +173,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading = true;
         });
-
+        String fecharuta =
+            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+        DateTime now = DateTime.now();
+        String fileName =
+            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
         try {
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
-          DateTime now = DateTime.now();
-          String fileName =
-              DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
           String uploadedUrl = await supabase.storage.from('imageip').upload(
               "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
               _images!);
@@ -169,7 +197,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             backgroundColor: Colors.green,
           ));
         } catch (e) {
-          //print("ERRROR : $e");
+          print("ERRROR : $e");
           setState(() {
             isUploading = false;
             Future.delayed(
@@ -706,17 +734,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   //////////////////////////////
-  Future<void> deleteImage(String imageName) async {
-    try {
-      await supabase.storage
-          .from('imageip')
-          .remove([supabase.auth.currentUser!.id + "/" + imageName]);
-      setState(() {});
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: const Text("Algo ha salido mal !")));
-    }
-  }
 
   @override
   void initState() {
@@ -946,7 +963,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () {
-                                          limpiaima();
+                                          setState(() {
+                                            getUrl = attendanceService
+                                                .attendanceModel!.pic_in
+                                                .toString();
+                                          });
+                                          borrar(getUrl);
                                           // disableButton();
                                         })
                                     : AbsorbPointer(
@@ -962,34 +984,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(20))),
-                                child: (attendanceService
-                                            .attendanceModel?.pic_in ==
-                                        null)
-                                    ? _images == null
-                                        ? Icon(Icons.photo)
-                                        : isUploading == true
-                                            ? const CircularProgressIndicator()
-                                            : (Image.network(
-                                                attendanceService
-                                                            .attendanceModel
-                                                            ?.pic_in ==
-                                                        null
-                                                    ? getUrl
-                                                    : attendanceService
-                                                        .attendanceModel
-                                                        ?.pic_in as String,
-                                                fit: BoxFit.cover,
-                                                height: 120))
-                                    : isUploading
-                                        ? const CircularProgressIndicator()
-                                        : (Image.network(
-                                            attendanceService.attendanceModel
-                                                ?.pic_in as String,
-                                            fit: BoxFit.cover,
-                                            height: 120))),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child:
+                                  (attendanceService.attendanceModel?.pic_in ==
+                                          null)
+                                      ? Icon(Icons.photo)
+                                      : isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : (Image.network(
+                                              attendanceService
+                                                  .attendanceModel!.pic_in
+                                                  .toString(),
+                                              fit: BoxFit.cover,
+                                              height: 120)),
+                            ),
                           ],
                         )
                         //container
