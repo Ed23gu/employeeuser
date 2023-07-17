@@ -26,7 +26,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
 
-  String getUrl="";
+  String getUrl = "";
   int segundos = 1;
   bool buttonDisabled = false;
   bool buttonDisabled2 = true;
@@ -144,9 +144,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading = true;
         });
+
         try {
           String fecharuta =
-          DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -154,8 +155,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
               _images!);
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
-          getUrl = supabase.storage.from('imageip').getPublicUrl(
-              urllisto);
+          getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
           await supabase.from('attendance').insert({
             'employee_id': supabase.auth.currentUser!.id,
             'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
@@ -174,7 +174,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             isUploading = false;
             Future.delayed(
               Duration(seconds: segundos),
-                  () => key.currentState?.reset(),
+              () => key.currentState?.reset(),
             );
           });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -183,7 +183,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ));
         }
       }
-
     } else if (kIsWeb) {
       var pickedFileweb = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
@@ -466,7 +465,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
                 pickedFile);
         String urllisto = uploadedUrl.replaceAll("imageip/", "");
-         getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
+        getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
         await supabase
             .from('attendance')
             .update({
@@ -733,7 +732,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context) {
           return Container(
-            child: Image(image: AssetImage('assets/icon/icon.png'), height: 20,),
+            child: Image(
+              image: AssetImage('assets/icon/icon.png'),
+              height: 20,
+            ),
           );
         }),
         title: Text(
@@ -924,7 +926,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () async {
-                                         await choiceImage();
+                                          await choiceImage();
                                           disableButton5();
                                         })
                                     : AbsorbPointer(
@@ -960,31 +962,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.all(Radius.circular(20))
-                              ),
-
-                                child:  (attendanceService
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: (attendanceService
                                             .attendanceModel?.pic_in ==
                                         null)
                                     ? _images == null
-                                     ? Icon(Icons.photo)
-                                       : isUploading==true ? const CircularProgressIndicator():(Image.network(
-                                       attendanceService
-                                        .attendanceModel?.pic_in == null ? getUrl : attendanceService
-                                           .attendanceModel?.pic_in as String,
-                                        fit: BoxFit.cover,
-                                         height: 120))
-
-                                    :isUploading ? const CircularProgressIndicator():(Image.network(
-                                        attendanceService
-                                            .attendanceModel?.pic_in as String,
-                                    fit: BoxFit.cover,
-                                        height: 120))
-
-
-
-                            ),
+                                        ? Icon(Icons.photo)
+                                        : isUploading == true
+                                            ? const CircularProgressIndicator()
+                                            : (Image.network(
+                                                attendanceService
+                                                            .attendanceModel
+                                                            ?.pic_in ==
+                                                        null
+                                                    ? getUrl
+                                                    : attendanceService
+                                                        .attendanceModel
+                                                        ?.pic_in as String,
+                                                fit: BoxFit.cover,
+                                                height: 120))
+                                    : isUploading
+                                        ? const CircularProgressIndicator()
+                                        : (Image.network(
+                                            attendanceService.attendanceModel
+                                                ?.pic_in as String,
+                                            fit: BoxFit.cover,
+                                            height: 120))),
                           ],
                         )
                         //container
@@ -1066,7 +1071,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         absorbing: buttonDisabled2,
                                         child: IconButton(
                                             icon: Icon(Icons.delete),
-                                            color: Colors.grey ,
+                                            color: Colors.grey,
                                             onPressed: () {
                                               limpiaima2();
                                               disableButton2();
@@ -1116,7 +1121,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   outerColor: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Color(0xFF2B2929),
-               //   innerColor: Colors.red,
+                  //   innerColor: Colors.red,
                   key: key,
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn != null &&
@@ -1132,7 +1137,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         _images != null &&
                         attendanceService.attendanceModel?.pic_in == null) {
                       print("antes del update");
-                     // await uploadFile(context);
+                      // await uploadFile(context);
                       await attendanceService.markAttendance(context);
                       print("despues del update");
                       // await uploadFile().then((_) async {
@@ -1192,6 +1197,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           text: 'una foto por favor'));
                       attendanceService.attendanceModel?.checkIn == null
                           ? (_images != null
+
+
+
                           ? uploadFile()
                           : _images2 != null
                           ? uploadFile2()
@@ -1264,7 +1272,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           height: 2,
                           width: 80,
                           child: Divider(),
-                        ),const SizedBox(
+                        ),
+                        const SizedBox(
                           height: 5,
                           width: 80,
                         ),
@@ -1275,8 +1284,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 (_images3 == null &&
-                                            attendanceService
-                                                    .attendanceModel?.checkIn2 ==
+                                            attendanceService.attendanceModel
+                                                    ?.checkIn2 ==
                                                 null) &&
                                         attendanceService
                                                 .attendanceModel?.checkOut !=
@@ -1296,7 +1305,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               disableButton3();
                                             }),
                                       ),
-                                attendanceService.attendanceModel?.checkIn2 == null
+                                attendanceService.attendanceModel?.checkIn2 ==
+                                        null
                                     ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
@@ -1329,8 +1339,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 height: 120,
                                               )
                                     : Image.network(
-                                        attendanceService.attendanceModel?.pic_in2
-                                            as String,
+                                        attendanceService
+                                            .attendanceModel?.pic_in2 as String,
                                         height: 120)),
                           ],
                         )
@@ -1364,7 +1374,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           height: 2,
                           width: 80,
                           child: Divider(),
-                        ), const SizedBox(
+                        ),
+                        const SizedBox(
                           height: 5,
                           width: 80,
                         ),
@@ -1375,8 +1386,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 (_images4 == null &&
-                                            attendanceService
-                                                    .attendanceModel?.checkOut2 ==
+                                            attendanceService.attendanceModel
+                                                    ?.checkOut2 ==
                                                 null) &&
                                         attendanceService
                                                 .attendanceModel?.checkIn2 !=
@@ -1396,7 +1407,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               disableButton4();
                                             }),
                                       ),
-                                attendanceService.attendanceModel?.checkOut2 == null
+                                attendanceService.attendanceModel?.checkOut2 ==
+                                        null
                                     ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
@@ -1429,8 +1441,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 height: 120,
                                               )
                                     : Image.network(
-                                        attendanceService.attendanceModel?.pic_out2
-                                            as String,
+                                        attendanceService.attendanceModel
+                                            ?.pic_out2 as String,
                                         height: 120)),
                           ],
                         )
@@ -1459,7 +1471,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   outerColor: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Color(0xFF2B2929),
-                 // innerColor: ,
+                  // innerColor: ,
                   key: key2,
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn2 != null &&
