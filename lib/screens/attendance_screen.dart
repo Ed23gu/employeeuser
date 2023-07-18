@@ -26,8 +26,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
   String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
-  String getUrl = "";
+  String getUrl = "NULL";
   int segundos = 1;
+  bool flagborrar = false;
   bool buttonDisabled = false;
   bool buttonDisabled2 = true;
   bool buttonDisabled3 = true;
@@ -83,25 +84,29 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   Future borrar(String tipoimagen, String imageName) async {
     _images4 = null;
-    String url2 = imageName.split('/')[9].toString();
-    String url3 = imageName.split('/')[10].toString();
+    if (imageName != "NULL") {
+      String url2 = imageName.split('/')[9].toString();
+      String url3 = imageName.split('/')[10].toString();
 
-    try {
-      final List<FileObject> objects = await supabase.storage
-          .from('imageip')
-          .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
-      print(supabase.auth.currentUser!.id + "/" + url2 + "/" + url3);
-      await supabase
-          .from('attendance')
-          .update({
-            'pic_in': "null",
-          })
-          .eq('employee_id', supabase.auth.currentUser!.id)
-          .eq('date', todayDate);
-      setState(() {});
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: const Text("Algo ha salido mal !")));
+      try {
+        await supabase.storage
+            .from('imageip')
+            .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
+        print(supabase.auth.currentUser!.id + "/" + url2 + "/" + url3);
+        await supabase
+            .from('attendance')
+            .update({
+              'pic_in': "NULL",
+            })
+            .eq('employee_id', supabase.auth.currentUser!.id)
+            .eq('date', todayDate);
+        setState(() {
+          flagborrar = true;
+        });
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: const Text("Algo ha salido mal !")));
+      }
     }
     setState(() {});
   }
@@ -175,48 +180,100 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
       if (pickedFile != null) {
-        _images = File(pickedFile.path);
-        File? imagescom = await customCompressed(imagePathToCompress: _images);
-        _images = File(imagescom.path);
-        setState(() {
-          isUploading = true;
-        });
-        String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
-        DateTime now = DateTime.now();
-        String fileName =
-            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
-        try {
-          String uploadedUrl = await supabase.storage.from('imageip').upload(
-              "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
-              _images!);
-          String urllisto = uploadedUrl.replaceAll("imageip/", "");
-          getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-          await supabase.from('attendance').insert({
-            'employee_id': supabase.auth.currentUser!.id,
-            'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-            'pic_in': getUrl,
-          });
+        if (flagborrar == false) {
+          _images = File(pickedFile.path);
+          File? imagescom =
+              await customCompressed(imagePathToCompress: _images);
+          _images = File(imagescom.path);
           setState(() {
-            isUploading = false;
+            isUploading = true;
           });
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Foto cargada correctamente"),
-            backgroundColor: Colors.green,
-          ));
-        } catch (e) {
-          print("ERRROR : $e");
+          String fecharuta =
+              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          DateTime now = DateTime.now();
+          String fileName =
+              DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+          try {
+            String uploadedUrl = await supabase.storage.from('imageip').upload(
+                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                _images!);
+            String urllisto = uploadedUrl.replaceAll("imageip/", "");
+            getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
+            await supabase.from('attendance').insert({
+              'employee_id': supabase.auth.currentUser!.id,
+              'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+              'pic_in': getUrl,
+            });
+            setState(() {
+              isUploading = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Foto cargada correctamente"),
+              backgroundColor: Colors.green,
+            ));
+          } catch (e) {
+            print("ERRROR : $e");
+            setState(() {
+              isUploading = false;
+              Future.delayed(
+                Duration(seconds: segundos),
+                () => key.currentState?.reset(),
+              );
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Algo ha salido, intentelo nuevamente"),
+              backgroundColor: Colors.red,
+            ));
+          }
+        } else {
+          _images = File(pickedFile.path);
+          File? imagescom =
+              await customCompressed(imagePathToCompress: _images);
+          _images = File(imagescom.path);
           setState(() {
-            isUploading = false;
-            Future.delayed(
-              Duration(seconds: segundos),
-              () => key.currentState?.reset(),
-            );
+            isUploading = true;
           });
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Algo ha salido, intentelo nuevamente"),
-            backgroundColor: Colors.red,
-          ));
+          String fecharuta =
+              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          DateTime now = DateTime.now();
+          String fileName =
+              DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+          try {
+            String uploadedUrl = await supabase.storage.from('imageip').upload(
+                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                _images!);
+            String urllisto = uploadedUrl.replaceAll("imageip/", "");
+            getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
+            await supabase
+                .from('attendance')
+                .update({
+                  'pic_in': getUrl,
+                })
+                .eq("employee_id", supabase.auth.currentUser!.id)
+                .eq('date', todayDate);
+
+            setState(() {
+              isUploading = false;
+              flagborrar = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Foto cargada correctamente"),
+              backgroundColor: Colors.green,
+            ));
+          } catch (e) {
+            print("ERRROR : $e");
+            setState(() {
+              isUploading = false;
+              Future.delayed(
+                Duration(seconds: segundos),
+                () => key.currentState?.reset(),
+              );
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Algo ha salido, intentelo nuevamente"),
+              backgroundColor: Colors.red,
+            ));
+          }
         }
       }
     } else if (kIsWeb) {
@@ -944,14 +1001,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                (_images == null &&
+                                (attendanceService.attendanceModel?.checkIn ==
+                                            null ||
                                         attendanceService
-                                                .attendanceModel?.checkIn ==
+                                                .attendanceModel?.pic_in ==
                                             null)
                                     ? IconButton(
                                         icon: Icon(Icons.add_a_photo),
                                         onPressed: () async {
                                           await choiceImage();
+                                          attendanceService
+                                              .markAttendance3(context);
                                           disableButton5();
                                         })
                                     : AbsorbPointer(
@@ -959,9 +1019,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         child: IconButton(
                                             icon: Icon(Icons.add_a_photo),
                                             onPressed: () async {
-                                              print("antes de");
+                                              setState(() {
+                                                getUrl = attendanceService
+                                                    .attendanceModel!.pic_in
+                                                    .toString();
+                                              });
                                               await choiceImage();
-                                              print("despues de  de");
+                                              attendanceService
+                                                  .markAttendance3(context);
                                               disableButton5();
                                             }),
                                       ),
@@ -970,13 +1035,18 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
-                                        onPressed: () {
+                                        onPressed: () async {
+                                          //setState(() {
+                                          //getUrl = attendanceService
+                                          //   .attendanceModel!.pic_in
+                                          // .toString();
+                                          //  });
+                                          await borrar('pic_in', getUrl);
                                           setState(() {
-                                            getUrl = attendanceService
-                                                .attendanceModel!.pic_in
-                                                .toString();
+                                            attendanceService
+                                                .markAttendance3(context);
                                           });
-                                          borrar('pic_in', getUrl);
+
                                           // disableButton();
                                         })
                                     : AbsorbPointer(
@@ -995,10 +1065,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               decoration: BoxDecoration(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(20))),
-                              child:
-                                  (attendanceService.attendanceModel?.pic_in ==
-                                          null)
-                                      ? Icon(Icons.photo)
+                              child: attendanceService
+                                          .attendanceModel?.pic_in ==
+                                      null
+                                  ? Icon(Icons.photo)
+                                  : attendanceService.attendanceModel?.pic_in ==
+                                          "NULL"
+                                      ? isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Icon(Icons.photo)
                                       : isUploading == true
                                           ? const CircularProgressIndicator()
                                           : Image.network(
@@ -1007,7 +1082,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                   .toString(),
                                               fit: BoxFit.fill,
                                               height: 120),
-                            ),
+                            )
                           ],
                         )
                         //container
