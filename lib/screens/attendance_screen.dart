@@ -91,7 +91,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           .from('imageip')
           .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
       print(supabase.auth.currentUser!.id + "/" + url2 + "/" + url3);
-
       await supabase
           .from('attendance')
           .update({
