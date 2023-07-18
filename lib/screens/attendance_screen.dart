@@ -25,7 +25,7 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
-
+  String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
   String getUrl = "";
   int segundos = 1;
   bool buttonDisabled = false;
@@ -81,15 +81,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     setState(() {});
   }
 
-  Future borrar(String imageName) async {
+  Future borrar(String tipoimagen, String imageName) async {
     _images4 = null;
     String url2 = imageName.split('/')[9].toString();
     String url3 = imageName.split('/')[10].toString();
 
     try {
-      await supabase.storage
+      final List<FileObject> objects = await supabase.storage
           .from('imageip')
           .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
+      print(supabase.auth.currentUser!.id + "/" + url2 + "/" + url3);
+
+      await supabase
+          .from('attendance')
+          .update({
+            'pic_in': "null",
+          })
+          .eq('employee_id', supabase.auth.currentUser!.id)
+          .eq('date', todayDate);
       setState(() {});
     } catch (e) {
       ScaffoldMessenger.of(context)
@@ -968,7 +977,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 .attendanceModel!.pic_in
                                                 .toString();
                                           });
-                                          borrar(getUrl);
+                                          borrar('pic_in', getUrl);
                                           // disableButton();
                                         })
                                     : AbsorbPointer(
@@ -993,12 +1002,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       ? Icon(Icons.photo)
                                       : isUploading == true
                                           ? const CircularProgressIndicator()
-                                          : (Image.network(
+                                          : Image.network(
                                               attendanceService
                                                   .attendanceModel!.pic_in
                                                   .toString(),
-                                              fit: BoxFit.cover,
-                                              height: 120)),
+                                              fit: BoxFit.fill,
+                                              height: 120),
                             ),
                           ],
                         )
