@@ -180,6 +180,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
       if (pickedFile != null) {
+        if (subirubi.attendanceModel?.pic_in.toString() == "NULL") {
+          setState(() {
+            flagborrar == true;
+          });
+        }
+
         if (flagborrar == false) {
           _images = File(pickedFile.path);
           File? imagescom =
@@ -976,7 +982,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                /*color: Colors.black5*/
                               ),
                             ),
                             Text(
@@ -1001,46 +1006,34 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                (attendanceService.attendanceModel?.checkIn ==
-                                            null ||
-                                        attendanceService
-                                                .attendanceModel?.pic_in ==
-                                            null)
-                                    ? IconButton(
-                                        icon: Icon(Icons.add_a_photo),
-                                        onPressed: () async {
-                                          await choiceImage();
-                                          attendanceService
+                                IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () async {
+                                      attendanceService
+                                                  .attendanceModel?.checkIn ==
+                                              null
+                                          ? attendanceService.attendanceModel
+                                                      ?.pic_in ==
+                                                  null
+                                              ? await choiceImage()
+                                              : await choiceImage()
+                                          : attendanceService
                                               .markAttendance3(context);
-                                          disableButton5();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled5,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () async {
-                                              setState(() {
-                                                getUrl = attendanceService
-                                                    .attendanceModel!.pic_in
-                                                    .toString();
-                                              });
-                                              await choiceImage();
-                                              attendanceService
-                                                  .markAttendance3(context);
-                                              disableButton5();
-                                            }),
-                                      ),
-                                attendanceService.attendanceModel?.checkIn ==
-                                        null
+                                    }),
+                                (attendanceService.attendanceModel?.checkIn ==
+                                            null &&
+                                        attendanceService
+                                                .attendanceModel?.pic_in !=
+                                            null)
                                     ? IconButton(
                                         icon: Icon(Icons.delete),
                                         color: Colors.red,
                                         onPressed: () async {
-                                          //setState(() {
-                                          //getUrl = attendanceService
-                                          //   .attendanceModel!.pic_in
-                                          // .toString();
-                                          //  });
+                                          setState(() {
+                                            getUrl = attendanceService
+                                                .attendanceModel!.pic_in
+                                                .toString();
+                                          });
                                           await borrar('pic_in', getUrl);
                                           setState(() {
                                             attendanceService
@@ -1082,7 +1075,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                   .toString(),
                                               fit: BoxFit.fill,
                                               height: 120),
-                            )
+                            ),
                           ],
                         )
                         //container
