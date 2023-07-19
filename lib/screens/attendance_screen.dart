@@ -1224,49 +1224,83 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                (_images2 == null &&
-                                            attendanceService.attendanceModel
-                                                    ?.checkOut ==
-                                                null) &&
-                                        attendanceService
-                                                .attendanceModel?.checkIn !=
-                                            null
-                                    ? IconButton(
-                                        icon: Icon(Icons.add_a_photo),
-                                        onPressed: () {
-                                          choiceImage2();
-                                          disableButton2();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled2,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage2();
-                                              disableButton2();
-                                            })),
-                                attendanceService.attendanceModel?.checkOut ==
-                                        null
-                                    ? IconButton(
-                                        icon: Icon(Icons.delete),
-                                        color: Colors.red,
-                                        onPressed: () {
-                                          limpiaima2();
-                                          // disableButton();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled2,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.grey,
-                                            onPressed: () {
-                                              limpiaima2();
-                                              disableButton2();
-                                            }),
-                                      ),
+                                IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () async {
+                                      attendanceService.attendanceModel
+                                                      ?.checkIn !=
+                                                  null &&
+                                              attendanceService.attendanceModel
+                                                      ?.checkOut ==
+                                                  null
+                                          ? attendanceService.attendanceModel
+                                                          ?.pic_out ==
+                                                      null ||
+                                                  attendanceService
+                                                          .attendanceModel
+                                                          ?.pic_out
+                                                          .toString() ==
+                                                      "NULL"
+                                              ? await choiceImage()
+                                              : attendanceService
+                                                  .markAttendance3(context)
+                                          : attendanceService
+                                              .markAttendance3(context);
+                                      attendanceService
+                                          .markAttendance3(context);
+                                    }),
+                                IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.grey,
+                                    onPressed: () async {
+                                      setState(() {
+                                        getUrl = attendanceService
+                                            .attendanceModel!.pic_out
+                                            .toString();
+                                      });
+
+                                      if (attendanceService
+                                                  .attendanceModel?.checkOut ==
+                                              null &&
+                                          attendanceService
+                                                  .attendanceModel?.pic_out !=
+                                              null) {
+                                        await borrar('pic_out', getUrl);
+                                        setState(() {
+                                          attendanceService
+                                              .markAttendance3(context);
+                                        });
+                                      }
+                                      attendanceService
+                                          .markAttendance3(context);
+                                      print("borrarrr");
+                                    }),
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child: attendanceService
+                                          .attendanceModel?.pic_out ==
+                                      null
+                                  ? Icon(Icons.photo)
+                                  : attendanceService
+                                              .attendanceModel?.pic_out ==
+                                          "NULL"
+                                      ? isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Icon(Icons.photo)
+                                      : isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Image.network(
+                                              attendanceService
+                                                  .attendanceModel!.pic_out
+                                                  .toString(),
+                                              fit: BoxFit.fill,
+                                              height: 120),
+                            ),
+                            /*Container(
                                 child: (attendanceService
                                             .attendanceModel?.pic_out ==
                                         null)
@@ -1281,7 +1315,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     : Image.network(
                                         attendanceService
                                             .attendanceModel?.pic_out as String,
-                                        height: 120))
+                                        height: 120))   */
                           ],
                         ),
                       ],
@@ -1320,12 +1354,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         attendanceService.attendanceModel?.pic_in != "NULL" &&
                         attendanceService.attendanceModel?.pic_in != null) {
                       await attendanceService.markAttendance(context);
-                    } else if (attendanceService.attendanceModel?.checkIn ==
+                    } else if (attendanceService.attendanceModel?.pic_in ==
                         null) {
                       _mostrarAlerta(context, "Suba", "una foto por favor.");
-                    } else if (attendanceService.attendanceModel?.pic_in !=
-                        null) {
-                      uploadFile2();
+                    } else if (attendanceService.attendanceModel?.pic_out !=
+                            null &&
+                        attendanceService.attendanceModel?.pic_out != "NULL") {
                       await attendanceService.markAttendance(context);
                     } else {
                       _mostrarAlerta(context, "Suba", "una foto por favor.");
@@ -1436,65 +1470,83 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                (_images3 == null &&
-                                            attendanceService.attendanceModel
-                                                    ?.checkIn2 ==
-                                                null) &&
-                                        attendanceService
-                                                .attendanceModel?.checkOut !=
-                                            null
-                                    ? IconButton(
-                                        icon: Icon(Icons.add_a_photo),
-                                        onPressed: () {
-                                          choiceImage3();
-                                          disableButton3();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled3,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage3();
-                                              disableButton3();
-                                            }),
-                                      ),
-                                attendanceService.attendanceModel?.checkIn2 ==
-                                        null
-                                    ? IconButton(
-                                        icon: Icon(Icons.delete),
-                                        color: Colors.red,
-                                        onPressed: () {
-                                          limpiaima3();
-                                          // disableButton();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled3,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.grey,
-                                            onPressed: () {
-                                              limpiaima3();
-                                              disableButton3();
-                                            }),
-                                      ),
+                                IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () async {
+                                      attendanceService.attendanceModel
+                                                      ?.checkOut ==
+                                                  null &&
+                                              attendanceService.attendanceModel
+                                                      ?.checkIn2 ==
+                                                  null
+                                          ? attendanceService.attendanceModel
+                                                          ?.pic_in2 ==
+                                                      null ||
+                                                  attendanceService
+                                                          .attendanceModel
+                                                          ?.pic_in2
+                                                          .toString() ==
+                                                      "NULL"
+                                              ? await choiceImage()
+                                              : attendanceService
+                                                  .markAttendance3(context)
+                                          : attendanceService
+                                              .markAttendance3(context);
+
+                                      attendanceService
+                                          .markAttendance3(context);
+                                    }),
+                                IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.grey,
+                                    onPressed: () async {
+                                      setState(() {
+                                        getUrl = attendanceService
+                                            .attendanceModel!.pic_in2
+                                            .toString();
+                                      });
+
+                                      if (attendanceService
+                                                  .attendanceModel?.checkIn2 ==
+                                              null &&
+                                          attendanceService
+                                                  .attendanceModel?.pic_in2 !=
+                                              null) {
+                                        await borrar('pic_in2', getUrl);
+                                        setState(() {
+                                          attendanceService
+                                              .markAttendance3(context);
+                                        });
+                                      }
+                                      attendanceService
+                                          .markAttendance3(context);
+                                      print("borrarrr"); // disableButton();
+                                    })
                               ],
                             ),
                             Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_in2 ==
-                                        null)
-                                    ? _images3 == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI3, height: 120)
-                                            : Image.file(
-                                                _images3!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService
-                                            .attendanceModel?.pic_in2 as String,
-                                        height: 120)),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child: attendanceService
+                                          .attendanceModel?.pic_in2 ==
+                                      null
+                                  ? Icon(Icons.photo)
+                                  : attendanceService
+                                              .attendanceModel?.pic_in2 ==
+                                          "NULL"
+                                      ? isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Icon(Icons.photo)
+                                      : isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Image.network(
+                                              attendanceService
+                                                  .attendanceModel!.pic_in2
+                                                  .toString(),
+                                              fit: BoxFit.fill,
+                                              height: 120),
+                            ),
                           ],
                         )
                       ],
@@ -1538,65 +1590,83 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                (_images4 == null &&
-                                            attendanceService.attendanceModel
-                                                    ?.checkOut2 ==
-                                                null) &&
-                                        attendanceService
-                                                .attendanceModel?.checkIn2 !=
-                                            null
-                                    ? IconButton(
-                                        icon: Icon(Icons.add_a_photo),
-                                        onPressed: () {
-                                          choiceImage4();
-                                          disableButton4();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled4,
-                                        child: IconButton(
-                                            icon: Icon(Icons.add_a_photo),
-                                            onPressed: () {
-                                              choiceImage4();
-                                              disableButton4();
-                                            }),
-                                      ),
-                                attendanceService.attendanceModel?.checkOut2 ==
-                                        null
-                                    ? IconButton(
-                                        icon: Icon(Icons.delete),
-                                        color: Colors.red,
-                                        onPressed: () {
-                                          limpiaima4();
-                                          // disableButton2();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled4,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.grey,
-                                            onPressed: () {
-                                              limpiaima4();
-                                              disableButton4();
-                                            }),
-                                      ),
+                                IconButton(
+                                    icon: Icon(Icons.add_a_photo),
+                                    onPressed: () async {
+                                      attendanceService.attendanceModel
+                                                      ?.checkIn2 ==
+                                                  null &&
+                                              attendanceService.attendanceModel
+                                                      ?.checkOut2 ==
+                                                  null
+                                          ? attendanceService.attendanceModel
+                                                          ?.pic_out2 ==
+                                                      null ||
+                                                  attendanceService
+                                                          .attendanceModel
+                                                          ?.pic_out2
+                                                          .toString() ==
+                                                      "NULL"
+                                              ? await choiceImage()
+                                              : attendanceService
+                                                  .markAttendance3(context)
+                                          : attendanceService
+                                              .markAttendance3(context);
+
+                                      attendanceService
+                                          .markAttendance3(context);
+                                    }),
+                                IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.grey,
+                                    onPressed: () async {
+                                      setState(() {
+                                        getUrl = attendanceService
+                                            .attendanceModel!.pic_out2
+                                            .toString();
+                                      });
+
+                                      if (attendanceService
+                                                  .attendanceModel?.checkIn2 ==
+                                              null &&
+                                          attendanceService
+                                                  .attendanceModel?.pic_out2 !=
+                                              null) {
+                                        await borrar('pic_out2', getUrl);
+                                        setState(() {
+                                          attendanceService
+                                              .markAttendance3(context);
+                                        });
+                                      }
+                                      attendanceService
+                                          .markAttendance3(context);
+                                      print("borrarrr"); // disableButton();
+                                    })
                               ],
                             ),
                             Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_out2 ==
-                                        null)
-                                    ? _images4 == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI4, height: 120)
-                                            : Image.file(
-                                                _images4!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService.attendanceModel
-                                            ?.pic_out2 as String,
-                                        height: 120)),
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
+                              child: attendanceService
+                                          .attendanceModel?.pic_out2 ==
+                                      null
+                                  ? Icon(Icons.photo)
+                                  : attendanceService
+                                              .attendanceModel?.pic_out2 ==
+                                          "NULL"
+                                      ? isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Icon(Icons.photo)
+                                      : isUploading == true
+                                          ? const CircularProgressIndicator()
+                                          : Image.network(
+                                              attendanceService
+                                                  .attendanceModel!.pic_out2
+                                                  .toString(),
+                                              fit: BoxFit.fill,
+                                              height: 120),
+                            ),
                           ],
                         )
                       ],
