@@ -180,9 +180,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
       if (pickedFile != null) {
-        if (subirubi.attendanceModel?.pic_in.toString() == "NULL") {
+        await subirubi.markAttendance3(context);
+        if (getUrl == "NULL") {
           setState(() {
-            flagborrar == true;
+            flagborrar = true;
           });
         }
 
@@ -1053,7 +1054,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       }
                                       attendanceService
                                           .markAttendance3(context);
-                                      // disableButton();
+                                      print("borrarrr"); // disableButton();
                                     })
                               ],
                             ),
@@ -1223,8 +1224,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     } else if (attendanceService.attendanceModel?.checkIn ==
                             null &&
-                        _images != null &&
-                        attendanceService.attendanceModel?.pic_in == null) {
+                        attendanceService.attendanceModel?.pic_in != "NULL" &&
+                        attendanceService.attendanceModel?.pic_in != null) {
                       print("antes del update");
                       // await uploadFile(context);
                       await attendanceService.markAttendance(context);
