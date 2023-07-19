@@ -1013,45 +1013,48 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                   .attendanceModel?.checkIn ==
                                               null
                                           ? attendanceService.attendanceModel
-                                                      ?.pic_in ==
-                                                  null
+                                                          ?.pic_in ==
+                                                      null ||
+                                                  attendanceService
+                                                          .attendanceModel
+                                                          ?.pic_in
+                                                          .toString() ==
+                                                      "NULL"
                                               ? await choiceImage()
-                                              : await choiceImage()
+                                              : attendanceService
+                                                  .markAttendance3(context)
                                           : attendanceService
                                               .markAttendance3(context);
-                                    }),
-                                (attendanceService.attendanceModel?.checkIn ==
-                                            null &&
-                                        attendanceService
-                                                .attendanceModel?.pic_in !=
-                                            null)
-                                    ? IconButton(
-                                        icon: Icon(Icons.delete),
-                                        color: Colors.red,
-                                        onPressed: () async {
-                                          setState(() {
-                                            getUrl = attendanceService
-                                                .attendanceModel!.pic_in
-                                                .toString();
-                                          });
-                                          await borrar('pic_in', getUrl);
-                                          setState(() {
-                                            attendanceService
-                                                .markAttendance3(context);
-                                          });
 
-                                          // disableButton();
-                                        })
-                                    : AbsorbPointer(
-                                        absorbing: buttonDisabled5,
-                                        child: IconButton(
-                                            icon: Icon(Icons.delete),
-                                            color: Colors.grey,
-                                            onPressed: () {
-                                              limpiaima();
-                                              disableButton5();
-                                            }),
-                                      ),
+                                      attendanceService
+                                          .markAttendance3(context);
+                                    }),
+                                IconButton(
+                                    icon: Icon(Icons.delete),
+                                    color: Colors.grey,
+                                    onPressed: () async {
+                                      setState(() {
+                                        getUrl = attendanceService
+                                            .attendanceModel!.pic_in
+                                            .toString();
+                                      });
+
+                                      if (attendanceService
+                                                  .attendanceModel?.checkIn ==
+                                              null &&
+                                          attendanceService
+                                                  .attendanceModel?.pic_in !=
+                                              null) {
+                                        await borrar('pic_in', getUrl);
+                                        setState(() {
+                                          attendanceService
+                                              .markAttendance3(context);
+                                        });
+                                      }
+                                      attendanceService
+                                          .markAttendance3(context);
+                                      // disableButton();
+                                    })
                               ],
                             ),
                             Container(
