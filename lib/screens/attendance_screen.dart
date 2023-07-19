@@ -11,7 +11,6 @@ import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
-import 'package:quickalert/quickalert.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -287,12 +286,110 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var pickedFileweb = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
       if (pickedFileweb != null) {
-        var f = await pickedFileweb.readAsBytes();
-        _images = File('a');
-        setState(() {
-          isUploading = true;
-          webI = f;
-        });
+        await subirubi.markAttendance3(context);
+        if (getUrl == "NULL") {
+          setState(() {
+            flagborrar = true;
+          });
+        }
+        if (flagborrar == false) {
+          var f = await pickedFileweb.readAsBytes();
+          _images = File('a');
+          setState(() {
+            isUploading = true;
+            webImage = f;
+          });
+        }
+        var pickedFile = webImage;
+        String fecharuta =
+            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+        DateTime now = DateTime.now();
+        String fileName =
+            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+        try {
+          String uploadedUrl = await supabase.storage
+              .from('imageip')
+              .uploadBinary(
+                  "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                  pickedFile);
+          String urllisto = uploadedUrl.replaceAll("imageip/", "");
+          final getUrl =
+              supabase.storage.from('imageip').getPublicUrl(urllisto);
+          await supabase.from('attendance').insert({
+            'employee_id': supabase.auth.currentUser!.id,
+            'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+            'pic_in': getUrl,
+          });
+
+          setState(() {
+            isUploading = false;
+            flagborrar = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Foto cargada correctamente !"),
+            backgroundColor: Colors.green,
+          ));
+        } catch (e) {
+          // print("ERRROR : $e");
+          setState(() {
+            isUploading = false;
+
+            Future.delayed(
+              Duration(seconds: segundos),
+              () => key.currentState?.reset(),
+            );
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Algo ha salido mal"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      } else {
+        var pickedFile = webImage;
+        String fecharuta =
+            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+        DateTime now = DateTime.now();
+        String fileName =
+            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+        try {
+          String uploadedUrl = await supabase.storage
+              .from('imageip')
+              .uploadBinary(
+                  "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                  pickedFile);
+          String urllisto = uploadedUrl.replaceAll("imageip/", "");
+          final getUrl =
+              supabase.storage.from('imageip').getPublicUrl(urllisto);
+          await supabase
+              .from('attendance')
+              .update({
+                'pic_in': getUrl,
+              })
+              .eq("employee_id", supabase.auth.currentUser!.id)
+              .eq('date', todayDate);
+
+          setState(() {
+            isUploading = false;
+            flagborrar = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Foto cargada correctamente !"),
+            backgroundColor: Colors.green,
+          ));
+        } catch (e) {
+          // print("ERRROR : $e");
+          setState(() {
+            isUploading = false;
+            Future.delayed(
+              Duration(seconds: segundos),
+              () => key.currentState?.reset(),
+            );
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Algo ha salido mal"),
+            backgroundColor: Colors.red,
+          ));
+        }
       }
     }
   }
@@ -1216,46 +1313,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn != null &&
                         attendanceService.attendanceModel?.checkOut != null) {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        title: ' ',
-                        text: 'Registro Completado',
-                      );
+                      _mostrarAlerta(
+                          context, "Asistencia", "exitosamente subida.");
                     } else if (attendanceService.attendanceModel?.checkIn ==
                             null &&
                         attendanceService.attendanceModel?.pic_in != "NULL" &&
                         attendanceService.attendanceModel?.pic_in != null) {
-                      print("antes del update");
-                      // await uploadFile(context);
                       await attendanceService.markAttendance(context);
-                      print("despues del update");
-                      // await uploadFile().then((_) async {
-                      //   await attendanceService.markAttendance(context);
-                      //   setState(() {});
-                      // });
-                      //if (attendanceService.attendanceModel?.pic_in != null) {
-                      //   await attendanceService.markAttendance(context);
-                      //  }
-                      //await attendanceService.markAttendance(context);
                     } else if (attendanceService.attendanceModel?.checkIn ==
                         null) {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        title: 'Suba',
-                        text: 'una foto por favor',
-                      );
-                    } else if (_images2 != null) {
+                      _mostrarAlerta(context, "Suba", "una foto por favor.");
+                    } else if (attendanceService.attendanceModel?.pic_in !=
+                        null) {
                       uploadFile2();
                       await attendanceService.markAttendance(context);
                     } else {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        title: 'Suba',
-                        text: 'una foto por favor',
-                      );
+                      _mostrarAlerta(context, "Suba", "una foto por favor.");
                     }
                     key.currentState!.reset();
                   },
@@ -1287,9 +1360,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           text: 'una foto por favor'));
                       attendanceService.attendanceModel?.checkIn == null
                           ? (_images != null
-
-
-
                           ? uploadFile()
                           : _images2 != null
                           ? uploadFile2()
@@ -1306,14 +1376,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             Container(
               height: 10,
             ),
-            /*  Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(top: 10),
-              child: const Text(
-                "Registro de la tarde",
-                style: TextStyle(fontSize: 18),
-              ),
-            ),*/
+
             Container(
               padding: EdgeInsets.all(10.0),
               margin: EdgeInsets.only(top: 5, bottom: 10),
@@ -1566,12 +1629,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn2 != null &&
                         attendanceService.attendanceModel?.checkOut2 != null) {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        title: ' ',
-                        text: 'Registro Completado',
-                      );
+                      _mostrarAlerta(context, "Registro", "completado");
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                             null &&
                         _images3 != null) {
@@ -1579,22 +1637,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       await attendanceService.markAttendance2(context);
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                         null) {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        title: 'Suba',
-                        text: 'una foto por favor',
-                      );
+                      _mostrarAlerta(context, "Suba", "una foto por favor");
                     } else if (_images4 != null) {
                       uploadFile4();
                       await attendanceService.markAttendance2(context);
                     } else {
-                      QuickAlert.show(
-                        context: context,
-                        type: QuickAlertType.warning,
-                        title: 'Suba',
-                        text: 'una foto por favor',
-                      );
+                      _mostrarAlerta(context, "Suba", "una foto por favor");
                     }
                     key2.currentState!.reset();
                   },
@@ -1646,28 +1694,21 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 }
 
-// flutter custom card button
-Card buildButton({
-  required onTap,
-  required title,
-  required text,
-  required leadingIcon,
-}) {
-  return Card(
-    shape: const StadiumBorder(),
-    margin: const EdgeInsets.symmetric(
-      horizontal: 20,
-    ),
-    clipBehavior: Clip.antiAlias,
-    elevation: 1,
-    child: ListTile(
-      onTap: onTap,
-      leading: leadingIcon,
-      title: Text(title ?? ""),
-      subtitle: Text(text ?? ""),
-      trailing: const Icon(
-        Icons.keyboard_arrow_right_rounded,
-      ),
-    ),
-  );
+void _mostrarAlerta(BuildContext context, String titulo, String contenido) {
+  showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+            // elevation: 1,
+            // alignment: Alignment.center,
+            title: Text(titulo, textAlign: TextAlign.center),
+            content: Text(contenido, textAlign: TextAlign.center),
+            actions: [
+              TextButton(
+                  child: Text("OK"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  }),
+            ],
+          ));
 }
