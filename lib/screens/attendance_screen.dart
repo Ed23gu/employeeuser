@@ -535,7 +535,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               );
             });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Algo ha salido, intentelo nuevamente"),
+              content: Text("Algo ha salido mal, intentelo nuevamente"),
               backgroundColor: Colors.red,
             ));
           }
@@ -574,10 +574,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
           final getUrl =
               supabase.storage.from('imageip').getPublicUrl(urllisto);
-          await supabase.from('attendance').insert({
-            'employee_id': supabase.auth.currentUser!.id,
-            'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-            'pic_in': getUrl,
+          await supabase.from('attendance').update({
+            //'employee_id': supabase.auth.currentUser!.id,
+            // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+            'pic_out': getUrl,
           });
 
           setState(() {
@@ -622,7 +622,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await supabase
               .from('attendance')
               .update({
-                'pic_in': getUrl,
+                'pic_out': getUrl,
               })
               .eq("employee_id", supabase.auth.currentUser!.id)
               .eq('date', todayDate);
@@ -1345,9 +1345,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                           .toString() ==
                                                       "NULL"
                                               ? await choiceImage()
-                                              : attendanceService
+                                              : await attendanceService
                                                   .markAttendance3(context)
-                                          : attendanceService
+                                          : await attendanceService
                                               .markAttendance3(context);
                                     }),
                                 IconButton(
