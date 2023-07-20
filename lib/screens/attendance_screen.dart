@@ -110,18 +110,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     setState(() {});
   }
 
-  Future<void> deleteImage(String imageName) async {
-    try {
-      await supabase.storage
-          .from('imageip')
-          .remove([supabase.auth.currentUser!.id + "/" + imageName]);
-      setState(() {});
-    } catch (e) {
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: const Text("Algo ha salido mal !")));
-    }
-  }
-
   Future<File> customCompressed({
     @required File? imagePathToCompress,
     quality = 100,
@@ -227,7 +215,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               );
             });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Algo ha salido, intentelo nuevamente"),
+              content: Text("Algo ha salido mal, intentelo nuevamente"),
               backgroundColor: Colors.red,
             ));
           }
@@ -394,42 +382,232 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  // Future choiceImage() async {
-  //   if (!kIsWeb) {
-  //     var pickedFile = await picker.pickImage(
-  //         source: ImageSource.camera, imageQuality: imageq);
-  //     if (pickedFile != null) {
-  //       _images = File(pickedFile.path);
-  //       File? imagescom = await customCompressed(imagePathToCompress: _images);
-  //       setState(() {
-  //         isUploading = true;
-  //         _imagescom1 = imagescom;
-  //       });
-  //
-  //
-  //
-  //
-  //
-  //
-  //     }
-  //
-  //
-  //
-  //
-  //   } else if (kIsWeb) {
-  //     var pickedFileweb = await picker.pickImage(
-  //         source: ImageSource.camera, imageQuality: imageq);
-  //     if (pickedFileweb != null) {
-  //       var f = await pickedFileweb.readAsBytes();
-  //       _images = File('a');
-  //       setState(() {
-  //         isUploading = true;
-  //         webI = f;
-  //       });
-  //     }
-  //   }
-  // }
   Future choiceImage2() async {
+    if (!kIsWeb) {
+      var pickedFile = await picker.pickImage(
+          source: ImageSource.camera, imageQuality: imageq);
+      if (pickedFile != null) {
+        await subirubi.markAttendance3(context);
+        if (getUrl == "NULL") {
+          setState(() {
+            flagborrar = true;
+          });
+        }
+
+        if (flagborrar == false) {
+          _images = File(pickedFile.path);
+          File? imagescom =
+              await customCompressed(imagePathToCompress: _images);
+          _images = File(imagescom.path);
+          setState(() {
+            isUploading2 = true;
+          });
+          String fecharuta =
+              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          DateTime now = DateTime.now();
+          String fileName =
+              DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+          try {
+            String uploadedUrl = await supabase.storage.from('imageip').upload(
+                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                _images!);
+            String urllisto = uploadedUrl.replaceAll("imageip/", "");
+            getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
+            await supabase
+                .from('attendance')
+                .update({
+                  // 'employee_id': supabase.auth.currentUser!.id,
+                  // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                  'pic_out': getUrl,
+                })
+                .eq("employee_id", supabase.auth.currentUser!.id)
+                .eq('date', todayDate);
+            setState(() {
+              isUploading2 = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Foto cargada correctamente"),
+              backgroundColor: Colors.green,
+            ));
+          } catch (e) {
+            print("ERRROR : $e");
+            setState(() {
+              isUploading2 = false;
+              Future.delayed(
+                Duration(seconds: segundos),
+                () => key.currentState?.reset(),
+              );
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Algo ha salido, intentelo nuevamente"),
+              backgroundColor: Colors.red,
+            ));
+          }
+        } else {
+          _images = File(pickedFile.path);
+          File? imagescom =
+              await customCompressed(imagePathToCompress: _images);
+          _images = File(imagescom.path);
+          setState(() {
+            isUploading2 = true;
+          });
+          String fecharuta =
+              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          DateTime now = DateTime.now();
+          String fileName =
+              DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+          try {
+            String uploadedUrl = await supabase.storage.from('imageip').upload(
+                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                _images!);
+            String urllisto = uploadedUrl.replaceAll("imageip/", "");
+            getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
+            await supabase
+                .from('attendance')
+                .update({
+                  'pic_out': getUrl,
+                })
+                .eq("employee_id", supabase.auth.currentUser!.id)
+                .eq('date', todayDate);
+
+            setState(() {
+              isUploading2 = false;
+              flagborrar = false;
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Foto cargada correctamente"),
+              backgroundColor: Colors.green,
+            ));
+          } catch (e) {
+            print("ERRROR : $e");
+            setState(() {
+              isUploading2 = false;
+              Future.delayed(
+                Duration(seconds: segundos),
+                () => key.currentState?.reset(),
+              );
+            });
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Algo ha salido mal, intentelo nuevamente"),
+              backgroundColor: Colors.red,
+            ));
+          }
+        }
+      }
+    } else if (kIsWeb) {
+      var pickedFileweb = await picker.pickImage(
+          source: ImageSource.camera, imageQuality: imageq);
+      if (pickedFileweb != null) {
+        await subirubi.markAttendance3(context);
+        if (getUrl == "NULL") {
+          setState(() {
+            flagborrar = true;
+          });
+        }
+        if (flagborrar == false) {
+          var f = await pickedFileweb.readAsBytes();
+          _images = File('a');
+          setState(() {
+            isUploading2 = true;
+            webImage = f;
+          });
+        }
+        var pickedFile = webImage;
+        String fecharuta =
+            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+        DateTime now = DateTime.now();
+        String fileName =
+            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+        try {
+          String uploadedUrl = await supabase.storage
+              .from('imageip')
+              .uploadBinary(
+                  "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                  pickedFile);
+          String urllisto = uploadedUrl.replaceAll("imageip/", "");
+          final getUrl =
+              supabase.storage.from('imageip').getPublicUrl(urllisto);
+          await supabase.from('attendance').update({
+            //'employee_id': supabase.auth.currentUser!.id,
+            // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+            'pic_out': getUrl,
+          });
+
+          setState(() {
+            isUploading2 = false;
+            flagborrar = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Foto cargada correctamente !"),
+            backgroundColor: Colors.green,
+          ));
+        } catch (e) {
+          // print("ERRROR : $e");
+          setState(() {
+            isUploading2 = false;
+
+            Future.delayed(
+              Duration(seconds: segundos),
+              () => key.currentState?.reset(),
+            );
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Algo ha salido mal"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      } else {
+        var pickedFile = webImage;
+        String fecharuta =
+            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+        DateTime now = DateTime.now();
+        String fileName =
+            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
+        try {
+          String uploadedUrl = await supabase.storage
+              .from('imageip')
+              .uploadBinary(
+                  "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
+                  pickedFile);
+          String urllisto = uploadedUrl.replaceAll("imageip/", "");
+          final getUrl =
+              supabase.storage.from('imageip').getPublicUrl(urllisto);
+          await supabase
+              .from('attendance')
+              .update({
+                'pic_out': getUrl,
+              })
+              .eq("employee_id", supabase.auth.currentUser!.id)
+              .eq('date', todayDate);
+
+          setState(() {
+            isUploading2 = false;
+            flagborrar = false;
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Foto cargada correctamente !"),
+            backgroundColor: Colors.green,
+          ));
+        } catch (e) {
+          // print("ERRROR : $e");
+          setState(() {
+            isUploading2 = false;
+            Future.delayed(
+              Duration(seconds: segundos),
+              () => key.currentState?.reset(),
+            );
+          });
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Algo ha salido mal"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }
+    }
+  }
+
+  // Future
+  Future choiceImage3() async {
     if (!kIsWeb) {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
@@ -676,33 +854,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         setState(() {
           isUploading2 = true;
           webI2 = f2;
-        });
-      }
-    }
-  }
-
-  Future choiceImage3() async {
-    if (!kIsWeb) {
-      var pickedFile3 = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: imageq);
-      if (pickedFile3 != null) {
-        _images3 = File(pickedFile3.path);
-        File? imagescom3 =
-            await customCompressed(imagePathToCompress: _images3);
-        setState(() {
-          isUploading3 = true;
-          _imagescom3 = imagescom3;
-        });
-      }
-    } else if (kIsWeb) {
-      var pickedFileweb3 = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: imageq);
-      if (pickedFileweb3 != null) {
-        var f3 = await pickedFileweb3.readAsBytes();
-        _images3 = File('a');
-        setState(() {
-          isUploading3 = true;
-          webI3 = f3;
         });
       }
     }
@@ -1344,11 +1495,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                           ?.pic_in
                                                           .toString() ==
                                                       "NULL"
-                                              ? await choiceImage()
+                                              ? await choiceImage() // foto 1
                                               : await attendanceService
                                                   .markAttendance3(context)
                                           : await attendanceService
                                               .markAttendance3(context);
+                                      await attendanceService
+                                          .markAttendance3(context);
                                     }),
                                 IconButton(
                                     icon: Icon(Icons.delete),
@@ -1511,10 +1664,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   : attendanceService
                                               .attendanceModel?.pic_out ==
                                           "NULL"
-                                      ? isUploading == true
+                                      ? isUploading2 == true
                                           ? const CircularProgressIndicator()
                                           : Icon(Icons.photo)
-                                      : isUploading == true
+                                      : isUploading2 == true
                                           ? const CircularProgressIndicator()
                                           : Image.network(
                                               attendanceService
@@ -1523,22 +1676,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               fit: BoxFit.fill,
                                               height: 120),
                             ),
-                            /*Container(
-                                child: (attendanceService
-                                            .attendanceModel?.pic_out ==
-                                        null)
-                                    ? _images2 == null
-                                        ? Icon(Icons.photo)
-                                        : kIsWeb == true
-                                            ? Image.memory(webI2, height: 120)
-                                            : Image.file(
-                                                _images2!,
-                                                height: 120,
-                                              )
-                                    : Image.network(
-                                        attendanceService
-                                            .attendanceModel?.pic_out as String,
-                                        height: 120))   */
                           ],
                         ),
                       ],
@@ -1587,53 +1724,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     } else {
                       _mostrarAlerta(context, "Suba", "una foto por favor.");
                     }
+
                     key.currentState!.reset();
                   },
-                  /*onSubmit: () async {
-                    if (attendanceService.attendanceModel?.checkIn != null &&
-                        attendanceService.attendanceModel?.checkOut != null) {
-                      QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.warning,
-                          title: ' ',
-                          text: 'Registro Completado');
-                    } else {
-                      (attendanceService.attendanceModel?.checkIn == null
-                          ? (_images != null
-                          ? (await attendanceService
-                          .markAttendance(context))
-                          : QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.warning,
-                          title: 'Suba',
-                          text: 'una foto por favor'))
-                          : _images2 != null
-                          ? (await attendanceService
-                          .markAttendance(context))
-                          : QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.warning,
-                          title: 'Suba',
-                          text: 'una foto por favor'));
-                      attendanceService.attendanceModel?.checkIn == null
-                          ? (_images != null
-                          ? uploadFile()
-                          : _images2 != null
-                          ? uploadFile2()
-                          : print("mal1"))
-                          : _images2 != null
-                          ? uploadFile2()
-                          : print("mal2");
-                    }
-                    key.currentState!.reset();
-                  },*/
                 );
               }),
             ),
             Container(
               height: 10,
             ),
-
             Container(
               padding: EdgeInsets.all(10.0),
               margin: EdgeInsets.only(top: 5, bottom: 10),
