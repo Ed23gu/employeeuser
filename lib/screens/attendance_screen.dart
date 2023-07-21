@@ -688,7 +688,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               isUploading3 = false;
               Future.delayed(
                 Duration(seconds: segundos),
-                () => key.currentState?.reset(),
+                () => key2.currentState?.reset(),
               );
             });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -752,7 +752,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
             Future.delayed(
               Duration(seconds: segundos),
-              () => key.currentState?.reset(),
+              () => key2.currentState?.reset(),
             );
           });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -798,7 +798,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             isUploading3 = false;
             Future.delayed(
               Duration(seconds: segundos),
-              () => key.currentState?.reset(),
+              () => key2.currentState?.reset(),
             );
           });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -846,7 +846,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 .update({
                   // 'employee_id': supabase.auth.currentUser!.id,
                   // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-                  'pic_out': getUrl,
+                  'pic_out2': getUrl,
                 })
                 .eq("employee_id", supabase.auth.currentUser!.id)
                 .eq('date', todayDate);
@@ -863,7 +863,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               isUploading4 = false;
               Future.delayed(
                 Duration(seconds: segundos),
-                () => key.currentState?.reset(),
+                () => key2.currentState?.reset(),
               );
             });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -893,7 +893,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             await supabase
                 .from('attendance')
                 .update({
-                  'pic_out': getUrl,
+                  'pic_out2': getUrl,
                 })
                 .eq("employee_id", supabase.auth.currentUser!.id)
                 .eq('date', todayDate);
@@ -912,7 +912,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               isUploading4 = false;
               Future.delayed(
                 Duration(seconds: segundos),
-                () => key.currentState?.reset(),
+                () => key2.currentState?.reset(),
               );
             });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -958,7 +958,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await supabase.from('attendance').update({
             //'employee_id': supabase.auth.currentUser!.id,
             // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-            'pic_out': getUrl,
+            'pic_out2': getUrl,
           });
 
           setState(() {
@@ -1003,7 +1003,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await supabase
               .from('attendance')
               .update({
-                'pic_out': getUrl,
+                'pic_out2': getUrl,
               })
               .eq("employee_id", supabase.auth.currentUser!.id)
               .eq('date', todayDate);
@@ -1022,7 +1022,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             isUploading4 = false;
             Future.delayed(
               Duration(seconds: segundos),
-              () => key.currentState?.reset(),
+              () => key2.currentState?.reset(),
             );
           });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
