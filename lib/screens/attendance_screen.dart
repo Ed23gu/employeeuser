@@ -167,7 +167,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
       if (pickedFile != null) {
-        await subirubi.markAttendance3(context);
+        await subirubi.getTodayAttendance();
         if (getUrl == "NULL") {
           setState(() {
             flagborrar = true;
@@ -1482,8 +1482,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 IconButton(
                                     icon: Icon(Icons.add_a_photo),
                                     onPressed: () async {
-                                      await attendanceService
-                                          .markAttendance3(context);
+                                      getUrl = attendanceService
+                                          .attendanceModel!.pic_in
+                                          .toString();
                                       attendanceService
                                                   .attendanceModel?.checkIn ==
                                               null
