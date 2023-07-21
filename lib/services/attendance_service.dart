@@ -211,6 +211,19 @@ class AttendanceService extends ChangeNotifier {
         .toList();
   }
 
+  Future<List<AttendanceModel>> getAttendanceHistory2(context) async {
+    final List data = await _supabase
+        .from(Constants.attendancetable)
+        .select()
+        .eq('employee_id', _supabase.auth.currentUser!.id)
+        // .eq('employee_id', "$attendanceusuario")   PARA ADMIN
+        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
+        .order('created_at', ascending: false);
+    return data
+        .map((attendance) => AttendanceModel.fromJson(attendance))
+        .toList();
+  }
+
   //////leer imagnes
   Future getMyFiles() async {
     final List<FileObject> result = await _supabase.storage
