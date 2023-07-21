@@ -1679,7 +1679,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     icon: Icon(Icons.add_a_photo),
                                     onPressed: () async {
                                       attendanceService.attendanceModel
-                                                      ?.checkOut ==
+                                                      ?.checkOut !=
                                                   null &&
                                               attendanceService.attendanceModel
                                                       ?.checkIn2 ==
@@ -1740,10 +1740,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   : attendanceService
                                               .attendanceModel?.pic_in2 ==
                                           "NULL"
-                                      ? isUploading == true
+                                      ? isUploading3 == true
                                           ? const CircularProgressIndicator()
                                           : Icon(Icons.photo)
-                                      : isUploading == true
+                                      : isUploading3 == true
                                           ? const CircularProgressIndicator()
                                           : Image.network(
                                               attendanceService
@@ -1799,7 +1799,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                     icon: Icon(Icons.add_a_photo),
                                     onPressed: () async {
                                       attendanceService.attendanceModel
-                                                      ?.checkIn2 ==
+                                                      ?.checkIn2 !=
                                                   null &&
                                               attendanceService.attendanceModel
                                                       ?.checkOut2 ==
@@ -1832,7 +1832,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       });
 
                                       if (attendanceService
-                                                  .attendanceModel?.checkIn2 ==
+                                                  .attendanceModel?.checkOut2 ==
                                               null &&
                                           attendanceService
                                                   .attendanceModel?.pic_out2 !=
@@ -1860,10 +1860,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                   : attendanceService
                                               .attendanceModel?.pic_out2 ==
                                           "NULL"
-                                      ? isUploading == true
+                                      ? isUploading4 == true
                                           ? const CircularProgressIndicator()
                                           : Icon(Icons.photo)
-                                      : isUploading == true
+                                      : isUploading4 == true
                                           ? const CircularProgressIndicator()
                                           : Image.network(
                                               attendanceService
@@ -1907,12 +1907,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       _mostrarAlerta(context, "Registro", "completado");
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                             null &&
-                        _images3 != null) {
+                        attendanceService.attendanceModel?.pic_in2 != null) {
                       await attendanceService.markAttendance2(context);
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                         null) {
                       _mostrarAlerta(context, "Suba", "una foto por favor");
-                    } else if (_images4 != null) {
+                    } else if (attendanceService.attendanceModel?.pic_out2 !=
+                        null) {
                       await attendanceService.markAttendance2(context);
                     } else {
                       _mostrarAlerta(context, "Suba", "una foto por favor");
