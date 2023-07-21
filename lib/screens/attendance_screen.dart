@@ -1211,6 +1211,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
+            IconButton(
+                icon: Icon(Icons.ac_unit),
+                color: Colors.grey,
+                onPressed: () async {
+                  await attendanceService.getAttendanceHistory2(context);
+                  setState(() {});
+                }),
             route.Consumer<DbService>(builder: (context, dbServie, child) {
               return FutureBuilder(
                   future: dbServie.getUserData(),
@@ -1402,10 +1409,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               .markAttendance3(context);
                                         });
                                       }
-                                      attendanceService
-                                          .markAttendance3(context);
+                                      setState(() {
+                                        attendanceService
+                                            .markAttendance3(context);
+                                      });
+
                                       print("borrarrr"); // disableButton();
-                                    })
+                                    }),
                               ],
                             ),
                             Container(
