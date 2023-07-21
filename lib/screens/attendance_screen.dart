@@ -61,26 +61,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final SupabaseClient supabase = Supabase.instance.client;
   final AttendanceService subirubi = AttendanceService();
 
-  Future limpiaima() async {
-    _images = null;
-    setState(() {});
-  }
-
-  Future limpiaima2() async {
-    _images2 = null;
-    setState(() {});
-  }
-
-  Future limpiaima3() async {
-    _images3 = null;
-    setState(() {});
-  }
-
-  Future limpiaima4() async {
-    _images4 = null;
-    setState(() {});
-  }
-
   Future borrar(String tipoimagen, String imageName) async {
     _images4 = null;
     if (imageName != "NULL") {
