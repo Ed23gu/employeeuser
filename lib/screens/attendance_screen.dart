@@ -42,14 +42,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   int per = 15;
   final picker = ImagePicker();
   File? pickedImage;
-  File? _imagescom1;
-  File? _imagescom2;
-  File? _imagescom3;
-  File? _imagescom4;
   File? _images;
-  File? _images2;
-  File? _images3;
-  File? _images4;
   Uint8List webImage = Uint8List(8);
   Uint8List webImage2 = Uint8List(8);
   Uint8List webImage3 = Uint8List(8);
@@ -62,11 +55,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final AttendanceService subirubi = AttendanceService();
 
   Future borrar(String tipoimagen, String imageName) async {
-    _images4 = null;
     if (imageName != "NULL") {
       String url2 = imageName.split('/')[9].toString();
       String url3 = imageName.split('/')[10].toString();
-
       try {
         await supabase.storage
             .from('imageip')
@@ -1576,7 +1567,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ? "Registrar el ingreso"
                           : "Registrar la salida",
                   //alignment: Alignment.topCenter,
-
+                  animationDuration: Duration(milliseconds: 200),
                   textStyle: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).brightness == Brightness.light
@@ -1883,6 +1874,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: const EdgeInsets.only(top: 5),
               child: Builder(builder: (context) {
                 return SlideAction(
+                  animationDuration: Duration(milliseconds: 200),
                   text: (attendanceService.attendanceModel?.checkIn2 != null &&
                           attendanceService.attendanceModel?.checkOut2 != null)
                       ? "Registro Exitoso Gracias"
@@ -1904,7 +1896,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn2 != null &&
                         attendanceService.attendanceModel?.checkOut2 != null) {
-                      _mostrarAlerta(context, "Registro", "completado");
+                      _mostrarAlerta(
+                          context, "Asistencia", "subida exitosamente");
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                             null &&
                         attendanceService.attendanceModel?.pic_in2 != null) {
