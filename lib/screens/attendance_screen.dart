@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
@@ -1433,12 +1434,26 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading == true
                                           ? const CircularProgressIndicator()
-                                          : Image.network(
+                                          : CachedNetworkImage(
+                                              imageUrl: getUrl,
+                                              progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
+
+                              /* Image.network(
                                               attendanceService
                                                   .attendanceModel!.pic_in
                                                   .toString(),
                                               fit: BoxFit.fill,
-                                              height: 120),
+                                              height: 120), */
                             ),
                           ],
                         )
@@ -1487,6 +1502,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 IconButton(
                                     icon: Icon(Icons.add_a_photo),
                                     onPressed: () async {
+                                      getUrl = attendanceService
+                                          .attendanceModel!.pic_out
+                                          .toString();
                                       attendanceService.attendanceModel
                                                       ?.checkIn !=
                                                   null &&
@@ -1679,12 +1697,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 IconButton(
                                     icon: Icon(Icons.add_a_photo),
                                     onPressed: () async {
-                                      attendanceService.attendanceModel
+                                      getUrl = attendanceService
+                                          .attendanceModel!.pic_in2
+                                          .toString();
+                                      (attendanceService.attendanceModel
                                                       ?.checkOut !=
                                                   null &&
                                               attendanceService.attendanceModel
                                                       ?.checkIn2 ==
-                                                  null
+                                                  null)
                                           ? attendanceService.attendanceModel
                                                           ?.pic_in2 ==
                                                       null ||
@@ -1799,12 +1820,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 IconButton(
                                     icon: Icon(Icons.add_a_photo),
                                     onPressed: () async {
-                                      attendanceService.attendanceModel
+                                      getUrl = attendanceService
+                                          .attendanceModel!.pic_out2
+                                          .toString();
+                                      (attendanceService.attendanceModel
                                                       ?.checkIn2 !=
                                                   null &&
                                               attendanceService.attendanceModel
                                                       ?.checkOut2 ==
-                                                  null
+                                                  null)
                                           ? attendanceService.attendanceModel
                                                           ?.pic_out2 ==
                                                       null ||

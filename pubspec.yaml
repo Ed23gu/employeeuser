@@ -65,6 +65,7 @@ dependencies:
   syncfusion_flutter_pdf:
   open_file: ^3.3.2
   flutter_image_compress: ^2.0.3
+  cached_network_image: ^3.2.3
 
 dev_dependencies:
   flutter_test:
