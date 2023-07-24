@@ -1435,14 +1435,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       : isUploading == true
                                           ? const CircularProgressIndicator()
                                           : CachedNetworkImage(
-                                              imageUrl: getUrl,
-                                              progressIndicatorBuilder:
+                                              imageUrl: attendanceService
+                                                  .attendanceModel!.pic_in
+                                                  .toString(),
+                                              height: 120,
+                                              /* progressIndicatorBuilder:
                                                   (context, url,
                                                           downloadProgress) =>
                                                       CircularProgressIndicator(
                                                           value:
                                                               downloadProgress
-                                                                  .progress),
+                                                                  .progress), */
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -1571,12 +1574,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading2 == true
                                           ? const CircularProgressIndicator()
-                                          : Image.network(
-                                              attendanceService
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
                                                   .attendanceModel!.pic_out
                                                   .toString(),
-                                              fit: BoxFit.fill,
-                                              height: 120),
+                                              height: 120,
+                                              /* progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress), */
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
                             ),
                           ],
                         ),
@@ -1767,12 +1780,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading3 == true
                                           ? const CircularProgressIndicator()
-                                          : Image.network(
-                                              attendanceService
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
                                                   .attendanceModel!.pic_in2
                                                   .toString(),
-                                              fit: BoxFit.fill,
-                                              height: 120),
+                                              height: 120,
+                                              /*  progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress), */
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
                             ),
                           ],
                         )
@@ -1890,12 +1913,22 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading4 == true
                                           ? const CircularProgressIndicator()
-                                          : Image.network(
-                                              attendanceService
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
                                                   .attendanceModel!.pic_out2
                                                   .toString(),
-                                              fit: BoxFit.fill,
-                                              height: 120),
+                                              height: 120,
+                                              /*  progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress), */
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
+                                            ),
                             ),
                           ],
                         )
