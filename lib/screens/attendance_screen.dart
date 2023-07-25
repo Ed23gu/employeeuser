@@ -1441,6 +1441,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               height: 120,
                                               /* progressIndicatorBuilder:
                                                   (context, url,
+                                                  COMPRTROBAR
                                                           downloadProgress) =>
                                                       CircularProgressIndicator(
                                                           value:
