@@ -4,6 +4,7 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
+import 'package:employee_attendance/screens/register_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:employee_attendance/action_button.dart';
+import 'package:employee_attendance/expandable_fab.dart';
+
+import '../pages/home_page.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -38,6 +43,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading2 = false;
   bool isUploading3 = false;
   bool isUploading4 = false;
+  bool flat=false;
   int imageq = 100;
   int qt = 85;
   int per = 15;
@@ -499,11 +505,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
           final getUrl =
               supabase.storage.from('imageip').getPublicUrl(urllisto);
-          await supabase.from('attendance').update({
-            //'employee_id': supabase.auth.currentUser!.id,
-            // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-            'pic_out': getUrl,
-          });
+          await supabase
+              .from('attendance')
+              .update({
+                //'employee_id': supabase.auth.currentUser!.id,
+                // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                'pic_out': getUrl,
+              })
+              .eq("employee_id", supabase.auth.currentUser!.id)
+              .eq('date', todayDate);
 
           setState(() {
             isUploading2 = false;
@@ -723,11 +733,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
           final getUrl =
               supabase.storage.from('imageip').getPublicUrl(urllisto);
-          await supabase.from('attendance').update({
-            //'employee_id': supabase.auth.currentUser!.id,
-            // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-            'pic_in2': getUrl,
-          });
+          await supabase
+              .from('attendance')
+              .update({
+                //'employee_id': supabase.auth.currentUser!.id,
+                // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                'pic_in2': getUrl,
+              })
+              .eq("employee_id", supabase.auth.currentUser!.id)
+              .eq('date', todayDate);
 
           setState(() {
             isUploading3 = false;
@@ -741,7 +755,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           // print("ERRROR : $e");
           setState(() {
             isUploading3 = false;
-
             Future.delayed(
               Duration(seconds: segundos),
               () => key2.currentState?.reset(),
@@ -947,11 +960,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
           final getUrl =
               supabase.storage.from('imageip').getPublicUrl(urllisto);
-          await supabase.from('attendance').update({
-            //'employee_id': supabase.auth.currentUser!.id,
-            // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-            'pic_out2': getUrl,
-          });
+          await supabase
+              .from('attendance')
+              .update({
+                //'employee_id': supabase.auth.currentUser!.id,
+                // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                'pic_out2': getUrl,
+              })
+              .eq("employee_id", supabase.auth.currentUser!.id)
+              .eq('date', todayDate);
 
           setState(() {
             isUploading4 = false;
@@ -1212,13 +1229,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         padding: const EdgeInsets.all(15),
         child: Column(
           children: [
-            IconButton(
-                icon: Icon(Icons.ac_unit),
-                color: Colors.grey,
-                onPressed: () async {
-                  await attendanceService.getAttendanceHistory2(context);
-                  setState(() {});
-                }),
             route.Consumer<DbService>(builder: (context, dbServie, child) {
               return FutureBuilder(
                   future: dbServie.getUserData(),
@@ -1261,19 +1271,31 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         ),
                       );
                     }
+
                     return const SizedBox(
                       width: 60,
                       child: LinearProgressIndicator(),
                     );
                   });
             }), //
+
             const SizedBox(
               child: Divider(
                 thickness: 1,
               ),
             ),
             ///////////////fecha/////////////////////
-
+            Container(
+              child : TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ComentariosPage()));
+                  },
+                  child: const Text(
+                      "¿Has tenido inconvenientes al momento de registrarte?Dejanos saber cual?")),
+            ),
             StreamBuilder(
                 stream: Stream.periodic(const Duration(seconds: 1)),
                 builder: (context, snapshot) {
@@ -1629,7 +1651,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             null &&
                         attendanceService.attendanceModel?.pic_in != "NULL" &&
                         attendanceService.attendanceModel?.pic_in != null) {
-                      await attendanceService.markAttendance(context);
+                      final bool flat= await attendanceService.markAttendance(context);
+                           flat==true ? key.currentState!.reset(): key.currentState;
                     } else if (attendanceService.attendanceModel?.pic_in ==
                         null) {
                       _mostrarAlerta(context, "Suba", "una foto por favor.");
@@ -2025,7 +2048,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ],
         ),
       ),
+
     );
+
   }
 }
 

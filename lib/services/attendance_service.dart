@@ -24,6 +24,7 @@ class AttendanceService extends ChangeNotifier {
   AttendanceModel? userModel3;
   int? employeeDepartment;
   int? employeeDepartment2;
+  bool bandera = false;
 
   String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
 
@@ -83,7 +84,7 @@ class AttendanceService extends ChangeNotifier {
     return userModel!;
   }
 
-  Future markAttendance(BuildContext context) async {
+  Future<bool> markAttendance(BuildContext context) async {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
@@ -109,18 +110,28 @@ class AttendanceService extends ChangeNotifier {
     print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn == null) {
-        await _supabase
-            .from(Constants.attendancetable)
-            .update({
-              //'employee_id': _supabase.auth.currentUser!.id,
-              //'date': todayDate,
-              'check_in': DateFormat('HH:mm').format(DateTime.now()),
-              'check_in_location': getLocation,
-              'obraid': depModel2!.title,
-              'nombre_asis': userModel!.name,
-            })
-            .eq('employee_id', _supabase.auth.currentUser!.id)
-            .eq('date', todayDate);
+        try {
+          await _supabase
+              .from(Constants.attendancetable)
+              .update({
+            //'employee_id': _supabase.auth.currentUser!.id,
+            //'date': todayDate,
+            'check_in': DateFormat('HH:mm').format(DateTime.now()),
+            'check_in_location': getLocation,
+            'obraid': depModel2!.title,
+            'nombre_asis': userModel!.name,
+          })
+              .eq('employee_id', _supabase.auth.currentUser!.id)
+              .eq('date', todayDate);
+        } catch (e) {
+          print("ERRROR : $e");
+          bandera=true;
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Algo ha salido mal, intentelo nuevamente"),
+            backgroundColor: Colors.red,
+          ));
+          return  bandera;
+        }
       } else if (attendanceModel?.checkOut == null) {
         await _supabase
             .from(Constants.attendancetable)
@@ -139,6 +150,7 @@ class AttendanceService extends ChangeNotifier {
           color: Colors.blue);
       getTodayAttendance();
     }
+    return bandera;
   }
 
   Future markAttendance3(BuildContext context) async {

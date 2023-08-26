@@ -1,63 +1,109 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:employee_attendance/screens/splash_screen.dart';
-import 'package:employee_attendance/services/attendance_service.dart';
-import 'package:employee_attendance/services/auth_service.dart';
-import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
-///////////////////////////ADMIN OPCION//////
-//////version 2 administrado////////////////////////////////
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  // load env
-  /* await dotenv.load(fileName: ".env");
-  String supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
-  String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
-*/
-  // Initialize Supabase
-  String supabaseUrl = 'https://glknpzlrktillummmbrr.supabase.co';
-  String supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
-  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  runApp(const MyApp());
+void main(){
+  runApp(new MaterialApp(
+    home: new myApp(),
+  ));
 }
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
+class myApp extends StatefulWidget{
+  @override
+  _State createState()=>new _State();
+}
+class _State extends State<myApp>{
+  Choice _selectedOption=choices[0];
+  void _select(Choice choice){
+    setState(() {
+      _selectedOption=choice;
+    });
+  }
   @override
   Widget build(BuildContext context) {
-    return AdaptiveTheme(
-      dark: ThemeData.dark(),
-      light: ThemeData.light(),
-      initial: AdaptiveThemeMode.light,
-      builder: (theme, darkTheme) {
-        return MultiProvider(
-          providers: [
-            ChangeNotifierProvider(create: (context) => AuthService()),
-            ChangeNotifierProvider(create: (context) => DbService()),
-            ChangeNotifierProvider(create: (context) => AttendanceService()),
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Hello"),
+        actions: [
+          PopupMenuButton(
+            onSelected: _select,
+            itemBuilder: (BuildContext context){
+              return choices.skip(0).map((Choice choice){
+                return PopupMenuItem<Choice>(child: Text(choice.name),value: choice,);
+              }).toList();
+            },
+          ),
+        ],
+
+      ),body: Padding(
+      padding: EdgeInsets.all(15.0),
+      child: ChoiceCard(
+        choice: _selectedOption,
+      ),
+    ),
+
+    );
+  }
+}
+class Choice{
+  const Choice({this.name,this.icon});
+  final String name;
+  final IconData icon;
+}
+const List<Choice>choices=const <Choice>[
+  const Choice(name: "Wifi",icon: Icons.wifi),
+  const Choice(name:"Bluetooth",icon:Icons.bluetooth),
+  const Choice(name:"Storage",icon:Icons.storage),
+];
+class ChoiceCard extends StatelessWidget{
+  final Choice choice;
+  const ChoiceCard({Key key,this.choice}):super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final TextStyle textStyle=Theme.of(context).textTheme.headline;
+    return Card(
+      color: Colors.blue,
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              choice.icon,size: 114.0,
+            ),Text(choice.name),
           ],
-          child: MaterialApp(
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                Locale('es', 'ES')
-              ],
-              debugShowCheckedModeBanner: false,
-              title: 'Asistencia',
-              theme: theme,
-              darkTheme: darkTheme,
-              home: const SplashScreen()),
-        );
-      },
+        ),
+      ),
+    );
+
+  }
+
+}
+
+
+
+
+void main(){
+  runApp(new MaterialApp(
+    home: new myApp(),
+  ));
+}
+class myApp extends StatefulWidget{
+  @override
+  _State createState()=>new _State();
+}
+class _State extends State<myApp>{
+  @override
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Hello"),
+      ),
+      body: new Container(
+        padding: new EdgeInsets.all(32.0),
+        child: new Column(
+          children: <Widget>[
+            new Text("My App")
+          ],
+        ),
+      ),
     );
   }
 }
