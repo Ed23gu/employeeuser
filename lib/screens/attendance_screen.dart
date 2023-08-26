@@ -15,6 +15,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:employee_attendance/action_button.dart';
+import 'package:employee_attendance/expandable_fab.dart';
+
+import '../pages/home_page.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -39,6 +43,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading2 = false;
   bool isUploading3 = false;
   bool isUploading4 = false;
+  bool flat=false;
   int imageq = 100;
   int qt = 85;
   int per = 15;
@@ -750,7 +755,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           // print("ERRROR : $e");
           setState(() {
             isUploading3 = false;
-
             Future.delayed(
               Duration(seconds: segundos),
               () => key2.currentState?.reset(),
@@ -1282,16 +1286,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
             ///////////////fecha/////////////////////
             Container(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterScreen()));
-                    },
-                    child: const Text(
-                        "Has tenido inconvenientes al momento de registrarte?"))),
+              child : TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const ComentariosPage()));
+                  },
+                  child: const Text(
+                      "¿Has tenido inconvenientes al momento de registrarte?Dejanos saber cual?")),
+            ),
             StreamBuilder(
                 stream: Stream.periodic(const Duration(seconds: 1)),
                 builder: (context, snapshot) {
@@ -1647,7 +1651,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             null &&
                         attendanceService.attendanceModel?.pic_in != "NULL" &&
                         attendanceService.attendanceModel?.pic_in != null) {
-                      await attendanceService.markAttendance(context);
+                      final bool flat= await attendanceService.markAttendance(context);
+                           flat==true ? key.currentState!.reset(): key.currentState;
                     } else if (attendanceService.attendanceModel?.pic_in ==
                         null) {
                       _mostrarAlerta(context, "Suba", "una foto por favor.");
@@ -2043,7 +2048,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ],
         ),
       ),
+
     );
+
   }
 }
 
