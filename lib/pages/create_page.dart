@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:adaptive_theme/adaptive_theme.dart';
 
 class CreatePage extends StatefulWidget {
   const CreatePage({super.key});
@@ -24,7 +23,9 @@ class _CreatePageState extends State<CreatePage> {
     supabase.dispose();
     super.dispose();
   }
-
+  void clearText() {
+    titleController.clear();
+  }
   Future insertData() async {
     setState(() {
       isLoading = true;
@@ -51,7 +52,7 @@ class _CreatePageState extends State<CreatePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    // backgroundColor: Colors.grey[200],
+      // backgroundColor: Colors.grey[200],
       appBar: AppBar(
         title: const Text("Observaciones"),
       ),
@@ -65,6 +66,7 @@ class _CreatePageState extends State<CreatePage> {
                 //crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextFormField(
+                    textCapitalization: TextCapitalization.sentences,
                     maxLines: null,
                     controller: titleController,
                     validator: (value) {
@@ -112,7 +114,8 @@ class _CreatePageState extends State<CreatePage> {
                           child: const Text("Guardar")),
                 ],
               ),
-            )),
+            )
+            ),
       ),
     );
   }

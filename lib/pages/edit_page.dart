@@ -84,6 +84,7 @@ class _EditPageState extends State<EditPage> {
         child: Column(
           children: [
             TextField(
+              maxLines: 5,
               controller: titleController,
               decoration: const InputDecoration(
                 hintText: "Enter the title",
@@ -97,13 +98,13 @@ class _EditPageState extends State<EditPage> {
                 ? const Center(
                     child: CircularProgressIndicator(),
                   )
-                : Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       IconButton(
                         onPressed: updateData,
-                         icon: Icon(Icons.update),
+                        icon: Icon(Icons.update),
                       ),
                       const SizedBox(
                         width: 10,

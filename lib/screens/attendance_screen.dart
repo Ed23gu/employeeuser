@@ -4,7 +4,6 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
-import 'package:employee_attendance/screens/register_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/foundation.dart';
@@ -15,8 +14,6 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:employee_attendance/action_button.dart';
-import 'package:employee_attendance/expandable_fab.dart';
 
 import '../pages/home_page.dart';
 
@@ -43,7 +40,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading2 = false;
   bool isUploading3 = false;
   bool isUploading4 = false;
-  bool flat=false;
+  bool flat = false;
   int imageq = 100;
   int qt = 85;
   int per = 15;
@@ -1190,7 +1187,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           );
         }),
         title: Text(
-          "ArtConsGroup",
+          "ArtConsGroup.",
           style: TextStyle(fontSize: 23),
         ),
         actions: [
@@ -1286,7 +1283,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
             ///////////////fecha/////////////////////
             Container(
-              child : TextButton(
+              child: TextButton(
                   onPressed: () {
                     Navigator.push(
                         context,
@@ -1294,7 +1291,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             builder: (context) => const ComentariosPage()));
                   },
                   child: const Text(
-                      "¿Has tenido inconvenientes al momento de registrarte?Dejanos saber cual?")),
+                    "¿Has tenido inconvenientes al momento de registrarte?Dejanoslo saber.",
+                  )),
             ),
             StreamBuilder(
                 stream: Stream.periodic(const Duration(seconds: 1)),
@@ -1328,16 +1326,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: EdgeInsets.only(top: 5, bottom: 5),
               height: 170,
               decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      //  color: Colors.white,
-                      : Color.fromARGB(255, 43, 41, 41),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(110, 18, 148, 255),
-                        blurRadius: 5,
-                        offset: Offset(1, 1)),
-                  ],
+                  color: Theme.of(context).colorScheme.surfaceVariant,
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1442,9 +1431,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in ==
                                       null
@@ -1456,23 +1442,50 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading == true
                                           ? const CircularProgressIndicator()
-                                          : CachedNetworkImage(
-                                              imageUrl: attendanceService
+                                          : Container(
+                                              height: 118,
+                                              width: 90,
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.rectangle,
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(15)),
+                                                // borderRadius:
+                                                image: DecorationImage(
+                                                  fit: BoxFit.fill,
+                                                  image:
+                                                      CachedNetworkImageProvider(
+                                                    attendanceService
+                                                        .attendanceModel!.pic_in
+                                                        .toString(),
+                                                  ),
+                                                ),
+                                                //     BorderRadius.all(Radius.circular(20))
+                                              ),
+
+                                              /* Image.network(
+                                              attendanceService
                                                   .attendanceModel!.pic_in
                                                   .toString(),
-                                              height: 120,
-                                              /* progressIndicatorBuilder:
-                                                  (context, url,
-                                                  COMPRTROBAR
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress), */
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
+                                              fit: BoxFit.fill,
+                                              height: 120), */
                                             ),
+                              // : CachedNetworkImage(
+                              //     imageUrl: attendanceService
+                              //         .attendanceModel!.pic_in
+                              //         .toString(),
+                              //     height: 120,
+                              //     /* progressIndicatorBuilder:
+                              //         (context, url,
+                              //         COMPRTROBAR
+                              //                 downloadProgress) =>
+                              //             CircularProgressIndicator(
+                              //                 value:
+                              //                     downloadProgress
+                              //                         .progress), */
+                              //     errorWidget:
+                              //         (context, url, error) =>
+                              //             Icon(Icons.error),
+                              //   ),
 
                               /* Image.network(
                                               attendanceService
@@ -1481,6 +1494,46 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               fit: BoxFit.fill,
                                               height: 120), */
                             ),
+                            //   Container(
+                            //     decoration: BoxDecoration(
+                            //         borderRadius:
+                            //             BorderRadius.all(Radius.circular(20))),
+                            //     child: attendanceService
+                            //                 .attendanceModel?.pic_in ==
+                            //             null
+                            //         ? Icon(Icons.photo)
+                            //         : attendanceService.attendanceModel?.pic_in ==
+                            //                 "NULL"
+                            //             ? isUploading == true
+                            //                 ? const CircularProgressIndicator()
+                            //                 : Icon(Icons.photo)
+                            //             : isUploading == true
+                            //                 ? const CircularProgressIndicator()
+                            //                 : CachedNetworkImage(
+                            //                     imageUrl: attendanceService
+                            //                         .attendanceModel!.pic_in
+                            //                         .toString(),
+                            //                     height: 120,
+                            //                     /* progressIndicatorBuilder:
+                            //                         (context, url,
+                            //                         COMPRTROBAR
+                            //                                 downloadProgress) =>
+                            //                             CircularProgressIndicator(
+                            //                                 value:
+                            //                                     downloadProgress
+                            //                                         .progress), */
+                            //                     errorWidget:
+                            //                         (context, url, error) =>
+                            //                             Icon(Icons.error),
+                            //                   ),
+
+                            //     /* Image.network(
+                            //                     attendanceService
+                            //                         .attendanceModel!.pic_in
+                            //                         .toString(),
+                            //                     fit: BoxFit.fill,
+                            //                     height: 120), */
+                            //   ),
                           ],
                         )
                         //container
@@ -1582,9 +1635,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              width: 100,
                               decoration: BoxDecoration(
+                                  color: Colors.amber,
+                                  border: Border.all(color: Colors.green),
                                   borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
+                                      BorderRadius.all(Radius.circular(15))),
                               child: attendanceService
                                           .attendanceModel?.pic_out ==
                                       null
@@ -1602,13 +1658,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                   .attendanceModel!.pic_out
                                                   .toString(),
                                               height: 120,
-                                              /* progressIndicatorBuilder:
-                                                  (context, url,
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress), */
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -1624,6 +1673,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: const EdgeInsets.only(top: 5),
               child: Builder(builder: (context) {
                 return SlideAction(
+                  height: 60,
                   text: (attendanceService.attendanceModel?.checkIn != null &&
                           attendanceService.attendanceModel?.checkOut != null)
                       ? "Registro Exitoso. Gracias"
@@ -1633,35 +1683,39 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   //alignment: Alignment.topCenter,
                   animationDuration: Duration(milliseconds: 200),
                   textStyle: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
-                  outerColor: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Color(0xFF2B2929),
+                    fontSize: 16,
+                    // color: Theme.of(context).brightness == Brightness.light
+                    //     ? Colors.black
+                    //     : Colors.white
+                  ),
+                  // outerColor: Theme.of(context).brightness == Brightness.light
+                  //     ? Colors.white
+                  //     : Color(0xFF2B2929),
                   //   innerColor: Colors.red,
                   key: key,
                   onSubmit: () async {
                     if (attendanceService.attendanceModel?.checkIn != null &&
                         attendanceService.attendanceModel?.checkOut != null) {
                       _mostrarAlerta(
-                          context, "Asistencia", "exitosamente subida.");
+                          context, "Asistencia exitosamente subida.");
                     } else if (attendanceService.attendanceModel?.checkIn ==
                             null &&
                         attendanceService.attendanceModel?.pic_in != "NULL" &&
                         attendanceService.attendanceModel?.pic_in != null) {
-                      final bool flat= await attendanceService.markAttendance(context);
-                           flat==true ? key.currentState!.reset(): key.currentState;
+                      final bool flat =
+                          await attendanceService.markAttendance(context);
+                      flat == true
+                          ? key.currentState!.reset()
+                          : key.currentState;
                     } else if (attendanceService.attendanceModel?.pic_in ==
                         null) {
-                      _mostrarAlerta(context, "Suba", "una foto por favor.");
+                      _mostrarAlerta(context, "Suba una foto por favor.");
                     } else if (attendanceService.attendanceModel?.pic_out !=
                             null &&
                         attendanceService.attendanceModel?.pic_out != "NULL") {
                       await attendanceService.markAttendance(context);
                     } else {
-                      _mostrarAlerta(context, "Suba", "una foto por favor.");
+                      _mostrarAlerta(context, "Suba una foto por favor.");
                     }
 
                     key.currentState!.reset();
@@ -1677,16 +1731,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: EdgeInsets.only(top: 5, bottom: 10),
               height: 170,
               decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      //  color: Colors.white,
-                      : Color.fromARGB(255, 43, 41, 41),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(110, 18, 148, 255),
-                        blurRadius: 5,
-                        offset: Offset(1, 1)),
-                  ],
+                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  //     ? Colors.white
+                  //     //  color: Colors.white,
+                  //     : Color.fromARGB(255, 43, 41, 41),
+                  // boxShadow: [
+                  //   BoxShadow(
+                  //       color: Color.fromARGB(110, 18, 148, 255),
+                  //       blurRadius: 5,
+                  //       offset: Offset(1, 1)),
+                  // ],
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1973,7 +2027,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ? "Registrar el ingreso"
                           : "Registrar la salida",
                   //alignment: Alignment.topCenter,
-
+                  height: 60,
                   textStyle: TextStyle(
                       fontSize: 16,
                       color: Theme.of(context).brightness == Brightness.light
@@ -1988,19 +2042,19 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     if (attendanceService.attendanceModel?.checkIn2 != null &&
                         attendanceService.attendanceModel?.checkOut2 != null) {
                       _mostrarAlerta(
-                          context, "Asistencia", "subida exitosamente");
+                          context, "Asistencia subida exitosamente.");
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                             null &&
                         attendanceService.attendanceModel?.pic_in2 != null) {
                       await attendanceService.markAttendance2(context);
                     } else if (attendanceService.attendanceModel?.checkIn2 ==
                         null) {
-                      _mostrarAlerta(context, "Suba", "una foto por favor");
+                      _mostrarAlerta(context, "Suba una foto por favor.");
                     } else if (attendanceService.attendanceModel?.pic_out2 !=
                         null) {
                       await attendanceService.markAttendance2(context);
                     } else {
-                      _mostrarAlerta(context, "Suba", "una foto por favor");
+                      _mostrarAlerta(context, "Suba una foto por favor.");
                     }
                     key2.currentState!.reset();
                   },
@@ -2048,21 +2102,21 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ],
         ),
       ),
-
     );
-
   }
 }
 
-void _mostrarAlerta(BuildContext context, String titulo, String contenido) {
+void _mostrarAlerta(BuildContext context, String titulo) {
   showDialog(
       barrierDismissible: false,
       context: context,
       builder: (context) => AlertDialog(
             // elevation: 1,
             // alignment: Alignment.center,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(17.0),
+            ),
             title: Text(titulo, textAlign: TextAlign.center),
-            content: Text(contenido, textAlign: TextAlign.center),
             actions: [
               TextButton(
                   child: Text("OK"),
