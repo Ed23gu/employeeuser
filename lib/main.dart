@@ -2,8 +2,10 @@ import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
+import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
+import 'package:employee_attendance/services/db_service_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,9 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(create: (context) => AuthService()),
             ChangeNotifierProvider(create: (context) => DbService()),
             ChangeNotifierProvider(create: (context) => AttendanceService()),
+            ChangeNotifierProvider(create: (context) => DbServiceadmin()),
+            ChangeNotifierProvider(
+                create: (context) => AttendanceServiceadmin()),
           ],
           child: MaterialApp(
               localizationsDelegates: const [
