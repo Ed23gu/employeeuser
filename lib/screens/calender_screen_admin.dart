@@ -1,12 +1,15 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/ubi_model.dart';
-import 'package:employee_attendance/services/attendance_service.dart';
+import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../services/db_service.dart';
+
+import '../models/user_model.dart';
+import '../services/db_service_admin.dart';
 
 class CalenderScreen extends StatefulWidget {
   const CalenderScreen({super.key});
@@ -15,7 +18,7 @@ class CalenderScreen extends StatefulWidget {
   State<CalenderScreen> createState() => _CalenderScreenState();
 }
 
-Future<void> _openmap (String lat, String lon) async {
+Future<void> _openmap(String lat, String lon) async {
   Uri googleUrl =
       Uri.parse('https://www.google.com.ec/maps/search/?api=1&query=$lat,$lon');
   await canLaunchUrl(googleUrl)
@@ -31,8 +34,8 @@ Future<void> _openmap (String lat, String lon) async {
 class _CalenderScreenState extends State<CalenderScreen> {
   @override
   Widget build(BuildContext context) {
-    final attendanceService = Provider.of<AttendanceService>(context);
-    final dbService = Provider.of<DbService>(context);
+    final attendanceService = Provider.of<AttendanceServiceadmin>(context);
+    final dbService = Provider.of<DbServiceadmin>(context);
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
     return Column(
       children: [
@@ -48,13 +51,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             //////seccion admin filtro
-           /* dbService.allempleados.isEmpty
+            dbService.allempleados.isEmpty
                 ? SizedBox(width: 60, child: const LinearProgressIndicator())
                 : Container(
                     //  padding: EdgeInsets.all(5),
                     margin: const EdgeInsets.only(
                         left: 5, top: 5, bottom: 10, right: 10),
-                    height: 45,
+                    height: 50,
                     width: 300,
                     child: DropdownButtonFormField(
                       decoration:
@@ -78,7 +81,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                         });
                       },
                     ),
-                  ), */
+                  ),
             Text(
               attendanceService.attendanceHistoryMonth,
               style: const TextStyle(fontSize: 25),
@@ -109,7 +112,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                             return Container(
                               margin: EdgeInsets.only(
                                   top: 12, left: 20, right: 20, bottom: 10),
-                              height: 190,
+                              height: 220,
                               decoration: BoxDecoration(
                                   color: Theme.of(context).brightness ==
                                           Brightness.light
@@ -262,7 +265,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn ?.toString() ??
+                                                    attendanceData.checkIn
+                                                            ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
@@ -293,8 +297,73 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         _openmap(lat.toString(),
                                                             lon.toString());
                                                       }),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                    width: 80,
+                                                    child: Divider(),
+                                                  ),
+                                                  Text(
+                                                    attendanceData.checkIn
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          //  color: Colors.white,
+                                                          : Colors.white,
+                                                    ),
+                                                  ),
                                                 ],
                                               )),
+                                              //////
+                                              Expanded(
+                                                  child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    child: attendanceData
+                                                                .pic_in ==
+                                                            null
+                                                        ? Icon(Icons.photo)
+                                                        : attendanceData
+                                                                    .pic_in ==
+                                                                "NULL"
+                                                            ? const CircularProgressIndicator()
+                                                            : Container(
+                                                                height: 115,
+                                                                width: 90,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .rectangle,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              15)),
+                                                                  image:
+                                                                      DecorationImage(
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    image:
+                                                                        CachedNetworkImageProvider(
+                                                                      attendanceData
+                                                                          .pic_in
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                  ),
+                                                ],
+                                              )),
+
+                                              /////////
                                               Expanded(
                                                   child: Column(
                                                 mainAxisAlignment:
@@ -351,6 +420,68 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         _openmap(lat.toString(),
                                                             lon.toString());
                                                       }),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                    width: 80,
+                                                    child: Divider(),
+                                                  ),
+                                                  Text(
+                                                    attendanceData.checkOut
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          //  color: Colors.white,
+                                                          : Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                              Expanded(
+                                                  child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    child: attendanceData
+                                                                .pic_out ==
+                                                            null
+                                                        ? Icon(Icons.photo)
+                                                        : attendanceData
+                                                                    .pic_out ==
+                                                                "NULL"
+                                                            ? const CircularProgressIndicator()
+                                                            : Container(
+                                                                height: 115,
+                                                                width: 90,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .rectangle,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              15)),
+                                                                  image:
+                                                                      DecorationImage(
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    image:
+                                                                        CachedNetworkImageProvider(
+                                                                      attendanceData
+                                                                          .pic_out
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                  ),
                                                 ],
                                               )),
                                             ])),
@@ -459,6 +590,68 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         _openmap(lat.toString(),
                                                             lon.toString());
                                                       }),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                    width: 80,
+                                                    child: Divider(),
+                                                  ),
+                                                  Text(
+                                                    attendanceData.checkIn2
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          //  color: Colors.white,
+                                                          : Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                              Expanded(
+                                                  child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    child: attendanceData
+                                                                .pic_in2 ==
+                                                            null
+                                                        ? Icon(Icons.photo)
+                                                        : attendanceData
+                                                                    .pic_in2 ==
+                                                                "NULL"
+                                                            ? const CircularProgressIndicator()
+                                                            : Container(
+                                                                height: 115,
+                                                                width: 90,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .rectangle,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              15)),
+                                                                  image:
+                                                                      DecorationImage(
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    image:
+                                                                        CachedNetworkImageProvider(
+                                                                      attendanceData
+                                                                          .pic_in2
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                  ),
                                                 ],
                                               )),
                                               Expanded(
@@ -520,6 +713,68 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         _openmap(lat.toString(),
                                                             lon.toString());
                                                       }),
+                                                  const SizedBox(
+                                                    height: 10,
+                                                    width: 80,
+                                                    child: Divider(),
+                                                  ),
+                                                  Text(
+                                                    attendanceData.checkOut2
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: 15,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          //  color: Colors.white,
+                                                          : Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
+                                              )),
+                                              Expanded(
+                                                  child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Container(
+                                                    child: attendanceData
+                                                                .pic_out2 ==
+                                                            null
+                                                        ? Icon(Icons.photo)
+                                                        : attendanceData
+                                                                    .pic_out2 ==
+                                                                "NULL"
+                                                            ? const CircularProgressIndicator()
+                                                            : Container(
+                                                                height: 115,
+                                                                width: 90,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .rectangle,
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          Radius.circular(
+                                                                              15)),
+                                                                  image:
+                                                                      DecorationImage(
+                                                                    fit: BoxFit
+                                                                        .fill,
+                                                                    image:
+                                                                        CachedNetworkImageProvider(
+                                                                      attendanceData
+                                                                          .pic_out2
+                                                                          .toString(),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                  ),
                                                 ],
                                               )),
                                             ])),
