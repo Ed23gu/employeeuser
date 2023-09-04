@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:flutter/material.dart';
@@ -37,7 +38,19 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 onPressed: () async {
                   final selectedDate =
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                          context: context, disableFuture: true);
+                          backgroundColor: AdaptiveTheme.of(context).mode ==
+                                  AdaptiveThemeMode.light
+                              ? Colors.white
+                              //  color: Colors.white,
+                              : Colors.black,
+                          selectionColor: AdaptiveTheme.of(context).mode ==
+                                  AdaptiveThemeMode.light
+                              ? Colors.blue
+                              //  color: Colors.white,
+                              : Colors.white,
+                          context: context,
+                          disableFuture: true);
+
                   String pickedMonth =
                       DateFormat('MMMM yyyy').format(selectedDate);
                   attendanceService.attendanceHistoryMonth = pickedMonth;
@@ -61,8 +74,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                   top: 12, left: 20, right: 20, bottom: 10),
                               height: 110,
                               decoration: BoxDecoration(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.light
+                                  color: AdaptiveTheme.of(context).mode ==
+                                          AdaptiveThemeMode.light
                                       ? Colors.white
                                       //  color: Colors.white,
                                       : Color.fromARGB(255, 43, 41, 41),
@@ -82,8 +95,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                   Container(
                                       child: Container(
                                     width: 50,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.blue,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primaryContainer,
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(20)),
                                     ),
@@ -91,9 +106,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       child: Text(
                                         DateFormat("EE \n dd", "es_ES")
                                             .format(attendanceData.createdAt),
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontSize: 18,
-                                            color: Colors.white,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onPrimaryContainer,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
@@ -101,7 +118,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
                                   Expanded(
                                     child: Column(children: [
-                                   /*   Container(
+                                      /*   Container(
                                         height: 20,
                                         child: Row(
                                             mainAxisAlignment:
@@ -158,9 +175,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 15,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
+                                                color: AdaptiveTheme.of(context)
+                                                            .mode ==
+                                                        AdaptiveThemeMode.light
                                                     ? Colors.black
                                                     //  color: Colors.white,
                                                     : Colors.white,
@@ -171,9 +188,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                   '--/--',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
+                                                color: AdaptiveTheme.of(context)
+                                                            .mode ==
+                                                        AdaptiveThemeMode.light
                                                     ? Colors.black
                                                     //  color: Colors.white,
                                                     : Colors.white,
@@ -198,9 +215,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -212,13 +231,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn ?.toString() ??
+                                                    attendanceData.checkIn
+                                                            ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -239,9 +261,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -258,9 +282,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -287,22 +313,23 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 15,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
+                                                color: AdaptiveTheme.of(context)
+                                                            .mode ==
+                                                        AdaptiveThemeMode.light
                                                     ? Colors.black
                                                     //  color: Colors.white,
                                                     : Colors.white,
                                               ),
                                             ),
                                             Text(
-                                              attendanceData.obra2?.toString() ??
+                                              attendanceData.obra2
+                                                      ?.toString() ??
                                                   '--/--',
                                               style: TextStyle(
                                                 fontSize: 12,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
+                                                color: AdaptiveTheme.of(context)
+                                                            .mode ==
+                                                        AdaptiveThemeMode.light
                                                     ? Colors.black
                                                     //  color: Colors.white,
                                                     : Colors.white,
@@ -327,9 +354,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -341,13 +370,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     child: Divider(),
                                                   ),
                                                   Text(
-                                                    attendanceData.checkIn2?.toString() ??
-                                                      '--/--',
+                                                    attendanceData.checkIn2
+                                                            ?.toString() ??
+                                                        '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -368,9 +400,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -387,9 +421,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         '--/--',
                                                     style: TextStyle(
                                                       fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
+                                                      color: AdaptiveTheme.of(
+                                                                      context)
+                                                                  .mode ==
+                                                              AdaptiveThemeMode
+                                                                  .light
                                                           ? Colors.black
                                                           //  color: Colors.white,
                                                           : Colors.white,
@@ -429,7 +465,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     color: Colors.grey,
                   );
                 })),
-
       ],
     );
   }

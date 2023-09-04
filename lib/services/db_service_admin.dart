@@ -7,7 +7,7 @@ import 'package:employee_attendance/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class DbService extends ChangeNotifier {
+class DbServiceadmin extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   UserModel? userModel;
   DepartmentModel? depModel2;
@@ -22,8 +22,8 @@ class DbService extends ChangeNotifier {
     final random = Random();
     const allChars = "faangFAANG0123456789";
     final randomString =
-    List.generate(8, (index) => allChars[random.nextInt(allChars.length)])
-        .join();
+        List.generate(8, (index) => allChars[random.nextInt(allChars.length)])
+            .join();
     return randomString;
   }
 
@@ -49,32 +49,26 @@ class DbService extends ChangeNotifier {
     employeeDepartment == null
         ? employeeDepartment = userModel?.department
         : null;
-    return
-      userModel!;
+    return userModel!;
   }
 
   Future<void> getAllDepartments() async {
     final List result =
-    await _supabase.from(Constants.departmentTable).select();
+        await _supabase.from(Constants.departmentTable).select();
     allDepartments = result
         .map((department) => DepartmentModel.fromJson(department))
         .toList();
     notifyListeners();
   }
 
-
   Future<void> getAllempleados() async {
-    final List result =
-    await _supabase.from(Constants.employeeTable).select();
-    allempleados = result
-        .map((empleados) => UserModel.fromJson(empleados))
-        .toList();
+    final List result = await _supabase.from(Constants.employeeTable).select();
+    allempleados =
+        result.map((empleados) => UserModel.fromJson(empleados)).toList();
     notifyListeners();
   }
 
-
   ////////
-
 
   Future updateProfile(String name, BuildContext context) async {
     await _supabase.from(Constants.employeeTable).update({
@@ -96,5 +90,4 @@ class DbService extends ChangeNotifier {
     }
     return depModel;
   }
-
 }
