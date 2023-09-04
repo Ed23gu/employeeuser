@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/* import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -144,9 +144,9 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
+ */
 
-
-/* import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
@@ -215,4 +215,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
- */

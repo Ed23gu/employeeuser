@@ -1816,13 +1816,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                   .attendanceModel!.pic_in2
                                                   .toString(),
                                               height: 120,
-                                              /*  progressIndicatorBuilder:
-                                                  (context, url,
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress), */
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -1949,13 +1942,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                   .attendanceModel!.pic_out2
                                                   .toString(),
                                               height: 120,
-                                              /*  progressIndicatorBuilder:
-                                                  (context, url,
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress), */
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -2011,44 +1997,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     }
                     key2.currentState!.reset();
                   },
-                  /* onSubmit: () async {
-                     if (attendanceService.attendanceModel?.checkIn2 != null &&
-                        attendanceService.attendanceModel?.checkOut2 != null) {
-                      QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.warning,
-                          title: 'Suba',
-                          text: 'una foto por favor');
-                    } else {
-                      (attendanceService.attendanceModel?.checkIn2 == null
-                          ? (_images3 != null
-                              ? (await attendanceService
-                                  .markAttendance2(context))
-                              : QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Suba',
-                                  text: 'una foto por favor'))
-                          : _images4 != null
-                              ? (await attendanceService
-                                  .markAttendance2(context))
-                              : QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Suba ',
-                                  text: 'una foto por favor'));
-                      attendanceService.attendanceModel?.checkIn2 == null
-                          ? (_images3 != null
-                              ? uploadFile3()
-                              : _images4 != null
-                                  ? uploadFile4()
-                                  : print("mal11"))
-                          : _images4 != null
-                              ? uploadFile4()
-                              : print("mal22");
-                    }
-                    key2.currentState!.reset();
-                  },*/
                 );
               }),
             ),
