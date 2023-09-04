@@ -1040,132 +1040,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  /*  Future choiceImage4() async {
-    if (!kIsWeb) {
-      var pickedFile4 = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: imageq);
-      if (pickedFile4 != null) {
-        _images4 = File(pickedFile4.path);
-        File? imagescom4 =
-            await customCompressed(imagePathToCompress: _images4);
-        setState(() {
-          isUploading4 = true;
-          _imagescom4 = imagescom4;
-        });
-      }
-    } else if (kIsWeb) {
-      var pickedFileweb4 = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: imageq);
-      if (pickedFileweb4 != null) {
-        var f4 = await pickedFileweb4.readAsBytes();
-        _images4 = File('a');
-        setState(() {
-          isUploading4 = true;
-          webI4 = f4;
-        });
-      }
-    }
-  }
- */
-
-/////////////tomar foto y subir//////////////
-  /* Future uploadFile(BuildContext context) async {
-    if (!kIsWeb) {
-      var pickedFile = _imagescom1;
-      try {
-        _images = File(pickedFile!.path);
-        String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
-        DateTime now = DateTime.now();
-        String fileName =
-            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
-        String uploadedUrl = await supabase.storage.from('imageip').upload(
-            "${supabase.auth.currentUser!.id}/$fecharuta/$fileName", _images!);
-        String urllisto = uploadedUrl.replaceAll("imageip/", "");
-        final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-        await supabase.from('attendance').insert({
-          'employee_id': supabase.auth.currentUser!.id,
-          'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-          'pic_in': getUrl,
-        });
-        setState(() {
-          isUploading = false;
-        });
-        // await markasistencia(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Foto cargada correctamente"),
-          backgroundColor: Colors.green,
-        ));
-        await subirubi.markAttendance(context);
-      } catch (e) {
-        //print("ERRROR : $e");
-        setState(() {
-          isUploading = false;
-          Future.delayed(
-            Duration(seconds: segundos),
-            () => key.currentState?.reset(),
-          );
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Algo ha salido malen carga"),
-          backgroundColor: Colors.red,
-        ));
-      }
-    } else if (kIsWeb) {
-      setState(() {
-        webImage = webI;
-      });
-      var pickedFile = webImage;
-      try {
-        String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
-        DateTime now = DateTime.now();
-        String fileName =
-            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
-        String uploadedUrl = await supabase.storage
-            .from('imageip')
-            .uploadBinary(
-                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
-                pickedFile);
-        String urllisto = uploadedUrl.replaceAll("imageip/", "");
-        final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-        await supabase.from('attendance').insert({
-          'employee_id': supabase.auth.currentUser!.id,
-          'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-          'pic_in': getUrl,
-        });
-
-        setState(() {
-          isUploading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Foto cargada correctamente !"),
-          backgroundColor: Colors.green,
-        ));
-      } catch (e) {
-        // print("ERRROR : $e");
-        setState(() {
-          isUploading = false;
-          Future.delayed(
-            Duration(seconds: segundos),
-            () => key.currentState?.reset(),
-          );
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Algo ha salido mal"),
-          backgroundColor: Colors.red,
-        ));
-      }
-    }
-  } */
-
-  /* void disableButton() {
-    setState(() {
-      buttonDisabled = true;
-    });
-  }
- */
-
   @override
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
@@ -1433,6 +1307,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in ==
                                       null
@@ -1566,6 +1443,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_out ==
                                       null
@@ -1618,15 +1498,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   //alignment: Alignment.topCenter,
                   animationDuration: Duration(milliseconds: 200),
                   textStyle: TextStyle(
-                    fontSize: 16,
-                    // color: Theme.of(context).brightness == Brightness.light
-                    //     ? Colors.black
-                    //     : Colors.white
-                  ),
+                      fontSize: 16,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white),
                   outerColor: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
                       : Color(0xFF2B2929),
-
                   //   innerColor: Colors.red,
                   key: key,
                   onSubmit: () async {
@@ -1668,15 +1546,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               height: 170,
               decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surfaceVariant,
-                  //     ? Colors.white
-                  //     //  color: Colors.white,
-                  //     : Color.fromARGB(255, 43, 41, 41),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //       color: Color.fromARGB(110, 18, 148, 255),
-                  //       blurRadius: 5,
-                  //       offset: Offset(1, 1)),
-                  // ],
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1696,6 +1565,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                /*color: Colors.black5*/
                               ),
                             ),
                             Text(
@@ -1780,6 +1650,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in2 ==
                                       null
@@ -1915,6 +1788,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_out2 ==
                                       null
@@ -1958,84 +1834,48 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: const EdgeInsets.only(top: 5),
               child: Builder(builder: (context) {
                 return SlideAction(
-                  animationDuration: Duration(milliseconds: 200),
-                  text: (attendanceService.attendanceModel?.checkIn2 != null &&
-                          attendanceService.attendanceModel?.checkOut2 != null)
-                      ? "Registro Exitoso Gracias"
-                      : (attendanceService.attendanceModel?.checkIn2 == null)
-                          ? "Registrar el ingreso"
-                          : "Registrar la salida",
-                  //alignment: Alignment.topCenter,
-                  height: 60,
-                  textStyle: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
-                  outerColor: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Color(0xFF2B2929),
-                  // innerColor: ,
-                  key: key2,
-                  onSubmit: () async {
-                    if (attendanceService.attendanceModel?.checkIn2 != null &&
-                        attendanceService.attendanceModel?.checkOut2 != null) {
-                      _mostrarAlerta(
-                          context, "Asistencia subida exitosamente.");
-                    } else if (attendanceService.attendanceModel?.checkIn2 ==
-                            null &&
-                        attendanceService.attendanceModel?.pic_in2 != null) {
-                      await attendanceService.markAttendance2(context);
-                    } else if (attendanceService.attendanceModel?.checkIn2 ==
-                        null) {
-                      _mostrarAlerta(context, "Suba una foto por favor.");
-                    } else if (attendanceService.attendanceModel?.pic_out2 !=
-                        null) {
-                      await attendanceService.markAttendance2(context);
-                    } else {
-                      _mostrarAlerta(context, "Suba una foto por favor.");
-                    }
-                    key2.currentState!.reset();
-                  },
-                  /* onSubmit: () async {
-                     if (attendanceService.attendanceModel?.checkIn2 != null &&
-                        attendanceService.attendanceModel?.checkOut2 != null) {
-                      QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.warning,
-                          title: 'Suba',
-                          text: 'una foto por favor');
-                    } else {
-                      (attendanceService.attendanceModel?.checkIn2 == null
-                          ? (_images3 != null
-                              ? (await attendanceService
-                                  .markAttendance2(context))
-                              : QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Suba',
-                                  text: 'una foto por favor'))
-                          : _images4 != null
-                              ? (await attendanceService
-                                  .markAttendance2(context))
-                              : QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Suba ',
-                                  text: 'una foto por favor'));
-                      attendanceService.attendanceModel?.checkIn2 == null
-                          ? (_images3 != null
-                              ? uploadFile3()
-                              : _images4 != null
-                                  ? uploadFile4()
-                                  : print("mal11"))
-                          : _images4 != null
-                              ? uploadFile4()
-                              : print("mal22");
-                    }
-                    key2.currentState!.reset();
-                  },*/
-                );
+                    animationDuration: Duration(milliseconds: 200),
+                    text: (attendanceService.attendanceModel?.checkIn2 !=
+                                null &&
+                            attendanceService.attendanceModel?.checkOut2 !=
+                                null)
+                        ? "Registro Exitoso Gracias"
+                        : (attendanceService.attendanceModel?.checkIn2 == null)
+                            ? "Registrar el ingreso"
+                            : "Registrar la salida",
+                    //alignment: Alignment.topCenter,
+                    height: 60,
+                    textStyle: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
+                    outerColor: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Color(0xFF2B2929),
+                    // innerColor: ,
+                    key: key2,
+                    onSubmit: () async {
+                      if (attendanceService.attendanceModel?.checkIn2 != null &&
+                          attendanceService.attendanceModel?.checkOut2 !=
+                              null) {
+                        _mostrarAlerta(
+                            context, "Asistencia subida exitosamente.");
+                      } else if (attendanceService.attendanceModel?.checkIn2 ==
+                              null &&
+                          attendanceService.attendanceModel?.pic_in2 != null) {
+                        await attendanceService.markAttendance2(context);
+                      } else if (attendanceService.attendanceModel?.checkIn2 ==
+                          null) {
+                        _mostrarAlerta(context, "Suba una foto por favor.");
+                      } else if (attendanceService.attendanceModel?.pic_out2 !=
+                          null) {
+                        await attendanceService.markAttendance2(context);
+                      } else {
+                        _mostrarAlerta(context, "Suba una foto por favor.");
+                      }
+                      key2.currentState!.reset();
+                    });
               }),
             ),
           ],
@@ -2056,6 +1896,7 @@ void _mostrarAlerta(BuildContext context, String titulo) {
               borderRadius: BorderRadius.circular(17.0),
             ),
             title: Text(titulo, textAlign: TextAlign.center),
+
             actions: [
               TextButton(
                   child: Text("OK"),

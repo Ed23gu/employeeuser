@@ -1,70 +1,78 @@
-import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+//import 'package:employee_attendance/screens/planillas_screen.dart';
 import 'package:employee_attendance/screens/attendance_screen.dart';
-import 'package:employee_attendance/screens/calender_screen_admin.dart';
+import 'package:employee_attendance/screens/calender_screen.dart';
 import 'package:employee_attendance/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class BottomNavBar extends StatefulWidget {
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _BottomNavBarState createState() => _BottomNavBarState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _BottomNavBarState extends State<BottomNavBar> {
-  int _page = 1;
-  GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+class _HomeScreenState extends State<HomeScreen> {
+  List<IconData> navigationIcons = [
+    FontAwesomeIcons.solidCalendarDays,
+    FontAwesomeIcons.list,
+    FontAwesomeIcons.solidUser
+  ];
+
+  int currentIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(
-        index: _page,
+        index: currentIndex,
         children: const [CalenderScreen(), AttendanceScreen(), ProfileScreen()],
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        index: 1,
-        height: 55.0,
-        items: <Widget>[
-          Icon(Icons.calendar_today, size: 27),
-          Icon(Icons.list, size: 27),
-          Icon(Icons.person_outline_sharp, size: 27),
-        ],
-        color: Theme.of(context).colorScheme.tertiaryContainer,
-        //     //  color: Colors.white,
-        //     : Colors.black,
-        buttonBackgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        //     ? Colors.white
-        // //  color: Colors.white,
-        //     : Color.fromARGB(255, 43, 41, 41),
-        animationCurve: Curves.easeInOut,
-        animationDuration: Duration(milliseconds: 300),
-        onTap: (index) {
-          setState(() {
-            _page = index;
-          });
-        },
-        letIndexChange: (index) => true,
+      bottomNavigationBar: Container(
+        height: 60,
+        margin: const EdgeInsets.only(left: 12, right: 12, bottom: 24),
+        decoration: BoxDecoration(
+            color: Theme.of(context).brightness == Brightness.light
+                ? Colors.white
+            //  color: Colors.white,
+                : Color.fromARGB(255, 43, 41, 41),
+            borderRadius: BorderRadius.all(Radius.circular(20)),
+            boxShadow: [
+              BoxShadow(
+                  color: Color.fromARGB(110, 18, 148, 255),
+                  blurRadius: 5,
+                  offset: Offset(2, 2))
+            ]),
+        child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              for (int i = 0; i < navigationIcons.length; i++) ...{
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        currentIndex = i;
+                      });
+                    },
+                    child: Center(
+                      child: FaIcon(
+                        navigationIcons[i],
+                        color: i == currentIndex
+                            ? Colors.blue
+                            : (Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                        //  color: Colors.white,
+                            : Colors.white),
+                        size: i == currentIndex ? 30 : 26,
+                      ),
+                    ),
+                  ),
+                )
+              }
+            ]),
       ),
-      // body: Container(
-      //   color: Colors.blueAccent,
-      //   child: Center(
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: <Widget>[
-      //         Text(_page.toString(), textScaleFactor: 10.0),
-      //         ElevatedButton(
-      //           child: Text('Go To Page of index 1'),
-      //           onPressed: () {
-      //             final CurvedNavigationBarState? navBarState =
-      //                 _bottomNavigationKey.currentState;
-      //             navBarState?.setPage(1);
-      //           },
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // )
     );
   }
 }

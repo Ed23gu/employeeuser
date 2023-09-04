@@ -1,3 +1,4 @@
+
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/department_model.dart';
@@ -8,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AttendanceServiceadmin extends ChangeNotifier {
+class AttendanceService extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   DepartmentModel? depModel2;
   DepartmentModel? depModel22;
@@ -40,20 +41,25 @@ class AttendanceServiceadmin extends ChangeNotifier {
 
   String get attendanceusuario => _attendanceusuario;
 
+
   set attendanceusuario(String value) {
     _attendanceusuario = value;
     notifyListeners();
   }
+
 
   String _attendanceHistoryMonth =
       DateFormat('MMMM yyyy').format(DateTime.now());
 
   String get attendanceHistoryMonth => _attendanceHistoryMonth;
 
+
   set attendanceHistoryMonth(String value) {
     _attendanceHistoryMonth = value;
     notifyListeners();
   }
+
+
 
   Future getTodayAttendance() async {
     final List result = await _supabase
@@ -83,6 +89,9 @@ class AttendanceServiceadmin extends ChangeNotifier {
     return userModel!;
   }
 
+
+
+
   Future markAttendance(BuildContext context) async {
     final userData = await _supabase
         .from(Constants.employeeTable)
@@ -109,16 +118,14 @@ class AttendanceServiceadmin extends ChangeNotifier {
     print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn == null) {
-        await _supabase
-            .from(Constants.attendancetable)
-            .update({
-              //'employee_id': _supabase.auth.currentUser!.id,
-              //'date': todayDate,
-              'check_in': DateFormat('HH:mm').format(DateTime.now()),
-              'check_in_location': getLocation,
-              'obraid': depModel2!.title,
-              'nombre_asis': userModel!.name,
-            })
+        await _supabase.from(Constants.attendancetable).update({
+          //'employee_id': _supabase.auth.currentUser!.id,
+          //'date': todayDate,
+          'check_in': DateFormat('HH:mm').format(DateTime.now()),
+          'check_in_location': getLocation,
+          'obraid': depModel2!.title,
+          'nombre_asis': userModel!.name,
+        })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
       } else if (attendanceModel?.checkOut == null) {
@@ -140,7 +147,6 @@ class AttendanceServiceadmin extends ChangeNotifier {
       getTodayAttendance();
     }
   }
-
   Future markAttendance2(BuildContext context) async {
     final userData2 = await _supabase
         .from(Constants.employeeTable)
@@ -162,27 +168,25 @@ class AttendanceServiceadmin extends ChangeNotifier {
     depModel22 = DepartmentModel.fromJson(result32.first);
 
     Map? getLocation =
-        await LocationService().initializeAndGetLocation(context);
+    await LocationService().initializeAndGetLocation(context);
     print("Location Data2 :");
     print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn2 == null) {
-        await _supabase
-            .from(Constants.attendancetable)
-            .update({
-              'check_in2': DateFormat('HH:mm').format(DateTime.now()),
-              'check_in_location2': getLocation,
-              'obraid2': depModel22!.title,
-            })
+        await _supabase.from(Constants.attendancetable).update({
+          'check_in2': DateFormat('HH:mm').format(DateTime.now()),
+          'check_in_location2': getLocation,
+          'obraid2': depModel22!.title,
+        })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
       } else if (attendanceModel?.checkOut2 == null) {
         await _supabase
             .from(Constants.attendancetable)
             .update({
-              'check_out2': DateFormat('HH:mm').format(DateTime.now()),
-              'check_out_location2': getLocation,
-            })
+          'check_out2': DateFormat('HH:mm').format(DateTime.now()),
+          'check_out_location2': getLocation,
+        })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
       } else {
@@ -196,19 +200,24 @@ class AttendanceServiceadmin extends ChangeNotifier {
     }
   }
 
+
+
+
   Future<List<AttendanceModel>> getAttendanceHistory() async {
     final List data = await _supabase
         .from(Constants.attendancetable)
         .select()
-        // .eq('employee_id', _supabase.auth.currentUser!.id)
-        .eq('employee_id', "$attendanceusuario")
+        .eq('employee_id', _supabase.auth.currentUser!.id)
+        // .eq('employee_id', "$attendanceusuario")   PARA ADMIN
         .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
-    print("'$attendanceusuario'");
+print("'$attendanceusuario'");
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
         .toList();
   }
+
+
 
   //////leer imagnes
   Future getMyFiles() async {
