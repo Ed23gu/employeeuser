@@ -50,7 +50,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            //////seccion admin filtro
             dbService.allempleados.isEmpty
                 ? SizedBox(width: 60, child: const LinearProgressIndicator())
                 : Container(
