@@ -1307,9 +1307,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in ==
                                       null
@@ -1443,9 +1440,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_out ==
                                       null
@@ -1498,13 +1492,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   //alignment: Alignment.topCenter,
                   animationDuration: Duration(milliseconds: 200),
                   textStyle: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
-                  outerColor: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Color(0xFF2B2929),
+                    fontSize: 16,
+                    // color: Theme.of(context).brightness == Brightness.light
+                    //     ? Colors.black
+                    //     : Colors.white
+                  ),
+                  // outerColor: Theme.of(context).brightness == Brightness.light
+                  //     ? Colors.white
+                  //     : Color(0xFF2B2929),
                   //   innerColor: Colors.red,
                   key: key,
                   onSubmit: () async {
@@ -1565,7 +1560,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
-                                /*color: Colors.black5*/
                               ),
                             ),
                             Text(
@@ -1650,9 +1644,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in2 ==
                                       null
@@ -1788,9 +1779,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_out2 ==
                                       null
@@ -1896,7 +1884,7 @@ void _mostrarAlerta(BuildContext context, String titulo) {
               borderRadius: BorderRadius.circular(17.0),
             ),
             title: Text(titulo, textAlign: TextAlign.center),
-
+            content: Text(contenido, textAlign: TextAlign.center),
             actions: [
               TextButton(
                   child: Text("OK"),
