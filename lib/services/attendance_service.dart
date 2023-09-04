@@ -114,23 +114,23 @@ class AttendanceService extends ChangeNotifier {
           await _supabase
               .from(Constants.attendancetable)
               .update({
-            //'employee_id': _supabase.auth.currentUser!.id,
-            //'date': todayDate,
-            'check_in': DateFormat('HH:mm').format(DateTime.now()),
-            'check_in_location': getLocation,
-            'obraid': depModel2!.title,
-            'nombre_asis': userModel!.name,
-          })
+                //'employee_id': _supabase.auth.currentUser!.id,
+                //'date': todayDate,
+                'check_in': DateFormat('HH:mm').format(DateTime.now()),
+                'check_in_location': getLocation,
+                'obraid': depModel2!.title,
+                'nombre_asis': userModel!.name,
+              })
               .eq('employee_id', _supabase.auth.currentUser!.id)
               .eq('date', todayDate);
         } catch (e) {
-          print("ERRROR : $e");
-          bandera=true;
+          print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
+          bandera = true;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Algo ha salido mal, intentelo nuevamente"),
             backgroundColor: Colors.red,
           ));
-          return  bandera;
+          return bandera;
         }
       } else if (attendanceModel?.checkOut == null) {
         await _supabase
