@@ -1463,7 +1463,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               imageUrl: attendanceService
                                                   .attendanceModel!.pic_in
                                                   .toString(),
-                                              height: 120,
+                                              height: 125,
                                               /* progressIndicatorBuilder:
                                                   (context, url,
                                                   COMPRTROBAR
@@ -1604,14 +1604,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               imageUrl: attendanceService
                                                   .attendanceModel!.pic_out
                                                   .toString(),
-                                              height: 120,
-                                              /* progressIndicatorBuilder:
-                                                  (context, url,
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress), */
+                                              height: 125,
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -1815,7 +1808,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               imageUrl: attendanceService
                                                   .attendanceModel!.pic_in2
                                                   .toString(),
-                                              height: 120,
+                                              height: 125,
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
@@ -1941,7 +1934,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               imageUrl: attendanceService
                                                   .attendanceModel!.pic_out2
                                                   .toString(),
-                                              height: 120,
+                                              height: 125,
                                               errorWidget:
                                                   (context, url, error) =>
                                                       Icon(Icons.error),
