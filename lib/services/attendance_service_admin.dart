@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AttendanceService extends ChangeNotifier {
+class AttendanceServiceadmin extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   DepartmentModel? depModel2;
   DepartmentModel? depModel22;
@@ -24,7 +24,6 @@ class AttendanceService extends ChangeNotifier {
   AttendanceModel? userModel3;
   int? employeeDepartment;
   int? employeeDepartment2;
-  bool bandera = false;
 
   String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
 
@@ -84,7 +83,7 @@ class AttendanceService extends ChangeNotifier {
     return userModel!;
   }
 
-  Future<bool> markAttendance(BuildContext context) async {
+  Future markAttendance(BuildContext context) async {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
@@ -110,28 +109,18 @@ class AttendanceService extends ChangeNotifier {
     print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn == null) {
-        try {
-          await _supabase
-              .from(Constants.attendancetable)
-              .update({
-                //'employee_id': _supabase.auth.currentUser!.id,
-                //'date': todayDate,
-                'check_in': DateFormat('HH:mm').format(DateTime.now()),
-                'check_in_location': getLocation,
-                'obraid': depModel2!.title,
-                'nombre_asis': userModel!.name,
-              })
-              .eq('employee_id', _supabase.auth.currentUser!.id)
-              .eq('date', todayDate);
-        } catch (e) {
-          print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
-          bandera = true;
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Algo ha salido mal, intentelo nuevamente"),
-            backgroundColor: Colors.red,
-          ));
-          return bandera;
-        }
+        await _supabase
+            .from(Constants.attendancetable)
+            .update({
+              //'employee_id': _supabase.auth.currentUser!.id,
+              //'date': todayDate,
+              'check_in': DateFormat('HH:mm').format(DateTime.now()),
+              'check_in_location': getLocation,
+              'obraid': depModel2!.title,
+              'nombre_asis': userModel!.name,
+            })
+            .eq('employee_id', _supabase.auth.currentUser!.id)
+            .eq('date', todayDate);
       } else if (attendanceModel?.checkOut == null) {
         await _supabase
             .from(Constants.attendancetable)
@@ -150,11 +139,6 @@ class AttendanceService extends ChangeNotifier {
           color: Colors.blue);
       getTodayAttendance();
     }
-    return bandera;
-  }
-
-  Future markAttendance3(BuildContext context) async {
-    getTodayAttendance();
   }
 
   Future markAttendance2(BuildContext context) async {
@@ -164,6 +148,8 @@ class AttendanceService extends ChangeNotifier {
         .eq('id', _supabase.auth.currentUser!.id)
         .single();
     userModel2 = UserModel.fromJson(userData2);
+    // Since this function can be called multiple times, then it will reset the dartment value
+    // That is why we are using condition to assign only at the first time
     employeeDepartment2 == null
         ? employeeDepartment2 = userModel2?.department
         : null;
@@ -214,41 +200,13 @@ class AttendanceService extends ChangeNotifier {
     final List data = await _supabase
         .from(Constants.attendancetable)
         .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
-        // .eq('employee_id', "$attendanceusuario")   PARA ADMIN
+        // .eq('employee_id', _supabase.auth.currentUser!.id)
+        .eq('employee_id', "$attendanceusuario")
         .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
+    print("'$attendanceusuario'");
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
         .toList();
-  }
-
-  Future<List<AttendanceModel>> getAttendanceHistory2(context) async {
-    final List data = await _supabase
-        .from(Constants.attendancetable)
-        .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
-        // .eq('employee_id', "$attendanceusuario")   PARA ADMIN
-        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
-        .order('created_at', ascending: false);
-    return data
-        .map((attendance) => AttendanceModel.fromJson(attendance))
-        .toList();
-  }
-
-  //////leer imagnes
-  Future getMyFiles() async {
-    final List<FileObject> result = await _supabase.storage
-        .from('imageip')
-        .list(path: _supabase.auth.currentUser!.id);
-    List<Map<String, String>> myImages = [];
-
-    for (var image in result) {
-      final getUrl = _supabase.storage
-          .from('imageip')
-          .getPublicUrl("${_supabase.auth.currentUser!.id}/${image.name}");
-      myImages.add({'name': image.name, 'url': getUrl});
-    }
-    return myImages;
   }
 }

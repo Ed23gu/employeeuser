@@ -1188,7 +1188,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }),
         title: Text(
           "ArtConsGroup.",
-          style: TextStyle(fontSize: 23),
+          style: TextStyle(
+            fontSize: 23,
+            /* color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
+                  ? Colors.white
+                  : Colors.lightBlue */
+          ),
         ),
         actions: [
           Row(
@@ -1196,9 +1201,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               Icon(
                 Icons.brightness_2_outlined,
                 size: 18, // Icono para tema claro
-                color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
+                /* color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
                     ? Colors.grey
-                    : Colors.white,
+                    : Colors.white, */
               ),
               Switch(
                   value:
@@ -1291,8 +1296,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             builder: (context) => const ComentariosPage()));
                   },
                   child: const Text(
-                    "¿Has tenido inconvenientes al momento de registrarte?Dejanoslo saber.",
-                  )),
+                      "¿Has tenido inconvenientes al momento de registrarte?Dejanoslo saber.",
+                      style: TextStyle(color: Colors.lightBlueAccent))),
             ),
             StreamBuilder(
                 stream: Stream.periodic(const Duration(seconds: 1)),
@@ -1326,7 +1331,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: EdgeInsets.only(top: 5, bottom: 5),
               height: 170,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      //  color: Colors.white,
+                      : Color.fromARGB(255, 43, 41, 41),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(110, 18, 148, 255),
+                        blurRadius: 5,
+                        offset: Offset(1, 1)),
+                  ],
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1365,8 +1379,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 80,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1433,6 +1445,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in ==
                                       null
@@ -1444,24 +1459,30 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading == true
                                           ? const CircularProgressIndicator()
-                                          : Container(
-                                              height: 115,
-                                              width: 90,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image:
-                                                      CachedNetworkImageProvider(
-                                                    attendanceService
-                                                        .attendanceModel!.pic_in
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              ),
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
+                                                  .attendanceModel!.pic_in
+                                                  .toString(),
+                                              height: 120,
+                                              /* progressIndicatorBuilder:
+                                                  (context, url,
+                                                  COMPRTROBAR
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress), */
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
                                             ),
+
+                              /* Image.network(
+                                              attendanceService
+                                                  .attendanceModel!.pic_in
+                                                  .toString(),
+                                              fit: BoxFit.fill,
+                                              height: 120), */
                             ),
                           ],
                         )
@@ -1502,8 +1523,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 80,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1566,6 +1585,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_out ==
                                       null
@@ -1578,24 +1600,21 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading2 == true
                                           ? const CircularProgressIndicator()
-                                          : Container(
-                                              height: 115,
-                                              width: 90,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image:
-                                                      CachedNetworkImageProvider(
-                                                    attendanceService
-                                                        .attendanceModel!
-                                                        .pic_out
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              ),
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
+                                                  .attendanceModel!.pic_out
+                                                  .toString(),
+                                              height: 120,
+                                              /* progressIndicatorBuilder:
+                                                  (context, url,
+                                                          downloadProgress) =>
+                                                      CircularProgressIndicator(
+                                                          value:
+                                                              downloadProgress
+                                                                  .progress), */
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
                                             ),
                             ),
                           ],
@@ -1618,14 +1637,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   //alignment: Alignment.topCenter,
                   animationDuration: Duration(milliseconds: 200),
                   textStyle: TextStyle(
-                    fontSize: 16,
-                    // color: Theme.of(context).brightness == Brightness.light
-                    //     ? Colors.black
-                    //     : Colors.white
-                  ),
-                  // outerColor: Theme.of(context).brightness == Brightness.light
-                  //     ? Colors.white
-                  //     : Color(0xFF2B2929),
+                      fontSize: 16,
+                      color: Theme.of(context).brightness == Brightness.light
+                          ? Colors.black
+                          : Colors.white),
+                  outerColor: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Color(0xFF2B2929),
                   //   innerColor: Colors.red,
                   key: key,
                   onSubmit: () async {
@@ -1666,16 +1684,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               margin: EdgeInsets.only(top: 5, bottom: 10),
               height: 170,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surfaceVariant,
-                  //     ? Colors.white
-                  //     //  color: Colors.white,
-                  //     : Color.fromARGB(255, 43, 41, 41),
-                  // boxShadow: [
-                  //   BoxShadow(
-                  //       color: Color.fromARGB(110, 18, 148, 255),
-                  //       blurRadius: 5,
-                  //       offset: Offset(1, 1)),
-                  // ],
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      //  color: Colors.white,
+                      : Color.fromARGB(255, 43, 41, 41),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(110, 18, 148, 255),
+                        blurRadius: 5,
+                        offset: Offset(1, 1)),
+                  ],
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -1695,6 +1713,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               style: TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
+                                /*color: Colors.black5*/
                               ),
                             ),
                             Text(
@@ -1714,8 +1733,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 80,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1779,6 +1796,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_in2 ==
                                       null
@@ -1791,24 +1811,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading3 == true
                                           ? const CircularProgressIndicator()
-                                          : Container(
-                                              height: 115,
-                                              width: 90,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image:
-                                                      CachedNetworkImageProvider(
-                                                    attendanceService
-                                                        .attendanceModel!
-                                                        .pic_in2
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              ),
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
+                                                  .attendanceModel!.pic_in2
+                                                  .toString(),
+                                              height: 120,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
                                             ),
                             ),
                           ],
@@ -1849,8 +1859,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           width: 80,
                         ),
                         Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -1914,6 +1922,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ],
                             ),
                             Container(
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20))),
                               child: attendanceService
                                           .attendanceModel?.pic_out2 ==
                                       null
@@ -1926,24 +1937,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           : Icon(Icons.photo)
                                       : isUploading4 == true
                                           ? const CircularProgressIndicator()
-                                          : Container(
-                                              height: 115,
-                                              width: 90,
-                                              decoration: BoxDecoration(
-                                                shape: BoxShape.rectangle,
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(15)),
-                                                image: DecorationImage(
-                                                  fit: BoxFit.fill,
-                                                  image:
-                                                      CachedNetworkImageProvider(
-                                                    attendanceService
-                                                        .attendanceModel!
-                                                        .pic_out2
-                                                        .toString(),
-                                                  ),
-                                                ),
-                                              ),
+                                          : CachedNetworkImage(
+                                              imageUrl: attendanceService
+                                                  .attendanceModel!.pic_out2
+                                                  .toString(),
+                                              height: 120,
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      Icon(Icons.error),
                                             ),
                             ),
                           ],
@@ -1996,44 +1997,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     }
                     key2.currentState!.reset();
                   },
-                  /* onSubmit: () async {
-                     if (attendanceService.attendanceModel?.checkIn2 != null &&
-                        attendanceService.attendanceModel?.checkOut2 != null) {
-                      QuickAlert.show(
-                          context: context,
-                          type: QuickAlertType.warning,
-                          title: 'Suba',
-                          text: 'una foto por favor');
-                    } else {
-                      (attendanceService.attendanceModel?.checkIn2 == null
-                          ? (_images3 != null
-                              ? (await attendanceService
-                                  .markAttendance2(context))
-                              : QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Suba',
-                                  text: 'una foto por favor'))
-                          : _images4 != null
-                              ? (await attendanceService
-                                  .markAttendance2(context))
-                              : QuickAlert.show(
-                                  context: context,
-                                  type: QuickAlertType.warning,
-                                  title: 'Suba ',
-                                  text: 'una foto por favor'));
-                      attendanceService.attendanceModel?.checkIn2 == null
-                          ? (_images3 != null
-                              ? uploadFile3()
-                              : _images4 != null
-                                  ? uploadFile4()
-                                  : print("mal11"))
-                          : _images4 != null
-                              ? uploadFile4()
-                              : print("mal22");
-                    }
-                    key2.currentState!.reset();
-                  },*/
                 );
               }),
             ),

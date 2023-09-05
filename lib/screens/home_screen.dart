@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:employee_attendance/screens/attendance_screen.dart';
-import 'package:employee_attendance/screens/calender_screen.dart';
+import 'package:employee_attendance/screens/calender_screen_admin.dart';
 import 'package:employee_attendance/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -34,9 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         //     : Colors.black,
         buttonBackgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        //     ? Colors.white
-        // //  color: Colors.white,
-        //     : Color.fromARGB(255, 43, 41, 41),
+
         animationCurve: Curves.easeInOut,
         animationDuration: Duration(milliseconds: 300),
         onTap: (index) {

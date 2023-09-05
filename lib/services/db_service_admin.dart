@@ -7,10 +7,9 @@ import 'package:employee_attendance/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class DbService extends ChangeNotifier {
+class DbServiceadmin extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   UserModel? userModel;
-  UserModel? userModeldep;
   DepartmentModel? depModel2;
   DepartmentModel? depModel;
   DepartmentModel? departmentModel;
@@ -81,23 +80,14 @@ class DbService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<DepartmentModel> getTodaydep() async {
-    final userData = await _supabase
-        .from(Constants.employeeTable)
-        .select()
-        .eq('id', _supabase.auth.currentUser!.id)
-        .single();
-    userModeldep = UserModel.fromJson(userData);
-    employeeDepartment == null
-        ? employeeDepartment = userModeldep?.department
-        : null;
+  Future<DepartmentModel?> getTodaydep() async {
     final List result = await _supabase
         .from(Constants.departmentTable)
         .select()
-        .eq("id", employeeDepartment);
+        .eq("id", userModel?.department);
     if (result.isNotEmpty) {
       depModel = DepartmentModel.fromJson(result.first);
     }
-    return depModel!;
+    return depModel;
   }
 }
