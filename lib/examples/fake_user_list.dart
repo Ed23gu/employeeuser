@@ -77,19 +77,5 @@ class FakeUserList extends StatelessWidget {
             : const ErrorPage();
       },
     );
-
-    /* Expanded(
-      
-      child: ListView(
-        children: _fakeNames.map((e) {
-          return Card(
-            child: ListTile(
-              leading: const Icon(Icons.person),
-              title: Text(e),
-            ),
-          );
-        }).toList(),
-      ),
-    ); */
   }
 }
