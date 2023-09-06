@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
@@ -1040,132 +1041,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  /*  Future choiceImage4() async {
-    if (!kIsWeb) {
-      var pickedFile4 = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: imageq);
-      if (pickedFile4 != null) {
-        _images4 = File(pickedFile4.path);
-        File? imagescom4 =
-            await customCompressed(imagePathToCompress: _images4);
-        setState(() {
-          isUploading4 = true;
-          _imagescom4 = imagescom4;
-        });
-      }
-    } else if (kIsWeb) {
-      var pickedFileweb4 = await picker.pickImage(
-          source: ImageSource.camera, imageQuality: imageq);
-      if (pickedFileweb4 != null) {
-        var f4 = await pickedFileweb4.readAsBytes();
-        _images4 = File('a');
-        setState(() {
-          isUploading4 = true;
-          webI4 = f4;
-        });
-      }
-    }
-  }
- */
-
-/////////////tomar foto y subir//////////////
-  /* Future uploadFile(BuildContext context) async {
-    if (!kIsWeb) {
-      var pickedFile = _imagescom1;
-      try {
-        _images = File(pickedFile!.path);
-        String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
-        DateTime now = DateTime.now();
-        String fileName =
-            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
-        String uploadedUrl = await supabase.storage.from('imageip').upload(
-            "${supabase.auth.currentUser!.id}/$fecharuta/$fileName", _images!);
-        String urllisto = uploadedUrl.replaceAll("imageip/", "");
-        final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-        await supabase.from('attendance').insert({
-          'employee_id': supabase.auth.currentUser!.id,
-          'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-          'pic_in': getUrl,
-        });
-        setState(() {
-          isUploading = false;
-        });
-        // await markasistencia(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Foto cargada correctamente"),
-          backgroundColor: Colors.green,
-        ));
-        await subirubi.markAttendance(context);
-      } catch (e) {
-        //print("ERRROR : $e");
-        setState(() {
-          isUploading = false;
-          Future.delayed(
-            Duration(seconds: segundos),
-            () => key.currentState?.reset(),
-          );
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Algo ha salido malen carga"),
-          backgroundColor: Colors.red,
-        ));
-      }
-    } else if (kIsWeb) {
-      setState(() {
-        webImage = webI;
-      });
-      var pickedFile = webImage;
-      try {
-        String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
-        DateTime now = DateTime.now();
-        String fileName =
-            DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
-        String uploadedUrl = await supabase.storage
-            .from('imageip')
-            .uploadBinary(
-                "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
-                pickedFile);
-        String urllisto = uploadedUrl.replaceAll("imageip/", "");
-        final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-        await supabase.from('attendance').insert({
-          'employee_id': supabase.auth.currentUser!.id,
-          'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-          'pic_in': getUrl,
-        });
-
-        setState(() {
-          isUploading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Foto cargada correctamente !"),
-          backgroundColor: Colors.green,
-        ));
-      } catch (e) {
-        // print("ERRROR : $e");
-        setState(() {
-          isUploading = false;
-          Future.delayed(
-            Duration(seconds: segundos),
-            () => key.currentState?.reset(),
-          );
-        });
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Algo ha salido mal"),
-          backgroundColor: Colors.red,
-        ));
-      }
-    }
-  } */
-
-  /* void disableButton() {
-    setState(() {
-      buttonDisabled = true;
-    });
-  }
- */
-
+  bool _iconBool = false;
+  IconData _iconLuz = Icons.wb_sunny;
+  IconData _iconObs = Icons.nights_stay;
   @override
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
@@ -1179,58 +1057,40 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context) {
-          return Container(
-            child: Image(
-              image: AssetImage('assets/icon/icon.png'),
-              height: 20,
+          return SizedBox(
+              child: Center(
+            child: Image.asset(
+              'assets/icon/icon.png',
+              width: 40,
             ),
-          );
+          ));
         }),
         title: Text(
           "ArtConsGroup.",
           style: TextStyle(
             fontSize: 23,
-            /* color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                  ? Colors.white
-                  : Colors.lightBlue */
           ),
         ),
         actions: [
-          Row(
-            children: [
-              Icon(
-                Icons.brightness_2_outlined,
-                size: 18, // Icono para tema claro
-                /* color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                    ? Colors.grey
-                    : Colors.white, */
-              ),
-              Switch(
-                  value:
-                      AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light,
-                  onChanged: (bool value) {
-                    if (value) {
-                      AdaptiveTheme.of(context).setLight();
-                    } else {
-                      AdaptiveTheme.of(context).setDark();
-                    }
-                  }),
-              Icon(
-                Icons.brightness_low_rounded,
-                size: 20, // Icono para tema oscuro
-                color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                    ? Colors.white
-                    : Colors.grey,
-              ),
-              SizedBox(width: 10)
-            ],
-          )
+          IconButton(
+              onPressed: () {
+                setState(() {
+                  _iconBool = !_iconBool;
+
+                  if (_iconBool) {
+                    AdaptiveTheme.of(context).setLight();
+                  } else {
+                    AdaptiveTheme.of(context).setDark();
+                  }
+                });
+              },
+              icon: Icon(_iconBool ? _iconLuz : _iconObs)),
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(15),
         child: Column(
           children: [
+            WarningWidgetValueNotifier(),
             route.Consumer<DbService>(builder: (context, dbServie, child) {
               return FutureBuilder(
                   future: dbServie.getUserData(),
@@ -1238,6 +1098,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     if (snapshot.hasData) {
                       UserModel user = snapshot.data!;
                       return Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                         alignment: Alignment.centerLeft,
                         child: Text(
                           user.name != ''
@@ -1266,6 +1127,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     if (snapshot.hasData) {
                       DepartmentModel user2 = snapshot.data!;
                       return Container(
+                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                         alignment: Alignment.centerLeft,
                         child: Text(
                           user2.title != "" ? user2.title.toString() : " ",
@@ -1273,7 +1135,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         ),
                       );
                     }
-
                     return const SizedBox(
                       width: 60,
                       child: LinearProgressIndicator(),
@@ -1288,6 +1149,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
             ///////////////fecha/////////////////////
             Container(
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: TextButton(
                   onPressed: () {
                     Navigator.push(
@@ -1325,8 +1187,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
             Container(
               padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.only(top: 5, bottom: 5),
-              height: 170,
+              margin: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+              height: 180,
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
@@ -1671,8 +1533,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ),
             Container(
               padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.only(top: 5, bottom: 10),
-              height: 170,
+              margin: EdgeInsets.only(top: 5, bottom: 10, left: 10, right: 10),
+              height: 180,
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.white

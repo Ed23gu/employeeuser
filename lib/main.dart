@@ -6,11 +6,13 @@ import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:employee_attendance/services/db_service_admin.dart';
+import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+final internetChecker = CheckInternetConnection();
 ///////////////////////////ADMIN OPCION//////
 //////version 2 administrado////////////////////////////////
 void main() async {
@@ -49,13 +51,14 @@ class ArtAsis extends StatelessWidget {
                 create: (context) => AttendanceServiceadmin()),
           ],
           child: MaterialApp(
-              onGenerateRoute: Routes.routes,
               localizationsDelegates: const [
                 GlobalMaterialLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
               ],
-              supportedLocales: const [Locale('es', 'ES')],
+              supportedLocales: const [
+                Locale('es', 'ES')
+              ],
               debugShowCheckedModeBanner: false,
               title: 'Asistencia',
               theme: theme,

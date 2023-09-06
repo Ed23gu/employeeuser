@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/ubi_model.dart';
 import 'package:employee_attendance/services/attendance_service_admin.dart';
@@ -39,6 +40,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
     return Column(
       children: [
+        WarningWidgetValueNotifier(),
         Container(
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.only(left: 20, top: 60, bottom: 10),

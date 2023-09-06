@@ -1,6 +1,6 @@
+import 'package:employee_attendance/examples/value_notifier/connection_status_value_notifier.dart';
+import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_supabase/examples/value_notifier/connection_status_value_notifier.dart';
-import 'package:flutter_supabase/utils/check_internet_connection.dart';
 
 class WarningWidgetValueNotifier extends StatelessWidget {
   const WarningWidgetValueNotifier({Key? key}) : super(key: key);

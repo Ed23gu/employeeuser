@@ -1,6 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:employee_attendance/screens/attendance_screen.dart';
-import 'package:employee_attendance/screens/calender_screen_admin.dart';
+import 'package:employee_attendance/screens/calender_screen.dart';
 import 'package:employee_attendance/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -44,25 +44,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
         },
         letIndexChange: (index) => true,
       ),
-      // body: Container(
-      //   color: Colors.blueAccent,
-      //   child: Center(
-      //     child: Column(
-      //       mainAxisAlignment: MainAxisAlignment.center,
-      //       children: <Widget>[
-      //         Text(_page.toString(), textScaleFactor: 10.0),
-      //         ElevatedButton(
-      //           child: Text('Go To Page of index 1'),
-      //           onPressed: () {
-      //             final CurvedNavigationBarState? navBarState =
-      //                 _bottomNavigationKey.currentState;
-      //             navBarState?.setPage(1);
-      //           },
-      //         )
-      //       ],
-      //     ),
-      //   ),
-      // )
     );
   }
 }
