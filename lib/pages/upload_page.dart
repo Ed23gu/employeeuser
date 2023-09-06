@@ -1,16 +1,13 @@
-import "package:flutter/material.dart";
-import 'package:image_picker/image_picker.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'dart:io';
-import 'dart:convert';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
 //import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
-
 import 'package:flutter/foundation.dart';
+import "package:flutter/material.dart";
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // Syntax to fetch Images
 // final List<FileObject> results = await supabase.storage.from('bucketName').list();

@@ -1,5 +1,4 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:employee_attendance/pages/edit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -75,8 +74,11 @@ class _ComentariosPageState extends State<ComentariosPage> {
         isLoading = false;
       });
       clearText();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Observación guardada"), width: 180, duration: new Duration(seconds: 1), behavior:  SnackBarBehavior.floating));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Observación guardada"),
+          width: 180,
+          duration: new Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating));
       //  Navigator.pop(context);
     } catch (e) {
       setState(() {
@@ -86,13 +88,17 @@ class _ComentariosPageState extends State<ComentariosPage> {
           .showSnackBar(const SnackBar(content: Text("Algo ha salido mal")));
     }
   }
+
   Future<void> _showMyDialog(int editId2) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Borrar esta observación?', style: TextStyle(fontSize: 15 ), ),
+          title: Text(
+            'Borrar esta observación?',
+            style: TextStyle(fontSize: 15),
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('Si'),
@@ -112,6 +118,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
       },
     );
   }
+
   Future<void> deleteData(int editId2) async {
     setState(() {
       isLoadingdel = true;
@@ -121,18 +128,19 @@ class _ComentariosPageState extends State<ComentariosPage> {
       await supabase.from('todos').delete().match({'id': editId2});
       //Navigator.pop(context);
       isLoadingdel = false;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Observación borrada"),width: 180,duration: new Duration(seconds: 1),behavior:  SnackBarBehavior.floating));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Observación borrada"),
+          width: 180,
+          duration: new Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating));
     } catch (e) {
       setState(() {
         isLoadingdel = false;
       });
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text("Algo ha salido mal!") ));
+          .showSnackBar(SnackBar(content: Text("Algo ha salido mal!")));
     }
   }
-
-
 
   // Syntax to select data
   Future<List> readData() async {
@@ -148,7 +156,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: const Text("Observaciones"),
         actions: [
           IconButton(
@@ -191,30 +198,27 @@ class _ComentariosPageState extends State<ComentariosPage> {
                           itemBuilder: (context, int index) {
                             var data = snapshot.data[index]; // {} map
                             return ListTile(
-                                title:
-                                    Container(
-                                        // color: Colors.purple,
-                                        padding: const EdgeInsets.all(10),
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 9),
-                                        decoration: BoxDecoration(
-                                          color: Colors.lightBlue,
-                                          borderRadius: BorderRadius.circular(11),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                color: Colors.cyan.withOpacity(0.2),
-                                                spreadRadius: 2,
-                                                blurRadius: 4,
-                                                offset: const Offset(2, 4)),
-                                          ],
-                                        ),
-                                        child: Text(
-                                          data['title'],
-                                          style:
-                                              const TextStyle(color: Colors.white),
-                                        )),
-
-
+                                title: Container(
+                                    // color: Colors.purple,
+                                    padding: const EdgeInsets.all(10),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 9),
+                                    decoration: BoxDecoration(
+                                      color: Colors.lightBlue,
+                                      borderRadius: BorderRadius.circular(11),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.cyan.withOpacity(0.2),
+                                            spreadRadius: 2,
+                                            blurRadius: 4,
+                                            offset: const Offset(2, 4)),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      data['title'],
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    )),
                                 subtitle: Text(
                                     data['created_at']
                                         .split('.')[0]
@@ -226,21 +230,21 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                             ? Colors.black45
                                             : Colors.grey,
                                         fontSize: 12)),
-                                trailing:
-                            SizedBox(
+                                trailing: SizedBox(
+                                  child: IconButton(
+                                    onPressed: () {
+                                      _showMyDialog(data['id']);
+                                    },
+                                    icon: Icon(Icons.delete_outline),
+                                  ),
+                                )
+                                // Padding(
+                                //   padding: const EdgeInsets.all(1.0),
+                                //   child: IconButton(
+                                //       onPressed: () {_showMyDialog(data['id']); }, icon: Icon(Icons.delete_outline)),
+                                // ),
 
-                              child: IconButton(
-                              onPressed:() {_showMyDialog(data['id']); }, icon:Icon(Icons.delete_outline),),
-                            )
-                                 // Padding(
-                                 //   padding: const EdgeInsets.all(1.0),
-                                 //   child: IconButton(
-                                 //       onPressed: () {_showMyDialog(data['id']); }, icon: Icon(Icons.delete_outline)),
-                                 // ),
-
-
-
-                               // IconButton(onPressed: () {_showMyDialog(data['id']); }, icon: Icon(Icons.delete_outline)),
+                                // IconButton(onPressed: () {_showMyDialog(data['id']); }, icon: Icon(Icons.delete_outline)),
                                 // PopupMenuButton<String>(
                                 //   onSelected: (value) {
                                 //     if (value == "editar") {
@@ -289,7 +293,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                         }
                         return null;
                       },
-                       autofocus: false,
+                      autofocus: false,
                       decoration: InputDecoration(
                         focusedBorder: InputBorder.none,
                         contentPadding: const EdgeInsets.all(8),
@@ -304,10 +308,12 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                 ? CircularProgressIndicator()
                                 : const Icon(Icons.send),
                             onPressed: () async {
-                              FocusScopeNode currentFocus = FocusScope.of(context);
+                              FocusScopeNode currentFocus =
+                                  FocusScope.of(context);
                               if (!currentFocus.hasPrimaryFocus) {
                                 currentFocus.unfocus();
-                              };
+                              }
+                              ;
                               final isValid = _formKey.currentState?.validate();
                               if (isValid != true) {
                                 return;
