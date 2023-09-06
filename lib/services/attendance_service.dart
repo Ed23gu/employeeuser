@@ -124,12 +124,12 @@ class AttendanceService extends ChangeNotifier {
               .eq('employee_id', _supabase.auth.currentUser!.id)
               .eq('date', todayDate);
         } on PostgrestException catch (error) {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            message: error.message
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            //message: error.message
             content: Text("$error Algo ha salido mal, intentelo nuevamente"),
             backgroundColor: Colors.red,
-          )
-        catch (e) {
+          ));
+        } catch (e) {
           print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
           bandera = true;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
