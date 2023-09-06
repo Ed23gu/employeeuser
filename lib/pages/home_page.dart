@@ -147,7 +147,10 @@ class _ComentariosPageState extends State<ComentariosPage> {
     final result = await supabase
         .from('todos')
         .select()
-        .eq('user_id', supabase.auth.currentUser!.id)
+        .eq(
+          'user_id',
+          supabase.auth.currentUser!.id,
+        )
         .order('id', ascending: false);
     return result;
   }

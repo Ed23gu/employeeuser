@@ -23,9 +23,11 @@ class _CreatePageState extends State<CreatePage> {
     supabase.dispose();
     super.dispose();
   }
+
   void clearText() {
     titleController.clear();
   }
+
   Future insertData() async {
     setState(() {
       isLoading = true;
@@ -81,16 +83,6 @@ class _CreatePageState extends State<CreatePage> {
                       contentPadding: const EdgeInsets.all(8),
                       hintText: "Ingrese aquí su observación",
                       border: const OutlineInputBorder(),
-                      // suffixIcon: Align(
-                      //   widthFactor: 1.0,
-                      //   heightFactor: 1.0,
-                      //   child: IconButton(
-                      //     icon: const Icon(Icons.add_photo_alternate_sharp),
-                      //     onPressed: () {
-                      //       //   print("dd");
-                      //     },
-                      //   ),
-                      // ),
                     ),
                   ),
                   const SizedBox(
@@ -114,8 +106,7 @@ class _CreatePageState extends State<CreatePage> {
                           child: const Text("Guardar")),
                 ],
               ),
-            )
-            ),
+            )),
       ),
     );
   }

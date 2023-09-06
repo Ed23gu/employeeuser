@@ -10,6 +10,7 @@ import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
@@ -1055,275 +1056,276 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget build(BuildContext context) {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
-      appBar: AppBar(
-        leading: Builder(builder: (BuildContext context) {
-          return SizedBox(
-              child: Center(
-            child: Image.asset(
-              'assets/icon/icon.png',
-              width: 40,
+        appBar: AppBar(
+          leading: Builder(builder: (BuildContext context) {
+            return SizedBox(
+                child: Center(
+              child: Image.asset(
+                'assets/icon/icon.png',
+                width: 40,
+              ),
+            ));
+          }),
+          title: Text(
+            "ArtConsGroup.",
+            style: TextStyle(
+              fontSize: 23,
             ),
-          ));
-        }),
-        title: Text(
-          "ArtConsGroup.",
-          style: TextStyle(
-            fontSize: 23,
           ),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    _iconBool = !_iconBool;
+
+                    if (_iconBool) {
+                      AdaptiveTheme.of(context).setLight();
+                    } else {
+                      AdaptiveTheme.of(context).setDark();
+                    }
+                  });
+                },
+                icon: Icon(_iconBool ? _iconLuz : _iconObs)),
+          ],
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  _iconBool = !_iconBool;
-
-                  if (_iconBool) {
-                    AdaptiveTheme.of(context).setLight();
-                  } else {
-                    AdaptiveTheme.of(context).setDark();
-                  }
-                });
-              },
-              icon: Icon(_iconBool ? _iconLuz : _iconObs)),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            WarningWidgetValueNotifier(),
-            route.Consumer<DbService>(builder: (context, dbServie, child) {
-              return FutureBuilder(
-                  future: dbServie.getUserData(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      UserModel user = snapshot.data!;
-                      return Container(
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          user.name != ''
-                              ? "Hola " + user.name + ","
-                              : "Hola" + "#${user.employeeId}" + ",",
-                          style: const TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold),
-                        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              WarningWidgetValueNotifier(),
+              route.Consumer<DbService>(builder: (context, dbServie, child) {
+                return FutureBuilder(
+                    future: dbServie.getUserData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        UserModel user = snapshot.data!;
+                        return Container(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            user.name != ''
+                                ? "Hola " + user.name + ","
+                                : "Hola" + "#${user.employeeId}" + ",",
+                            style: const TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        );
+                      }
+                      return const SizedBox(
+                        width: 60,
+                        child: LinearProgressIndicator(),
                       );
-                    }
-                    return const SizedBox(
-                      width: 60,
-                      child: LinearProgressIndicator(),
-                    );
-                  });
-            }),
-            const SizedBox(
-              child: Divider(
-                thickness: 1,
+                    });
+              }),
+              const SizedBox(
+                child: Divider(
+                  thickness: 1,
+                ),
               ),
-            ),
-            route.Consumer<DbService>(builder: (context, dbServie, child) {
-              return FutureBuilder(
-                  future: dbServie.getTodaydep(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      DepartmentModel user2 = snapshot.data!;
-                      return Container(
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          user2.title != "" ? user2.title.toString() : " ",
-                          style: const TextStyle(fontSize: 13),
-                        ),
+              route.Consumer<DbService>(builder: (context, dbServie, child) {
+                return FutureBuilder(
+                    future: dbServie.getTodaydep(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        DepartmentModel user2 = snapshot.data!;
+                        return Container(
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            user2.title != "" ? user2.title.toString() : " ",
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        );
+                      }
+                      return const SizedBox(
+                        width: 60,
+                        child: LinearProgressIndicator(),
                       );
-                    }
-                    return const SizedBox(
-                      width: 60,
-                      child: LinearProgressIndicator(),
-                    );
-                  });
-            }), //
+                    });
+              }), //
 
-            const SizedBox(
-              child: Divider(
-                thickness: 1,
+              const SizedBox(
+                child: Divider(
+                  thickness: 1,
+                ),
               ),
-            ),
-            ///////////////fecha/////////////////////
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const ComentariosPage()));
-                  },
-                  child: const Text(
-                      "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
-                      style: TextStyle(color: Colors.lightBlueAccent))),
-            ),
-            StreamBuilder(
-                stream: Stream.periodic(const Duration(seconds: 1)),
-                builder: (context, snapshot) {
-                  return Container(
-                    alignment: Alignment.center,
-                    child: Text(
-                      DateFormat("HH:mm:ss").format(DateTime.now()),
-                      style: const TextStyle(fontSize: 27),
-                    ),
-                  );
-                }),
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                DateFormat("dd MMMM yyyy").format(DateTime.now()),
-                style: const TextStyle(fontSize: 14),
+              // ///////////////fecha/////////////////////
+              // Container(
+              //   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+              //   child: TextButton(
+              //       onPressed: () {
+              //         Navigator.push(
+              //             context,
+              //             MaterialPageRoute(
+              //                 builder: (context) => const ComentariosPage()));
+              //       },
+              //       child: const Text(
+              //           "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
+              //           style: TextStyle(color: Colors.lightBlueAccent))),
+              // ),
+              StreamBuilder(
+                  stream: Stream.periodic(const Duration(seconds: 1)),
+                  builder: (context, snapshot) {
+                    return Container(
+                      alignment: Alignment.center,
+                      child: Text(
+                        DateFormat("HH:mm:ss").format(DateTime.now()),
+                        style: const TextStyle(fontSize: 27),
+                      ),
+                    );
+                  }),
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                  style: const TextStyle(fontSize: 14),
+                ),
               ),
-            ),
-            const SizedBox(
-              width: 90,
-              child: Divider(
-                thickness: 1,
+              const SizedBox(
+                width: 90,
+                child: Divider(
+                  thickness: 1,
+                ),
               ),
-            ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
-              height: 180,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      //  color: Colors.white,
-                      : Color.fromARGB(255, 43, 41, 41),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(110, 18, 148, 255),
-                        blurRadius: 5,
-                        offset: Offset(1, 1)),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Ingreso:  ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+              Container(
+                padding: EdgeInsets.all(10.0),
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                height: 180,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        //  color: Colors.white,
+                        : Color.fromARGB(255, 43, 41, 41),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(110, 18, 148, 255),
+                          blurRadius: 5,
+                          offset: Offset(1, 1)),
+                    ],
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Ingreso:  ",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            Text(
-                              attendanceService.attendanceModel?.checkIn ??
-                                  '--/--',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 2,
-                          width: 80,
-                          child: Divider(),
-                        ),
-                        const SizedBox(
-                          height: 7,
-                          width: 80,
-                        ),
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () async {
-                                      if (attendanceService
-                                              .attendanceModel?.pic_in !=
-                                          null) {
-                                        getUrl = attendanceService
-                                            .attendanceModel!.pic_in
-                                            .toString();
-                                      }
-                                      attendanceService
-                                                  .attendanceModel?.checkIn ==
-                                              null
-                                          ? attendanceService.attendanceModel
-                                                          ?.pic_in ==
-                                                      null ||
-                                                  attendanceService
-                                                          .attendanceModel
-                                                          ?.pic_in
-                                                          .toString() ==
-                                                      "NULL"
-                                              ? await choiceImage()
-                                              : await attendanceService
-                                                  .markAttendance3(context)
-                                          : await attendanceService
-                                              .markAttendance3(context);
-                                      await attendanceService
-                                          .markAttendance3(context);
-                                    }),
-                                IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.grey,
-                                    onPressed: () async {
-                                      setState(() {
-                                        getUrl = attendanceService
-                                            .attendanceModel!.pic_in
-                                            .toString();
-                                      });
+                              Text(
+                                attendanceService.attendanceModel?.checkIn ??
+                                    '--/--',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 2,
+                            width: 80,
+                            child: Divider(),
+                          ),
+                          const SizedBox(
+                            height: 7,
+                            width: 80,
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      icon: Icon(Icons.add_a_photo),
+                                      onPressed: () async {
+                                        if (attendanceService
+                                                .attendanceModel?.pic_in !=
+                                            null) {
+                                          getUrl = attendanceService
+                                              .attendanceModel!.pic_in
+                                              .toString();
+                                        }
+                                        attendanceService
+                                                    .attendanceModel?.checkIn ==
+                                                null
+                                            ? attendanceService.attendanceModel
+                                                            ?.pic_in ==
+                                                        null ||
+                                                    attendanceService
+                                                            .attendanceModel
+                                                            ?.pic_in
+                                                            .toString() ==
+                                                        "NULL"
+                                                ? await choiceImage()
+                                                : await attendanceService
+                                                    .markAttendance3(context)
+                                            : await attendanceService
+                                                .markAttendance3(context);
+                                        await attendanceService
+                                            .markAttendance3(context);
+                                      }),
+                                  IconButton(
+                                      icon: Icon(Icons.delete),
+                                      color: Colors.grey,
+                                      onPressed: () async {
+                                        setState(() {
+                                          getUrl = attendanceService
+                                              .attendanceModel!.pic_in
+                                              .toString();
+                                        });
 
-                                      if (attendanceService
-                                                  .attendanceModel?.checkIn ==
-                                              null &&
-                                          attendanceService
-                                                  .attendanceModel?.pic_in !=
-                                              null) {
-                                        await borrar('pic_in', getUrl);
+                                        if (attendanceService
+                                                    .attendanceModel?.checkIn ==
+                                                null &&
+                                            attendanceService
+                                                    .attendanceModel?.pic_in !=
+                                                null) {
+                                          await borrar('pic_in', getUrl);
+                                          setState(() {
+                                            attendanceService
+                                                .markAttendance3(context);
+                                          });
+                                        }
                                         setState(() {
                                           attendanceService
                                               .markAttendance3(context);
                                         });
-                                      }
-                                      setState(() {
-                                        attendanceService
-                                            .markAttendance3(context);
-                                      });
 
-                                      print("borrarrr"); // disableButton();
-                                    }),
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: attendanceService
-                                          .attendanceModel?.pic_in ==
-                                      null
-                                  ? Icon(Icons.photo)
-                                  : attendanceService.attendanceModel?.pic_in ==
-                                          "NULL"
-                                      ? isUploading == true
-                                          ? const CircularProgressIndicator()
-                                          : Icon(Icons.photo)
-                                      : isUploading == true
-                                          ? const CircularProgressIndicator()
-                                          : CachedNetworkImage(
-                                              imageUrl: attendanceService
-                                                  .attendanceModel!.pic_in
-                                                  .toString(),
-                                              height: 125,
-                                              /* progressIndicatorBuilder:
+                                        print("borrarrr"); // disableButton();
+                                      }),
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: attendanceService
+                                            .attendanceModel?.pic_in ==
+                                        null
+                                    ? Icon(Icons.photo)
+                                    : attendanceService
+                                                .attendanceModel?.pic_in ==
+                                            "NULL"
+                                        ? isUploading == true
+                                            ? const CircularProgressIndicator()
+                                            : Icon(Icons.photo)
+                                        : isUploading == true
+                                            ? const CircularProgressIndicator()
+                                            : CachedNetworkImage(
+                                                imageUrl: attendanceService
+                                                    .attendanceModel!.pic_in
+                                                    .toString(),
+                                                height: 125,
+                                                /* progressIndicatorBuilder:
                                                   (context, url,
                                                   COMPRTROBAR
                                                           downloadProgress) =>
@@ -1331,531 +1333,570 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                           value:
                                                               downloadProgress
                                                                   .progress), */
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
 
-                              /* Image.network(
+                                /* Image.network(
                                               attendanceService
                                                   .attendanceModel!.pic_in
                                                   .toString(),
                                               fit: BoxFit.fill,
                                               height: 120), */
-                            ),
-                          ],
-                        )
-                        //container
-                      ],
-                    )), //expanded
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Salida:  ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                /*color: Colors.black5*/
                               ),
-                            ),
-                            Text(
-                              attendanceService.attendanceModel?.checkOut ??
-                                  '--/--',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 2,
-                          width: 80,
-                          child: Divider(),
-                        ),
-                        const SizedBox(
-                          height: 6,
-                          width: 80,
-                        ),
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () async {
-                                      getUrl = attendanceService
-                                          .attendanceModel!.pic_out
-                                          .toString();
-                                      attendanceService.attendanceModel
-                                                      ?.checkIn !=
-                                                  null &&
-                                              attendanceService.attendanceModel
-                                                      ?.checkOut ==
-                                                  null
-                                          ? attendanceService.attendanceModel
-                                                          ?.pic_out ==
-                                                      null ||
-                                                  attendanceService
-                                                          .attendanceModel
-                                                          ?.pic_out
-                                                          .toString() ==
-                                                      "NULL"
-                                              ? await choiceImage2()
-                                              : attendanceService
-                                                  .markAttendance3(context)
-                                          : attendanceService
-                                              .markAttendance3(context);
-                                      attendanceService
-                                          .markAttendance3(context);
-                                    }),
-                                IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.grey,
-                                    onPressed: () async {
-                                      setState(() {
+                            ],
+                          )
+                          //container
+                        ],
+                      )), //expanded
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Salida:  ",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  /*color: Colors.black5*/
+                                ),
+                              ),
+                              Text(
+                                attendanceService.attendanceModel?.checkOut ??
+                                    '--/--',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 2,
+                            width: 80,
+                            child: Divider(),
+                          ),
+                          const SizedBox(
+                            height: 6,
+                            width: 80,
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      icon: Icon(Icons.add_a_photo),
+                                      onPressed: () async {
                                         getUrl = attendanceService
                                             .attendanceModel!.pic_out
                                             .toString();
-                                      });
-
-                                      if (attendanceService
-                                                  .attendanceModel?.checkOut ==
-                                              null &&
-                                          attendanceService
-                                                  .attendanceModel?.pic_out !=
-                                              null) {
-                                        await borrar('pic_out', getUrl);
+                                        attendanceService.attendanceModel
+                                                        ?.checkIn !=
+                                                    null &&
+                                                attendanceService
+                                                        .attendanceModel
+                                                        ?.checkOut ==
+                                                    null
+                                            ? attendanceService.attendanceModel
+                                                            ?.pic_out ==
+                                                        null ||
+                                                    attendanceService
+                                                            .attendanceModel
+                                                            ?.pic_out
+                                                            .toString() ==
+                                                        "NULL"
+                                                ? await choiceImage2()
+                                                : attendanceService
+                                                    .markAttendance3(context)
+                                            : attendanceService
+                                                .markAttendance3(context);
+                                        attendanceService
+                                            .markAttendance3(context);
+                                      }),
+                                  IconButton(
+                                      icon: Icon(Icons.delete),
+                                      color: Colors.grey,
+                                      onPressed: () async {
                                         setState(() {
-                                          attendanceService
-                                              .markAttendance3(context);
+                                          getUrl = attendanceService
+                                              .attendanceModel!.pic_out
+                                              .toString();
                                         });
-                                      }
-                                      attendanceService
-                                          .markAttendance3(context);
-                                      print("borrarrr");
-                                    }),
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: attendanceService
-                                          .attendanceModel?.pic_out ==
-                                      null
-                                  ? Icon(Icons.photo)
-                                  : attendanceService
-                                              .attendanceModel?.pic_out ==
-                                          "NULL"
-                                      ? isUploading2 == true
-                                          ? const CircularProgressIndicator()
-                                          : Icon(Icons.photo)
-                                      : isUploading2 == true
-                                          ? const CircularProgressIndicator()
-                                          : CachedNetworkImage(
-                                              imageUrl: attendanceService
-                                                  .attendanceModel!.pic_out
-                                                  .toString(),
-                                              height: 125,
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    )),
-                  ]),
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              child: Builder(builder: (context) {
-                return SlideAction(
-                  height: 60,
-                  text: (attendanceService.attendanceModel?.checkIn != null &&
-                          attendanceService.attendanceModel?.checkOut != null)
-                      ? "Registro Exitoso. Gracias"
-                      : (attendanceService.attendanceModel?.checkIn == null)
-                          ? "Registrar el ingreso"
-                          : "Registrar la salida",
-                  //alignment: Alignment.topCenter,
-                  animationDuration: Duration(milliseconds: 200),
-                  textStyle: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
-                  outerColor: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Color(0xFF2B2929),
-                  //   innerColor: Colors.red,
-                  key: key,
-                  onSubmit: () async {
-                    if (attendanceService.attendanceModel?.checkIn != null &&
-                        attendanceService.attendanceModel?.checkOut != null) {
-                      _mostrarAlerta(
-                          context, "Asistencia exitosamente subida.");
-                    } else if (attendanceService.attendanceModel?.checkIn ==
-                            null &&
-                        attendanceService.attendanceModel?.pic_in != "NULL" &&
-                        attendanceService.attendanceModel?.pic_in != null) {
-                      final bool flat =
-                          await attendanceService.markAttendance(context);
-                      flat == true
-                          ? key.currentState!.reset()
-                          : key.currentState;
-                    } else if (attendanceService.attendanceModel?.pic_in ==
-                        null) {
-                      _mostrarAlerta(context, "Suba una foto por favor.");
-                    } else if (attendanceService.attendanceModel?.pic_out !=
-                            null &&
-                        attendanceService.attendanceModel?.pic_out != "NULL") {
-                      await attendanceService.markAttendance(context);
-                    } else {
-                      _mostrarAlerta(context, "Suba una foto por favor.");
-                    }
 
-                    key.currentState!.reset();
-                  },
-                );
-              }),
-            ),
-            Container(
-              height: 10,
-            ),
-            Container(
-              padding: EdgeInsets.all(10.0),
-              margin: EdgeInsets.only(top: 5, bottom: 10, left: 10, right: 10),
-              height: 180,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      //  color: Colors.white,
-                      : Color.fromARGB(255, 43, 41, 41),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Color.fromARGB(110, 18, 148, 255),
-                        blurRadius: 5,
-                        offset: Offset(1, 1)),
-                  ],
-                  borderRadius: BorderRadius.all(Radius.circular(10))),
-              child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Entrada:  ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                /*color: Colors.black5*/
+                                        if (attendanceService.attendanceModel
+                                                    ?.checkOut ==
+                                                null &&
+                                            attendanceService
+                                                    .attendanceModel?.pic_out !=
+                                                null) {
+                                          await borrar('pic_out', getUrl);
+                                          setState(() {
+                                            attendanceService
+                                                .markAttendance3(context);
+                                          });
+                                        }
+                                        attendanceService
+                                            .markAttendance3(context);
+                                        print("borrarrr");
+                                      }),
+                                ],
                               ),
-                            ),
-                            Text(
-                              attendanceService.attendanceModel?.checkIn2 ??
-                                  '--/--',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 2,
-                          width: 80,
-                          child: Divider(),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                          width: 80,
-                        ),
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () async {
-                                      getUrl = attendanceService
-                                          .attendanceModel!.pic_in2
-                                          .toString();
-                                      (attendanceService.attendanceModel
-                                                      ?.checkOut !=
-                                                  null &&
-                                              attendanceService.attendanceModel
-                                                      ?.checkIn2 ==
-                                                  null)
-                                          ? attendanceService.attendanceModel
-                                                          ?.pic_in2 ==
-                                                      null ||
-                                                  attendanceService
-                                                          .attendanceModel
-                                                          ?.pic_in2
-                                                          .toString() ==
-                                                      "NULL"
-                                              ? await choiceImage3()
-                                              : attendanceService
-                                                  .markAttendance3(context)
-                                          : attendanceService
-                                              .markAttendance3(context);
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: attendanceService
+                                            .attendanceModel?.pic_out ==
+                                        null
+                                    ? Icon(Icons.photo)
+                                    : attendanceService
+                                                .attendanceModel?.pic_out ==
+                                            "NULL"
+                                        ? isUploading2 == true
+                                            ? const CircularProgressIndicator()
+                                            : Icon(Icons.photo)
+                                        : isUploading2 == true
+                                            ? const CircularProgressIndicator()
+                                            : CachedNetworkImage(
+                                                imageUrl: attendanceService
+                                                    .attendanceModel!.pic_out
+                                                    .toString(),
+                                                height: 125,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      )),
+                    ]),
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 5),
+                child: Builder(builder: (context) {
+                  return SlideAction(
+                    height: 60,
+                    text: (attendanceService.attendanceModel?.checkIn != null &&
+                            attendanceService.attendanceModel?.checkOut != null)
+                        ? "Gracias por completar el registro"
+                        : (attendanceService.attendanceModel?.checkIn == null)
+                            ? "Registre el ingreso"
+                            : "Registre la salida",
+                    //alignment: Alignment.topCenter,
+                    animationDuration: Duration(milliseconds: 200),
+                    textStyle: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
+                    outerColor: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Color(0xFF2B2929),
+                    //   innerColor: Colors.red,
+                    key: key,
+                    onSubmit: () async {
+                      var url = Uri.parse('http://www.supabase.com');
+                      final response = await http.get(url);
+                      if (response.statusCode == 200) {
+                        if (attendanceService.attendanceModel?.checkIn !=
+                                null &&
+                            attendanceService.attendanceModel?.checkOut !=
+                                null) {
+                          _mostrarAlerta(
+                              context, "Asistencia exitosamente subida.");
+                        } else if (attendanceService.attendanceModel?.checkIn ==
+                                null &&
+                            attendanceService.attendanceModel?.pic_in !=
+                                "NULL" &&
+                            attendanceService.attendanceModel?.pic_in != null) {
+                          final bool flat =
+                              await attendanceService.markAttendance(context);
+                          flat == true
+                              ? key.currentState!.reset()
+                              : key.currentState;
+                        } else if (attendanceService.attendanceModel?.pic_in ==
+                            null) {
+                          _mostrarAlerta(context, "Suba una foto por favor.");
+                        } else if (attendanceService.attendanceModel?.pic_out !=
+                                null &&
+                            attendanceService.attendanceModel?.pic_out !=
+                                "NULL") {
+                          await attendanceService.markAttendance(context);
+                        } else {
+                          _mostrarAlerta(context, "Suba una foto por favor.");
+                        }
+                        key.currentState!.reset();
+                      } else if (response.statusCode == 404) {
+                        print('${response.statusCode} no encontado');
+                        key.currentState!.reset();
+                      } else if (response.statusCode == 500) {
+                        print('${response.statusCode} el servidor no responde');
+                        key.currentState!.reset();
+                      } else if (response.statusCode == 204) {
+                        print('${response.statusCode} sin respuesta');
+                        key.currentState!.reset();
+                      } else {
+                        print('${response.statusCode} error desconocido');
+                        key.currentState!.reset();
+                      }
 
-                                      attendanceService
-                                          .markAttendance3(context);
-                                    }),
-                                IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.grey,
-                                    onPressed: () async {
-                                      setState(() {
+                      key.currentState!.reset();
+                    },
+                  );
+                }),
+              ),
+              Container(
+                height: 10,
+              ),
+              Container(
+                padding: EdgeInsets.all(10.0),
+                margin:
+                    EdgeInsets.only(top: 5, bottom: 10, left: 10, right: 10),
+                height: 180,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        //  color: Colors.white,
+                        : Color.fromARGB(255, 43, 41, 41),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Color.fromARGB(110, 18, 148, 255),
+                          blurRadius: 5,
+                          offset: Offset(1, 1)),
+                    ],
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Entrada:  ",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  /*color: Colors.black5*/
+                                ),
+                              ),
+                              Text(
+                                attendanceService.attendanceModel?.checkIn2 ??
+                                    '--/--',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 2,
+                            width: 80,
+                            child: Divider(),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                            width: 80,
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      icon: Icon(Icons.add_a_photo),
+                                      onPressed: () async {
                                         getUrl = attendanceService
                                             .attendanceModel!.pic_in2
                                             .toString();
-                                      });
+                                        (attendanceService.attendanceModel
+                                                        ?.checkOut !=
+                                                    null &&
+                                                attendanceService
+                                                        .attendanceModel
+                                                        ?.checkIn2 ==
+                                                    null)
+                                            ? attendanceService.attendanceModel
+                                                            ?.pic_in2 ==
+                                                        null ||
+                                                    attendanceService
+                                                            .attendanceModel
+                                                            ?.pic_in2
+                                                            .toString() ==
+                                                        "NULL"
+                                                ? await choiceImage3()
+                                                : attendanceService
+                                                    .markAttendance3(context)
+                                            : attendanceService
+                                                .markAttendance3(context);
 
-                                      if (attendanceService
-                                                  .attendanceModel?.checkIn2 ==
-                                              null &&
-                                          attendanceService
-                                                  .attendanceModel?.pic_in2 !=
-                                              null) {
-                                        await borrar('pic_in2', getUrl);
+                                        attendanceService
+                                            .markAttendance3(context);
+                                      }),
+                                  IconButton(
+                                      icon: Icon(Icons.delete),
+                                      color: Colors.grey,
+                                      onPressed: () async {
                                         setState(() {
-                                          attendanceService
-                                              .markAttendance3(context);
+                                          getUrl = attendanceService
+                                              .attendanceModel!.pic_in2
+                                              .toString();
                                         });
-                                      }
-                                      attendanceService
-                                          .markAttendance3(context);
-                                      print("borrarrr"); // disableButton();
-                                    })
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: attendanceService
-                                          .attendanceModel?.pic_in2 ==
-                                      null
-                                  ? Icon(Icons.photo)
-                                  : attendanceService
-                                              .attendanceModel?.pic_in2 ==
-                                          "NULL"
-                                      ? isUploading3 == true
-                                          ? const CircularProgressIndicator()
-                                          : Icon(Icons.photo)
-                                      : isUploading3 == true
-                                          ? const CircularProgressIndicator()
-                                          : CachedNetworkImage(
-                                              imageUrl: attendanceService
-                                                  .attendanceModel!.pic_in2
-                                                  .toString(),
-                                              height: 125,
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
-                            ),
-                          ],
-                        )
-                      ],
-                    )),
-                    Expanded(
-                        child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Salida:  ",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                /*color: Colors.black5*/
-                              ),
-                            ),
-                            Text(
-                              attendanceService.attendanceModel?.checkOut2 ??
-                                  '--/--',
-                              style: TextStyle(fontSize: 17),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 2,
-                          width: 80,
-                          child: Divider(),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                          width: 80,
-                        ),
-                        Row(
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                    icon: Icon(Icons.add_a_photo),
-                                    onPressed: () async {
-                                      getUrl = attendanceService
-                                          .attendanceModel!.pic_out2
-                                          .toString();
-                                      (attendanceService.attendanceModel
-                                                      ?.checkIn2 !=
-                                                  null &&
-                                              attendanceService.attendanceModel
-                                                      ?.checkOut2 ==
-                                                  null)
-                                          ? attendanceService.attendanceModel
-                                                          ?.pic_out2 ==
-                                                      null ||
-                                                  attendanceService
-                                                          .attendanceModel
-                                                          ?.pic_out2
-                                                          .toString() ==
-                                                      "NULL"
-                                              ? await choiceImage4()
-                                              : attendanceService
-                                                  .markAttendance3(context)
-                                          : attendanceService
-                                              .markAttendance3(context);
 
-                                      attendanceService
-                                          .markAttendance3(context);
-                                    }),
-                                IconButton(
-                                    icon: Icon(Icons.delete),
-                                    color: Colors.grey,
-                                    onPressed: () async {
-                                      setState(() {
+                                        if (attendanceService.attendanceModel
+                                                    ?.checkIn2 ==
+                                                null &&
+                                            attendanceService
+                                                    .attendanceModel?.pic_in2 !=
+                                                null) {
+                                          await borrar('pic_in2', getUrl);
+                                          setState(() {
+                                            attendanceService
+                                                .markAttendance3(context);
+                                          });
+                                        }
+                                        attendanceService
+                                            .markAttendance3(context);
+                                        print("borrarrr"); // disableButton();
+                                      })
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: attendanceService
+                                            .attendanceModel?.pic_in2 ==
+                                        null
+                                    ? Icon(Icons.photo)
+                                    : attendanceService
+                                                .attendanceModel?.pic_in2 ==
+                                            "NULL"
+                                        ? isUploading3 == true
+                                            ? const CircularProgressIndicator()
+                                            : Icon(Icons.photo)
+                                        : isUploading3 == true
+                                            ? const CircularProgressIndicator()
+                                            : CachedNetworkImage(
+                                                imageUrl: attendanceService
+                                                    .attendanceModel!.pic_in2
+                                                    .toString(),
+                                                height: 125,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )),
+                      Expanded(
+                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const Text(
+                                "Salida:  ",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  /*color: Colors.black5*/
+                                ),
+                              ),
+                              Text(
+                                attendanceService.attendanceModel?.checkOut2 ??
+                                    '--/--',
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 2,
+                            width: 80,
+                            child: Divider(),
+                          ),
+                          const SizedBox(
+                            height: 5,
+                            width: 80,
+                          ),
+                          Row(
+                            children: [
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  IconButton(
+                                      icon: Icon(Icons.add_a_photo),
+                                      onPressed: () async {
                                         getUrl = attendanceService
                                             .attendanceModel!.pic_out2
                                             .toString();
-                                      });
+                                        (attendanceService.attendanceModel
+                                                        ?.checkIn2 !=
+                                                    null &&
+                                                attendanceService
+                                                        .attendanceModel
+                                                        ?.checkOut2 ==
+                                                    null)
+                                            ? attendanceService.attendanceModel
+                                                            ?.pic_out2 ==
+                                                        null ||
+                                                    attendanceService
+                                                            .attendanceModel
+                                                            ?.pic_out2
+                                                            .toString() ==
+                                                        "NULL"
+                                                ? await choiceImage4()
+                                                : attendanceService
+                                                    .markAttendance3(context)
+                                            : attendanceService
+                                                .markAttendance3(context);
 
-                                      if (attendanceService
-                                                  .attendanceModel?.checkOut2 ==
-                                              null &&
-                                          attendanceService
-                                                  .attendanceModel?.pic_out2 !=
-                                              null) {
-                                        await borrar('pic_out2', getUrl);
+                                        attendanceService
+                                            .markAttendance3(context);
+                                      }),
+                                  IconButton(
+                                      icon: Icon(Icons.delete),
+                                      color: Colors.grey,
+                                      onPressed: () async {
                                         setState(() {
-                                          attendanceService
-                                              .markAttendance3(context);
+                                          getUrl = attendanceService
+                                              .attendanceModel!.pic_out2
+                                              .toString();
                                         });
-                                      }
-                                      attendanceService
-                                          .markAttendance3(context);
-                                      print("borrarrr"); // disableButton();
-                                    })
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: attendanceService
-                                          .attendanceModel?.pic_out2 ==
-                                      null
-                                  ? Icon(Icons.photo)
-                                  : attendanceService
-                                              .attendanceModel?.pic_out2 ==
-                                          "NULL"
-                                      ? isUploading4 == true
-                                          ? const CircularProgressIndicator()
-                                          : Icon(Icons.photo)
-                                      : isUploading4 == true
-                                          ? const CircularProgressIndicator()
-                                          : CachedNetworkImage(
-                                              imageUrl: attendanceService
-                                                  .attendanceModel!.pic_out2
-                                                  .toString(),
-                                              height: 125,
-                                              errorWidget:
-                                                  (context, url, error) =>
-                                                      Icon(Icons.error),
-                                            ),
-                            ),
-                          ],
-                        )
-                      ],
-                    )),
-                  ]),
-            ),
-            ///////////////////////////////////fotos//////////////
-            Container(
-              margin: const EdgeInsets.only(top: 5),
-              child: Builder(builder: (context) {
-                return SlideAction(
-                  animationDuration: Duration(milliseconds: 200),
-                  text: (attendanceService.attendanceModel?.checkIn2 != null &&
-                          attendanceService.attendanceModel?.checkOut2 != null)
-                      ? "Registro Exitoso Gracias"
-                      : (attendanceService.attendanceModel?.checkIn2 == null)
-                          ? "Registrar el ingreso"
-                          : "Registrar la salida",
-                  //alignment: Alignment.topCenter,
-                  height: 60,
-                  textStyle: TextStyle(
-                      fontSize: 16,
-                      color: Theme.of(context).brightness == Brightness.light
-                          ? Colors.black
-                          : Colors.white),
-                  outerColor: Theme.of(context).brightness == Brightness.light
-                      ? Colors.white
-                      : Color(0xFF2B2929),
-                  // innerColor: ,
-                  key: key2,
-                  onSubmit: () async {
-                    if (attendanceService.attendanceModel?.checkIn2 != null &&
-                        attendanceService.attendanceModel?.checkOut2 != null) {
-                      _mostrarAlerta(
-                          context, "Asistencia subida exitosamente.");
-                    } else if (attendanceService.attendanceModel?.checkIn2 ==
-                            null &&
-                        attendanceService.attendanceModel?.pic_in2 != null) {
-                      await attendanceService.markAttendance2(context);
-                    } else if (attendanceService.attendanceModel?.checkIn2 ==
-                        null) {
-                      _mostrarAlerta(context, "Suba una foto por favor.");
-                    } else if (attendanceService.attendanceModel?.pic_out2 !=
-                        null) {
-                      await attendanceService.markAttendance2(context);
-                    } else {
-                      _mostrarAlerta(context, "Suba una foto por favor.");
-                    }
-                    key2.currentState!.reset();
-                  },
-                );
-              }),
-            ),
-          ],
+
+                                        if (attendanceService.attendanceModel
+                                                    ?.checkOut2 ==
+                                                null &&
+                                            attendanceService.attendanceModel
+                                                    ?.pic_out2 !=
+                                                null) {
+                                          await borrar('pic_out2', getUrl);
+                                          setState(() {
+                                            attendanceService
+                                                .markAttendance3(context);
+                                          });
+                                        }
+                                        attendanceService
+                                            .markAttendance3(context);
+                                        print("borrarrr"); // disableButton();
+                                      })
+                                ],
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: attendanceService
+                                            .attendanceModel?.pic_out2 ==
+                                        null
+                                    ? Icon(Icons.photo)
+                                    : attendanceService
+                                                .attendanceModel?.pic_out2 ==
+                                            "NULL"
+                                        ? isUploading4 == true
+                                            ? const CircularProgressIndicator()
+                                            : Icon(Icons.photo)
+                                        : isUploading4 == true
+                                            ? const CircularProgressIndicator()
+                                            : CachedNetworkImage(
+                                                imageUrl: attendanceService
+                                                    .attendanceModel!.pic_out2
+                                                    .toString(),
+                                                height: 125,
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        Icon(Icons.error),
+                                              ),
+                              ),
+                            ],
+                          )
+                        ],
+                      )),
+                    ]),
+              ),
+              ///////////////////////////////////fotos//////////////
+              Container(
+                margin: const EdgeInsets.only(top: 5),
+                child: Builder(builder: (context) {
+                  return SlideAction(
+                    animationDuration: Duration(milliseconds: 200),
+                    text: (attendanceService.attendanceModel?.checkIn2 !=
+                                null &&
+                            attendanceService.attendanceModel?.checkOut2 !=
+                                null)
+                        ? "Gracias por completar el registro"
+                        : (attendanceService.attendanceModel?.checkIn2 == null)
+                            ? "Registre el ingreso"
+                            : "Registre la salida",
+                    //alignment: Alignment.topCenter,
+                    height: 60,
+                    textStyle: TextStyle(
+                        fontSize: 16,
+                        color: Theme.of(context).brightness == Brightness.light
+                            ? Colors.black
+                            : Colors.white),
+                    outerColor: Theme.of(context).brightness == Brightness.light
+                        ? Colors.white
+                        : Color(0xFF2B2929),
+                    // innerColor: ,
+                    key: key2,
+                    onSubmit: () async {
+                      if (attendanceService.attendanceModel?.checkIn2 != null &&
+                          attendanceService.attendanceModel?.checkOut2 !=
+                              null) {
+                        _mostrarAlerta(
+                            context, "Asistencia subida exitosamente.");
+                      } else if (attendanceService.attendanceModel?.checkIn2 ==
+                              null &&
+                          attendanceService.attendanceModel?.pic_in2 != null) {
+                        await attendanceService.markAttendance2(context);
+                      } else if (attendanceService.attendanceModel?.checkIn2 ==
+                          null) {
+                        _mostrarAlerta(context, "Suba una foto por favor.");
+                      } else if (attendanceService.attendanceModel?.pic_out2 !=
+                          null) {
+                        await attendanceService.markAttendance2(context);
+                      } else {
+                        _mostrarAlerta(context, "Suba una foto por favor.");
+                      }
+                      key2.currentState!.reset();
+                    },
+                  );
+                }),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+        floatingActionButton: FloatingActionButton(
+          tooltip:
+              "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const ComentariosPage()));
+          },
+          child: const Icon(Icons.message_outlined),
+        ));
   }
 }
 

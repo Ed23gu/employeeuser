@@ -1,4 +1,4 @@
-import 'package:employee_attendance/screens/home_screen.dart';
+import 'package:employee_attendance/examples/fake_user_list.dart';
 import 'package:flutter/material.dart';
 
 class ValueNotifierExampleScreen extends StatelessWidget {
@@ -6,6 +6,6 @@ class ValueNotifierExampleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavBar();
+    return FakeUserList();
   }
 }
