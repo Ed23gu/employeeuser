@@ -1296,7 +1296,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             builder: (context) => const ComentariosPage()));
                   },
                   child: const Text(
-                      "¿Has tenido inconvenientes al momento de registrarte?Dejanoslo saber.",
+                      "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
                       style: TextStyle(color: Colors.lightBlueAccent))),
             ),
             StreamBuilder(
@@ -1323,9 +1323,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 thickness: 1,
               ),
             ),
-            //////
-
-            ///////////////hora/////////////////////
             Container(
               padding: EdgeInsets.all(10.0),
               margin: EdgeInsets.only(top: 5, bottom: 5),
@@ -1405,7 +1402,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                           ?.pic_in
                                                           .toString() ==
                                                       "NULL"
-                                              ? await choiceImage() // foto 1
+                                              ? await choiceImage()
                                               : await attendanceService
                                                   .markAttendance3(context)
                                           : await attendanceService
