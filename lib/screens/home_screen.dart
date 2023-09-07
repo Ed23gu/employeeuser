@@ -1,10 +1,9 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
-import 'package:employee_attendance/examples/error_page_calen.dart';
-import 'package:employee_attendance/examples/error_page_perfi.dart';
+import 'package:employee_attendance/screens/errores/error_page_asis.dart';
+import 'package:employee_attendance/screens/errores/error_page_calen.dart';
+import 'package:employee_attendance/screens/errores/error_page_perfi.dart';
 import 'package:flutter/material.dart';
-
-import '../examples/error_page_asis.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override

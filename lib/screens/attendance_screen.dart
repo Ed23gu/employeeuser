@@ -1040,9 +1040,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  bool _iconBool = false;
-  IconData _iconLuz = Icons.wb_sunny;
-  IconData _iconObs = Icons.nights_stay;
   @override
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
@@ -1133,7 +1130,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   style: const TextStyle(fontSize: 14),
                 ),
               ),
-              Container(
+              /* Container(
                 alignment: Alignment.topRight,
                 child: TextButton.icon(
                     onPressed: () async {
@@ -1150,7 +1147,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     },
                     icon: const Icon(Icons.logout),
                     label: const Text("Salir")),
-              ),
+              ), */
               const SizedBox(
                 width: 90,
                 child: Divider(
