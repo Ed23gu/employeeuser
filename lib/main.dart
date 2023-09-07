@@ -29,9 +29,11 @@ void main() async {
   try {
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
   } on PostgrestException catch (error) {
+    print('dddddddddddddddddddddddddddddddddddddd');
     print(error);
   } catch (e) {
-    print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
+    print('222222222222222222222222222222222222');
+    print(e);
   }
   runApp(const ArtAsis());
 }

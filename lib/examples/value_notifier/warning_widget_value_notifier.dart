@@ -12,26 +12,30 @@ class WarningWidgetValueNotifier extends StatelessWidget {
       builder: (context, ConnectionStatus status, child) {
         return Visibility(
           visible: status != ConnectionStatus.online,
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            height: 25,
-            color: Colors.black87,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  Icons.wifi_off,
-                  size: 15,
-                  color: Colors.white,
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(3),
+                height: 22,
+                color: Colors.black87,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(
+                      Icons.wifi_off,
+                      size: 15,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 7),
+                    Text(
+                      'Sin conexión a internet.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
                 ),
-                SizedBox(width: 8),
-                Text(
-                  'Sin conexión a internet.',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

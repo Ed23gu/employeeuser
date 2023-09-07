@@ -46,7 +46,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           actions: [
             Container(
-              margin: const EdgeInsets.only(top: 20),
               alignment: Alignment.topRight,
               child: TextButton.icon(
                   onPressed: () {

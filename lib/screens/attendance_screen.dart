@@ -1,23 +1,21 @@
 import 'dart:io';
 
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
+import 'package:employee_attendance/pages/home_page.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as route;
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
-import '../pages/home_page.dart';
 
 class AttendanceScreen extends StatefulWidget {
   const AttendanceScreen({super.key});
@@ -1056,38 +1054,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Widget build(BuildContext context) {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
-        appBar: AppBar(
-          leading: Builder(builder: (BuildContext context) {
-            return SizedBox(
-                child: Center(
-              child: Image.asset(
-                'assets/icon/icon.png',
-                width: 40,
-              ),
-            ));
-          }),
-          title: Text(
-            "ArtConsGroup.",
-            style: TextStyle(
-              fontSize: 23,
-            ),
-          ),
-          actions: [
-            IconButton(
-                onPressed: () {
-                  setState(() {
-                    _iconBool = !_iconBool;
-
-                    if (_iconBool) {
-                      AdaptiveTheme.of(context).setLight();
-                    } else {
-                      AdaptiveTheme.of(context).setDark();
-                    }
-                  });
-                },
-                icon: Icon(_iconBool ? _iconLuz : _iconObs)),
-          ],
-        ),
         body: SingleChildScrollView(
           child: Column(
             children: [
@@ -1148,20 +1114,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   thickness: 1,
                 ),
               ),
-              // ///////////////fecha/////////////////////
-              // Container(
-              //   padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              //   child: TextButton(
-              //       onPressed: () {
-              //         Navigator.push(
-              //             context,
-              //             MaterialPageRoute(
-              //                 builder: (context) => const ComentariosPage()));
-              //       },
-              //       child: const Text(
-              //           "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
-              //           style: TextStyle(color: Colors.lightBlueAccent))),
-              // ),
+
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
                   builder: (context, snapshot) {
@@ -1179,6 +1132,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   DateFormat("dd MMMM yyyy").format(DateTime.now()),
                   style: const TextStyle(fontSize: 14),
                 ),
+              ),
+              Container(
+                alignment: Alignment.topRight,
+                child: TextButton.icon(
+                    onPressed: () async {
+                      attendanceService.markAttendance3(context);
+                      key.currentState!.reset();
+                      print('ed');
+                      String supabaseUrl =
+                          'https://glknpzlrktillummmbrr.supabase.co';
+                      String supabaseKey =
+                          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
+
+                      await Supabase.initialize(
+                          url: supabaseUrl, anonKey: supabaseKey);
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Salir")),
               ),
               const SizedBox(
                 width: 90,
@@ -1326,24 +1297,24 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                     .toString(),
                                                 height: 125,
                                                 /* progressIndicatorBuilder:
-                                                  (context, url,
-                                                  COMPRTROBAR
-                                                          downloadProgress) =>
-                                                      CircularProgressIndicator(
-                                                          value:
-                                                              downloadProgress
-                                                                  .progress), */
+                                                      (context, url,
+                                                      COMPRTROBAR
+                                                              downloadProgress) =>
+                                                          CircularProgressIndicator(
+                                                              value:
+                                                                  downloadProgress
+                                                                      .progress), */
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Icon(Icons.error),
                                               ),
 
                                 /* Image.network(
-                                              attendanceService
-                                                  .attendanceModel!.pic_in
-                                                  .toString(),
-                                              fit: BoxFit.fill,
-                                              height: 120), */
+                                                  attendanceService
+                                                      .attendanceModel!.pic_in
+                                                      .toString(),
+                                                  fit: BoxFit.fill,
+                                                  height: 120), */
                               ),
                             ],
                           )
@@ -1502,49 +1473,29 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     //   innerColor: Colors.red,
                     key: key,
                     onSubmit: () async {
-                      var url = Uri.parse('http://www.supabase.com');
-                      final response = await http.get(url);
-                      if (response.statusCode == 200) {
-                        if (attendanceService.attendanceModel?.checkIn !=
-                                null &&
-                            attendanceService.attendanceModel?.checkOut !=
-                                null) {
-                          _mostrarAlerta(
-                              context, "Asistencia exitosamente subida.");
-                        } else if (attendanceService.attendanceModel?.checkIn ==
-                                null &&
-                            attendanceService.attendanceModel?.pic_in !=
-                                "NULL" &&
-                            attendanceService.attendanceModel?.pic_in != null) {
-                          final bool flat =
-                              await attendanceService.markAttendance(context);
-                          flat == true
-                              ? key.currentState!.reset()
-                              : key.currentState;
-                        } else if (attendanceService.attendanceModel?.pic_in ==
-                            null) {
-                          _mostrarAlerta(context, "Suba una foto por favor.");
-                        } else if (attendanceService.attendanceModel?.pic_out !=
-                                null &&
-                            attendanceService.attendanceModel?.pic_out !=
-                                "NULL") {
-                          await attendanceService.markAttendance(context);
-                        } else {
-                          _mostrarAlerta(context, "Suba una foto por favor.");
-                        }
-                        key.currentState!.reset();
-                      } else if (response.statusCode == 404) {
-                        print('${response.statusCode} no encontado');
-                        key.currentState!.reset();
-                      } else if (response.statusCode == 500) {
-                        print('${response.statusCode} el servidor no responde');
-                        key.currentState!.reset();
-                      } else if (response.statusCode == 204) {
-                        print('${response.statusCode} sin respuesta');
-                        key.currentState!.reset();
+                      if (attendanceService.attendanceModel?.checkIn != null &&
+                          attendanceService.attendanceModel?.checkOut != null) {
+                        _mostrarAlerta(
+                            context, "Asistencia exitosamente subida.");
+                      } else if (attendanceService.attendanceModel?.checkIn ==
+                              null &&
+                          attendanceService.attendanceModel?.pic_in != "NULL" &&
+                          attendanceService.attendanceModel?.pic_in != null) {
+                        final bool flat =
+                            await attendanceService.markAttendance(context);
+                        flat == true
+                            ? key.currentState!.reset()
+                            : key.currentState;
+                      } else if (attendanceService.attendanceModel?.pic_in ==
+                          null) {
+                        _mostrarAlerta(context, "Suba una foto por favor.");
+                      } else if (attendanceService.attendanceModel?.pic_out !=
+                              null &&
+                          attendanceService.attendanceModel?.pic_out !=
+                              "NULL") {
+                        await attendanceService.markAttendance(context);
                       } else {
-                        print('${response.statusCode} error desconocido');
-                        key.currentState!.reset();
+                        _mostrarAlerta(context, "Suba una foto por favor.");
                       }
 
                       key.currentState!.reset();
@@ -1885,17 +1836,66 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ],
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        floatingActionButton: FloatingActionButton(
-          tooltip:
-              "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ComentariosPage()));
-          },
-          child: const Icon(Icons.message_outlined),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
+        // floatingActionButton: FloatingActionButton(
+        //   tooltip:
+        //       "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
+        //   onPressed: () {
+        //     Navigator.push(
+        //         context,
+        //         MaterialPageRoute(
+        //             builder: (context) => const ComentariosPage()));
+        //   },
+        //   child: const Icon(Icons.message_outlined),
+        // )
+
+        floatingActionButton: SpeedDial(
+          //Speed dial menu
+          // marginBottom: 10, //margin bottom
+          icon: Icons.message_outlined, //icon on Floating action button
+          activeIcon: Icons.close, //icon when menu is expanded on button
+          //backgroundColor: Colors.deepOrangeAccent, //background color of button
+          // foregroundColor: Colors.white, //font color, icon color in button
+          activeBackgroundColor:
+              Colors.deepPurpleAccent, //background color when menu is expanded
+          activeForegroundColor: Colors.white,
+          //buttonSize: Size(45, 45), //button size
+          visible: true,
+          closeManually: false,
+          curve: Curves.bounceIn,
+          overlayColor: Colors.black,
+          overlayOpacity: 0.5,
+          onOpen: () => print('OPENING DIAL'), // action when menu opens
+          onClose: () => print('DIAL CLOSED'), //action when menu closes
+
+          elevation: 8.0, //shadow elevation of button
+          shape: CircleBorder(), //shape of button
+
+          children: [
+            SpeedDialChild(
+              //speed dial child
+              child: Icon(Icons.message),
+              //  backgroundColor: Colors.red,
+              // foregroundColor: Colors.white,
+              label:
+                  '¿Has tenido inconvenientes \n al momento de registrarte? \n Dejanoslo saber.',
+              labelStyle: TextStyle(fontSize: 18.0),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ComentariosPage()));
+              },
+              onLongPress: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ComentariosPage()));
+              },
+            ),
+
+            //add more menu item childs here
+          ],
         ));
   }
 }
