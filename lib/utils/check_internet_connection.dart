@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:http/http.dart' as http;
+import 'package:rxdart/rxdart.dart';
 
 enum ConnectionStatus {
   online,
@@ -30,6 +30,7 @@ class CheckInternetConnection {
   Future<void> _checkInternetConnection() async {
     try {
       // Sometimes the callback is called when we reconnect to wifi,
+
       // but the internet is not really functional
       // This delay try to wait until we are really connected to internet
       await Future.delayed(const Duration(seconds: 3));
