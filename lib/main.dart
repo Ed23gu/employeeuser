@@ -26,15 +26,9 @@ void main() async {
   String supabaseUrl = 'https://glknpzlrktillummmbrr.supabase.co';
   String supabaseKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
-  try {
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  } on PostgrestException catch (error) {
-    print('dddddddddddddddddddddddddddddddddddddd');
-    print(error);
-  } catch (e) {
-    print('222222222222222222222222222222222222');
-    print(e);
-  }
+
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+
   runApp(const ArtAsis());
 }
 

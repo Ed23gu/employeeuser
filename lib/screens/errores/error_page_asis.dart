@@ -35,11 +35,10 @@ class ErrorPageAsis extends StatelessWidget {
                           fontSize: 17,
                         )),
                     RichText(
+                        // selectionColor: Theme.of(context).colorScheme.primary,
                         textAlign: TextAlign.left,
                         text: const TextSpan(
-                            style: TextStyle(
-                              fontSize: 13, /* color: Colors.black */
-                            ),
+                            style: TextStyle(fontSize: 13),
                             children: <TextSpan>[
                               TextSpan(text: 'Intente:\n'),
                               TextSpan(
@@ -54,8 +53,6 @@ class ErrorPageAsis extends StatelessWidget {
                             ])),
                   ],
                 ),
-                /*  child: Text(
-                                    '${snapshot.error!.toString()}\n ${snapshot.stackTrace!.toString()}'), */
               ))
             : const AttendanceScreen();
       },

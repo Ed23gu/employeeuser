@@ -68,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 padding: const EdgeInsets.all(20),
                 child: SingleChildScrollView(
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
@@ -141,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       value: item.id,
                                       child: Text(
                                         item.title,
-                                        style: const TextStyle(fontSize: 20),
+                                        //style: const TextStyle(fontSize: 20),
                                       ));
                                 }).toList(),
                                 onChanged: (selectedValue) {
@@ -174,8 +174,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         height: 40,
                       ),
                       SizedBox(
-                        width: 200,
                         height: 50,
+                        width: 200,
                         child: ElevatedButton(
                           onPressed: () {
                             dbService.updateProfile(
@@ -183,7 +183,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           },
                           child: const Text(
                             "Actualizar Perfil",
-                            style: TextStyle(fontSize: 20),
+                            // style: TextStyle(fontSize: 17),
                           ),
                         ),
                       ),
