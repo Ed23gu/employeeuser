@@ -1,4 +1,3 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:employee_attendance/screens/errores/error_page_asis.dart';
 import 'package:employee_attendance/screens/errores/error_page_calen.dart';
@@ -12,9 +11,7 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _page = 1;
-  bool _iconBool = false;
-  IconData _iconLuz = Icons.wb_sunny;
-  IconData _iconObs = Icons.nights_stay;
+
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
@@ -35,20 +32,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             fontSize: 23,
           ),
         ),
-        actions: [
-          IconButton(
-              onPressed: () {
-                setState(() {
-                  _iconBool = !_iconBool;
-                });
-                if (_iconBool) {
-                  AdaptiveTheme.of(context).setLight();
-                } else {
-                  AdaptiveTheme.of(context).setDark();
-                }
-              },
-              icon: Icon(_iconBool ? _iconLuz : _iconObs)),
-        ],
       ),
       body: IndexedStack(
         index: _page,

@@ -223,7 +223,6 @@ class AttendanceService extends ChangeNotifier {
         .from(Constants.attendancetable)
         .select()
         .eq('employee_id', _supabase.auth.currentUser!.id)
-        // .eq('employee_id', "$attendanceusuario")   PARA ADMIN
         .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
     return data
@@ -236,27 +235,10 @@ class AttendanceService extends ChangeNotifier {
         .from(Constants.attendancetable)
         .select()
         .eq('employee_id', _supabase.auth.currentUser!.id)
-        // .eq('employee_id', "$attendanceusuario")   PARA ADMIN
         .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
         .toList();
-  }
-
-  //////leer imagnes
-  Future getMyFiles() async {
-    final List<FileObject> result = await _supabase.storage
-        .from('imageip')
-        .list(path: _supabase.auth.currentUser!.id);
-    List<Map<String, String>> myImages = [];
-
-    for (var image in result) {
-      final getUrl = _supabase.storage
-          .from('imageip')
-          .getPublicUrl("${_supabase.auth.currentUser!.id}/${image.name}");
-      myImages.add({'name': image.name, 'url': getUrl});
-    }
-    return myImages;
   }
 }

@@ -1052,6 +1052,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
         body: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
           child: Column(
             children: [
               WarningWidgetValueNotifier(),
@@ -1062,7 +1063,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       if (snapshot.hasData) {
                         UserModel user = snapshot.data!;
                         return Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          //padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           alignment: Alignment.centerLeft,
                           child: Text(
                             user.name != ''
@@ -1091,7 +1092,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       if (snapshot.hasData) {
                         DepartmentModel user2 = snapshot.data!;
                         return Container(
-                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           alignment: Alignment.centerLeft,
                           child: Text(
                             user2.title != "" ? user2.title.toString() : " ",
@@ -1141,8 +1141,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           'https://glknpzlrktillummmbrr.supabase.co';
                       String supabaseKey =
                           'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
-
-                      await Supabase.initialize(
++
                           url: supabaseUrl, anonKey: supabaseKey);
                     },
                     icon: const Icon(Icons.logout),
@@ -1155,8 +1154,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(10.0),
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
+                //padding: EdgeInsets.all(10.0),
+                margin: EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
                 height: 180,
                 decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
@@ -1505,8 +1504,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
               Container(
                 padding: EdgeInsets.all(10.0),
-                margin:
-                    EdgeInsets.only(top: 5, bottom: 10, left: 10, right: 10),
+                margin: EdgeInsets.only(top: 5, bottom: 10, left: 0, right: 0),
                 height: 180,
                 decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
@@ -1534,7 +1532,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const Text(
-                                "Entrada:  ",
+                                "Ingreso:  ",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,

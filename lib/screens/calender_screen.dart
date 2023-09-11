@@ -1,5 +1,4 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:flutter/material.dart';
@@ -41,15 +40,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
         ), */
         body: Column(
       children: [
-        WarningWidgetValueNotifier(),
+        Container(
+          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          alignment: Alignment.centerLeft,
+          child: Text(
+            "Registro de Asitencias",
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              attendanceService.attendanceHistoryMonth,
-              style: const TextStyle(fontSize: 25),
+            Container(
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              child: Text(
+                attendanceService.attendanceHistoryMonth,
+                style: const TextStyle(fontSize: 18),
+              ),
             ),
-            OutlinedButton(
+            ElevatedButton(
+                style: ButtonStyle(),
                 onPressed: () async {
                   final selectedDate =
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
@@ -86,8 +96,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 snapshot.data[index];
                             return Container(
                               margin: EdgeInsets.only(
-                                  top: 12, left: 20, right: 20, bottom: 10),
-                              height: 110,
+                                  top: 12, left: 15, right: 15, bottom: 10),
+                              height: 150,
                               decoration: BoxDecoration(
                                   color: AdaptiveTheme.of(context).mode ==
                                           AdaptiveThemeMode.light
@@ -98,7 +108,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                     BoxShadow(
                                         color:
                                             Color.fromARGB(110, 18, 148, 255),
-                                        blurRadius: 10,
+                                        blurRadius: 5,
                                         offset: Offset(2, 2)),
                                   ],
                                   borderRadius:
@@ -108,10 +118,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                      child: Container(
                                     width: 50,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.blue,
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiaryContainer,
                                       borderRadius:
                                           BorderRadius.all(Radius.circular(20)),
                                     ),
@@ -120,58 +131,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                         DateFormat("EE \n dd", "es_ES")
                                             .format(attendanceData.createdAt),
                                         style: const TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
+                                            fontSize: 17,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                  )),
-
+                                  ),
                                   Expanded(
                                     child: Column(children: [
-                                      /*   Container(
-                                        height: 20,
-                                        child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.center,
-                                            children: [
-                                              Text(
-                                                "Nombre:",
-                                                style: TextStyle(
-                                                  decorationThickness: 2.2,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      //  color: Colors.white,
-                                                      : Colors.white,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                attendanceData.usuario ??
-                                                    '--/--',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      //  color: Colors.white,
-                                                      : Colors.white,
-                                                ),
-                                              ),
-                                            ]),
-                                      ),
-                                      const SizedBox(
-                                        child: Divider(),
-                                      ), */
                                       Expanded(
                                           child: Row(children: [
                                         Expanded(
@@ -186,30 +152,23 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 15,
-                                                color: AdaptiveTheme.of(context)
-                                                            .mode ==
-                                                        AdaptiveThemeMode.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              attendanceData.obra?.toString() ??
-                                                  '--/--',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: AdaptiveTheme.of(context)
-                                                            .mode ==
-                                                        AdaptiveThemeMode.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
                                               ),
                                             ),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 5,
                                               child: Divider(),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.fromLTRB(
+                                                  4, 0, 4, 0),
+                                              child: Text(
+                                                attendanceData.obra
+                                                        ?.toString() ??
+                                                    '--/--',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                ),
+                                              ),
                                             ),
                                             Expanded(
                                                 child: Row(children: [
@@ -226,18 +185,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
                                                     ),
                                                   ),
                                                   const SizedBox(
-                                                    height: 10,
+                                                    height: 5,
                                                     width: 80,
                                                     child: Divider(),
                                                   ),
@@ -246,15 +197,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                      fontSize: 12,
                                                     ),
                                                   )
                                                 ],
@@ -272,18 +215,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
                                                     ),
                                                   ),
                                                   const SizedBox(
-                                                    height: 10,
+                                                    height: 5,
                                                     width: 80,
                                                     child: Divider(),
                                                   ),
@@ -292,15 +227,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                      fontSize: 12,
                                                     ),
                                                   )
                                                 ],
@@ -324,31 +251,23 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 15,
-                                                color: AdaptiveTheme.of(context)
-                                                            .mode ==
-                                                        AdaptiveThemeMode.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              attendanceData.obra2
-                                                      ?.toString() ??
-                                                  '--/--',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: AdaptiveTheme.of(context)
-                                                            .mode ==
-                                                        AdaptiveThemeMode.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
                                               ),
                                             ),
                                             const SizedBox(
-                                              height: 10,
+                                              height: 5,
                                               child: Divider(),
+                                            ),
+                                            Container(
+                                              margin: EdgeInsets.fromLTRB(
+                                                  4, 0, 4, 0),
+                                              child: Text(
+                                                attendanceData.obra2
+                                                        ?.toString() ??
+                                                    '--/--',
+                                                style: TextStyle(
+                                                  fontSize: 12,
+                                                ),
+                                              ),
                                             ),
                                             Expanded(
                                                 child: Row(children: [
@@ -365,18 +284,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
                                                     ),
                                                   ),
                                                   const SizedBox(
-                                                    height: 10,
+                                                    height: 5,
                                                     width: 80,
                                                     child: Divider(),
                                                   ),
@@ -385,15 +296,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                      fontSize: 12,
                                                     ),
                                                   )
                                                 ],
@@ -411,18 +314,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontWeight:
                                                           FontWeight.bold,
                                                       fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
                                                     ),
                                                   ),
                                                   const SizedBox(
-                                                    height: 10,
+                                                    height: 5,
                                                     width: 80,
                                                     child: Divider(),
                                                   ),
@@ -431,15 +326,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: AdaptiveTheme.of(
-                                                                      context)
-                                                                  .mode ==
-                                                              AdaptiveThemeMode
-                                                                  .light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                      fontSize: 12,
                                                     ),
                                                   )
                                                 ],
@@ -448,14 +335,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           ],
                                         )),
                                       ])),
-
-/////////////////////////////////////////
-
-                                      ///
-//////nombre colum///////////////////////
+                                      Row(
+                                        children: [
+                                          Text('Observaciones: '),
+                                          Container(child: Text('d'))
+                                        ],
+                                      )
                                     ]),
                                   ),
-///////////////////////////
                                 ],
                               ),
                             );

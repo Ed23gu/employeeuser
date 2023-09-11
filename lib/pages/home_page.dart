@@ -89,6 +89,37 @@ class _ComentariosPageState extends State<ComentariosPage> {
     }
   }
 
+/*   Future insertData() async {
+    setState(() {
+      isLoading = true;
+    });
+    try {
+      String userId = supabase.auth.currentUser!.id;
+      await supabase.from('todos').insert({
+        'title': titleController.text,
+        'user_id': userId,
+        'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+        'horain': DateFormat('HH:mm').format(DateTime.now()),
+      });
+      setState(() {
+        isLoading = false;
+      });
+      clearText();
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Observación guardada"),
+          width: 180,
+          duration: new Duration(seconds: 1),
+          behavior: SnackBarBehavior.floating));
+      //  Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Algo ha salido mal")));
+    }
+  }
+ */
   Future<void> _showMyDialog(int editId2) async {
     return showDialog<void>(
       context: context,
@@ -144,6 +175,18 @@ class _ComentariosPageState extends State<ComentariosPage> {
 
   // Syntax to select data
   Future<List> readData() async {
+    final result = await supabase
+        .from('todos')
+        .select()
+        .eq(
+          'user_id',
+          supabase.auth.currentUser!.id,
+        )
+        .order('id', ascending: false);
+    return result;
+  }
+
+  Future<List> readData2() async {
     final result = await supabase
         .from('todos')
         .select()
@@ -240,37 +283,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                     },
                                     icon: Icon(Icons.delete_outline),
                                   ),
-                                )
-                                // Padding(
-                                //   padding: const EdgeInsets.all(1.0),
-                                //   child: IconButton(
-                                //       onPressed: () {_showMyDialog(data['id']); }, icon: Icon(Icons.delete_outline)),
-                                // ),
-
-                                // IconButton(onPressed: () {_showMyDialog(data['id']); }, icon: Icon(Icons.delete_outline)),
-                                // PopupMenuButton<String>(
-                                //   onSelected: (value) {
-                                //     if (value == "editar") {
-                                //       Navigator.push(
-                                //           context,
-                                //           MaterialPageRoute(
-                                //               builder: (context) => EditPage(
-                                //                   data['title'], data['id'])));
-                                //     } else if (value == "borrar") {
-                                //       _showMyDialog(data['id']);
-                                //     }
-                                //   },
-                                //   itemBuilder: (BuildContext context) =>
-                                //       <PopupMenuEntry<String>>[
-                                //     PopupMenuItem(
-                                //         value: "editar",
-                                //         child: Icon(Icons.update)),
-                                //     PopupMenuItem(
-                                //         value: "borrar",
-                                //         child: Icon(Icons.delete))
-                                //   ],
-                                // )
-                                );
+                                ));
                           });
                     }
 
