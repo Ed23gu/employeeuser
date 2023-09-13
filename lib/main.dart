@@ -6,6 +6,7 @@ import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:employee_attendance/services/db_service_admin.dart';
+import 'package:employee_attendance/services/obs_service.dart';
 import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -51,6 +52,7 @@ class ArtAsis extends StatelessWidget {
             ChangeNotifierProvider(create: (context) => DbServiceadmin()),
             ChangeNotifierProvider(
                 create: (context) => AttendanceServiceadmin()),
+            ChangeNotifierProvider(create: (context) => ObsService())
           ],
           child: MaterialApp(
               localizationsDelegates: const [

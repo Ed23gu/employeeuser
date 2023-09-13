@@ -1,4 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:employee_attendance/obs/historial_page.dart';
+import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -36,6 +38,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
   bool isLoadingdel = false;
   TextEditingController titleController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  // final attendanceService = root.Provider.of<ObsService>();
+  final ObsService obsfiltro = ObsService();
 
   @override
   void dispose() {
@@ -50,6 +54,10 @@ class _ComentariosPageState extends State<ComentariosPage> {
         .from('todos')
         .stream(primaryKey: ['id'])
         .eq('user_id', supabase.auth.currentUser!.id)
+        .eq(
+          'date',
+          DateFormat("dd MMMM yyyy").format(DateTime.now()),
+        )
         .order('id', ascending: false);
     super.initState();
   }
@@ -157,7 +165,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
 
     try {
       await supabase.from('todos').delete().match({'id': editId2});
-      //Navigator.pop(context);
+      //Navigator.pop(context);z
       isLoadingdel = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Observación borrada"),
@@ -181,6 +189,10 @@ class _ComentariosPageState extends State<ComentariosPage> {
         .eq(
           'user_id',
           supabase.auth.currentUser!.id,
+        )
+        .eq(
+          'date',
+          DateFormat("dd MMMM yyyy").format(DateTime.now()),
         )
         .order('id', ascending: false);
     return result;
@@ -211,10 +223,26 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       .from('todos')
                       .stream(primaryKey: ['id'])
                       .eq('user_id', supabase.auth.currentUser!.id)
+                      .eq(
+                        'date',
+                        DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                      )
                       .order('id', ascending: false);
                 });
               },
               icon: const Icon(Icons.refresh_outlined)),
+          IconButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ComentariosHisPage()));
+              },
+              icon: Image.asset(
+                'assets/historial.png',
+                width: 30,
+                height: 40,
+              ))
         ],
       ),
       body: Column(

@@ -18,26 +18,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
   Widget build(BuildContext context) {
     final attendanceService = Provider.of<AttendanceService>(context);
     return Scaffold(
-        /*  appBar: AppBar(
-          leading: Builder(builder: (BuildContext context) {
-            return SizedBox(
-                child: Center(
-              child: Image.asset(
-                'assets/icon/icon.png',
-                width: 40,
-              ),
-            ));
-          }),
-          title: Text(
-            "Mi Asistencia",
-            style: TextStyle(
-              fontSize: 23,
-              /* color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                  ? Colors.white
-                  : Colors.lightBlue */
-            ),
-          ),
-        ), */
         body: Column(
       children: [
         Container(
@@ -119,21 +99,15 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 children: [
                                   Container(
                                     width: 50,
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .tertiaryContainer,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        DateFormat("EE \n dd", "es_ES")
-                                            .format(attendanceData.createdAt),
-                                        style: const TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                      ),
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .tertiaryContainer,
+                                    child: Text(
+                                      DateFormat("EE \n dd", "es_ES")
+                                          .format(attendanceData.createdAt),
+                                      style: const TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold),
                                     ),
                                   ),
                                   Expanded(

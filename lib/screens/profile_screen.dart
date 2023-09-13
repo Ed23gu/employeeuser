@@ -16,31 +16,6 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController nameController = TextEditingController();
 
-  popUpMenu() {
-    return PopupMenuButton<int>(
-        icon: Icon(Icons.menu),
-        itemBuilder: (context) {
-          return <PopupMenuEntry<int>>[
-            PopupMenuItem(
-                child: ListTile(
-              leading: Icon(Icons.wb_sunny),
-              title: Text("Claro"),
-              onTap: () {
-                AdaptiveTheme.of(context).setLight();
-              },
-            )),
-            PopupMenuItem(
-                child: ListTile(
-              leading: Icon(Icons.brightness_2_outlined),
-              title: Text("Oscuro"),
-              onTap: () {
-                AdaptiveTheme.of(context).setDark();
-              },
-            )),
-          ];
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     final dbService = Provider.of<DbService>(context);
@@ -51,8 +26,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : null;
     return Scaffold(
       body: dbService.userModel == null
-          ? const Center(
-              child: CircularProgressIndicator(),
+          ? Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 50,
+                ),
+                const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                SizedBox(
+                  height: 50,
+                ),
+                Container(
+                  child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          dbService.allDepartments.isEmpty
+                              ? dbService.getAllDepartments()
+                              : null;
+                          nameController.text.isEmpty
+                              ? nameController.text =
+                                  dbService.userModel?.name ?? ''
+                              : null;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.refresh_outlined,
+                        size: 50,
+                      )),
+                ),
+              ],
             )
           : Padding(
               padding: const EdgeInsets.all(10),
@@ -115,26 +119,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                           ),
                     /*  SizedBox(
-                            width: double.infinity,
-                            child: DropdownButtonFormField(
-                              decoration: const InputDecoration(
-                                  border: OutlineInputBorder()),
-                              value: dbService.employeeDepartment ??
-                                  dbService.allDepartments.first.id,
-                              items: dbService.allDepartments
-                                  .map((DepartmentModel item) {
-                                return DropdownMenuItem(
-                                    value: item.id,
-                                    child: Text(
-                                      item.title,
-                                      style: const TextStyle(fontSize: 20),
-                                    ));
-                              }).toList(),
-                              onChanged: (selectedValue) {
-                                dbService.employeeDepartment = selectedValue;
-                              },
-                            ),
-                          ),*/
+                                width: double.infinity,
+                                child: DropdownButtonFormField(
+                                  decoration: const InputDecoration(
+                                      border: OutlineInputBorder()),
+                                  value: dbService.employeeDepartment ??
+                                      dbService.allDepartments.first.id,
+                                  items: dbService.allDepartments
+                                      .map((DepartmentModel item) {
+                                    return DropdownMenuItem(
+                                        value: item.id,
+                                        child: Text(
+                                          item.title,
+                                          style: const TextStyle(fontSize: 20),
+                                        ));
+                                  }).toList(),
+                                  onChanged: (selectedValue) {
+                                    dbService.employeeDepartment = selectedValue;
+                                  },
+                                ),
+                              ),*/
                     const SizedBox(
                       height: 15,
                     ),

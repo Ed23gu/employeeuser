@@ -4,7 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
-import 'package:employee_attendance/pages/home_page.dart';
+import 'package:employee_attendance/obs/home_diario_page.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/foundation.dart';
@@ -1831,19 +1831,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ],
           ),
         ),
-        // floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
-        // floatingActionButton: FloatingActionButton(
-        //   tooltip:
-        //       "¿Has tenido inconvenientes al momento de registrarte? Dejanoslo saber.",
-        //   onPressed: () {
-        //     Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //             builder: (context) => const ComentariosPage()));
-        //   },
-        //   child: const Icon(Icons.message_outlined),
-        // )
-
         floatingActionButton: SpeedDial(
           //Speed dial menu
           // marginBottom: 10, //margin bottom
@@ -1860,9 +1847,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           curve: Curves.bounceIn,
           overlayColor: Colors.black,
           overlayOpacity: 0.5,
-          onOpen: () => print('OPENING DIAL'), // action when menu opens
-          onClose: () => print('DIAL CLOSED'), //action when menu closes
-
           elevation: 8.0, //shadow elevation of button
           shape: CircleBorder(), //shape of button
 
@@ -1881,12 +1865,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     MaterialPageRoute(
                         builder: (context) => const ComentariosPage()));
               },
-              onLongPress: () {
+              /*  onLongPress: () {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) => const ComentariosPage()));
-              },
+              }, */
             ),
 
             //add more menu item childs here
