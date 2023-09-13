@@ -41,7 +41,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading3 = false;
   bool isUploading4 = false;
   bool flat = false;
-  Color wite = Color(0xffffff);
+
   int imageq = 100;
   int qt = 85;
   int per = 15;
