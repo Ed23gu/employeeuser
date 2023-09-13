@@ -41,6 +41,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading3 = false;
   bool isUploading4 = false;
   bool flat = false;
+  Color wite = Color(0xffffff);
   int imageq = 100;
   int qt = 85;
   int per = 15;
@@ -1508,8 +1509,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 height: 180,
                 decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
-                        ? Colors.white
-                        //  color: Colors.white,
+                        ? Colors.white //  color: Colors.white,
                         : Color.fromARGB(255, 43, 41, 41),
                     boxShadow: [
                       BoxShadow(
