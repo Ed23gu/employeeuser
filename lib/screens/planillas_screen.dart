@@ -1,6 +1,5 @@
 import 'dart:core';
 
-import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
@@ -58,19 +57,15 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     final PdfDocument document = PdfDocument();
     document.pageSettings.orientation = PdfPageOrientation.landscape;
     PdfPage pdfpage = document.pages.add();
-    document.pageSettings.margins.all = 50;
+    //document.pageSettings.margins.all = 200;
     //PdfPage page = document.pages[0];
 
     PdfPageTemplateElement header = PdfPageTemplateElement(
         Rect.fromLTWH(0, 0, document.pageSettings.size.width, 40));
 
-    PdfDateTimeField dateAndTimeField = PdfDateTimeField(
-        font: PdfStandardFont(PdfFontFamily.timesRoman, 12),
-        brush: PdfSolidBrush(PdfColor(0, 0, 0)));
-
-    dateAndTimeField.date = DateTime.now();
-
-    dateAndTimeField.dateFormatString = "MM.dd.yyyy";
+      PdfDateTimeField dateAndTimeField = PdfDateTimeField(
+          font: PdfStandardFont(PdfFontFamily.timesRoman, 12),
+          brush: PdfSolidBrush(PdfColor(0, 0, 0)));
 
     PdfCompositeField compositefields = PdfCompositeField(
       font: PdfStandardFont(PdfFontFamily.helvetica, 12),
@@ -142,7 +137,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     PdfCompositeField compositeField = PdfCompositeField(
         font: PdfStandardFont(PdfFontFamily.timesRoman, 11),
         brush: PdfSolidBrush(PdfColor(0, 0, 0)),
-        text: 'Pagina {0},  Fecha:{1}',
+        text: 'Pagina: {0},  Fecha:{1}',
         fields: <PdfAutomaticField>[pageNumber, dateTimeField]);
     compositeField.bounds = footer.bounds;
 
@@ -159,125 +154,17 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
       exportStackedHeaders: false,
       fitAllColumnsInOnePage: false,
       autoColumnWidth: true,
-      /* headerFooterExport:
-          (DataGridPdfHeaderFooterExportDetails headerFooterExport) {
-        final double width = headerFooterExport.pdfPage.getClientSize().width;
-        final PdfPageTemplateElement header =
-            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width - 1, 35));
-        header.graphics.drawString(
-          '\n Proyecto: ' + proyecto,
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(170, 5, 200, 50),
-        );
-        header.graphics.drawString(
-          '\n Periodo:' + periodo,
-          // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(400, 5, 200, 50),
-        );
-        header.graphics.drawString(
-          'REGISTRO DE ASISTENCIAS\n Nombre:' + nombre,
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(0, 5, 200, 50),
-        );
-        headerFooterExport.pdfDocumentTemplate.top = header;
-      } */
     );
     pdfGrid.draw(
       page: pdfpage,
     );
-    /*   excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
-      exportTableSummaries: true,
-      exportStackedHeaders: false,
-      fitAllColumnsInOnePage: true,
-      //autoColumnWidth: true, */
-    /*   headerFooterExport:
-          (DataGridPdfHeaderFooterExportDetails headerFooterExport) {
-        final double width = headerFooterExport.pdfPage.getClientSize().width;
-        final PdfPageTemplateElement header =
-            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width - 1, 35));
-        header.graphics.drawString(
-          '\n Proyecto: ' + proyecto,
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(170, 5, 200, 50),
-        );
-        header.graphics.drawString(
-          '\n Periodo:' + periodo,
-          // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(400, 5, 200, 50),
-        );
-        header.graphics.drawString(
-          'REGISTRO DE ASISTENCIAS\n Nombre:' + nombre,
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(0, 5, 200, 50),
-        );
-        headerFooterExport.pdfDocumentTemplate.top = header;
-      }, */
-    // );
-    //  PdfPage page = document.pages[0];
-    // page.graphics.drawString(
-    //        'Nombre:' + nombre , PdfStandardFont(PdfFontFamily.helvetica, 12),
-    //     bounds: const Rect.fromLTWH(40, 10, 400, 30));
-    //document.pageSettings.size = PdfPageSize.a4;
-    //document.pageSettings.size = Size(297, 210);
-    //document.pageSettings.orientation = PdfPageOrientation.landscape;
-    //document.pageSettings.rotate = PdfPageRotateAngle.rotateAngle90;
+
     final List<int> bytes = document.saveSync();
     await helper.saveAndLaunchFile(
         bytes, 'Asis' + '_' + '$nombre' + '_' + '$periodo.pdf');
     document.dispose();
   }
 
-//
-  /* Future<void> _exportDataGridToPdf(
-      String periodo, String nombre, String proyecto) async {
-    final PdfDocument document = PdfDocument();
-    document.pageSettings.orientation = PdfPageOrientation.landscape;
-    PdfPage pdfpage = document.pages.add();
-    PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
-      excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
-      exportTableSummaries: true,
-      exportStackedHeaders: false,
-      fitAllColumnsInOnePage: true,
-      //autoColumnWidth: true,
-      /*   headerFooterExport:
-          (DataGridPdfHeaderFooterExportDetails headerFooterExport) {
-        final double width = headerFooterExport.pdfPage.getClientSize().width;
-        final PdfPageTemplateElement header =
-            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width - 1, 35));
-        header.graphics.drawString(
-          '\n Proyecto: ' + proyecto,
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(170, 5, 200, 50),
-        );
-        header.graphics.drawString(
-          '\n Periodo:' + periodo,
-          // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(400, 5, 200, 50),
-        );
-        header.graphics.drawString(
-          'REGISTRO DE ASISTENCIAS\n Nombre:' + nombre,
-          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
-          bounds: const Rect.fromLTWH(0, 5, 200, 50),
-        );
-        headerFooterExport.pdfDocumentTemplate.top = header;
-      }, */
-    );
-    //  PdfPage page = document.pages[0];
-    // page.graphics.drawString(
-    //        'Nombre:' + nombre , PdfStandardFont(PdfFontFamily.helvetica, 12),
-    //     bounds: const Rect.fromLTWH(40, 10, 400, 30));
-    //document.pageSettings.size = PdfPageSize.a4;
-    //document.pageSettings.size = Size(297, 210);
-    //document.pageSettings.orientation = PdfPageOrientation.landscape;
-    //document.pageSettings.rotate = PdfPageRotateAngle.rotateAngle90;
-    final List<int> bytes = document.saveSync();
-    await helper.saveAndLaunchFile(bytes, 'Asis$nombre$periodo.pdf');
-    document.dispose();
-  }
- */
 ////////////////////////////////////
   Future<void> _exportDataGridToExcel(
       String periodo, String nombre, String proyecto) async {
@@ -359,7 +246,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
 
     return Scaffold(
-        appBar: AppBar(
+        /*   appBar: AppBar(
           leading: Builder(builder: (BuildContext context) {
             return Container(
               child: Image(image: AssetImage('/icon/icon.png')),
@@ -402,381 +289,370 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
             )
           ],
         ),
+        */
         body: Column(
+      children: [
+        Container(
+          alignment: Alignment.center,
+          margin: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
+          child: const Text(
+            "Resumen de Asistencias",
+            style: TextStyle(fontSize: 17),
+          ),
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              alignment: Alignment.center,
-              margin: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
-              child: const Text(
-                "Resumen de Asistencias",
-                style: TextStyle(fontSize: 17),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                dbService.allempleados.isEmpty
-                    ? SizedBox(
-                        width: 60, child: const LinearProgressIndicator())
-                    : Container(
-                        //  padding: EdgeInsets.all(5),
-                        margin: const EdgeInsets.only(
-                            left: 5, top: 5, bottom: 10, right: 10),
-                        height: 45,
-                        width: 300,
-                        child: DropdownButtonFormField(
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder()),
-                          value: dbService.empleadolista,
-                          items: dbService.allempleados.map((UserModel item) {
-                            return DropdownMenuItem(
-                              value: item.id,
-                              child: Text(
-                                item.name.toString(),
-                                style: const TextStyle(fontSize: 14),
-                              ),
-                            );
-                          }).toList(),
-                          onChanged: (selectedValue) {
-                            setState(() {
-                              dbService.empleadolista =
-                                  selectedValue.toString();
-                              _employeeDataSource.clearFilters();
-                              _employeeDataSource.addFilter(
-                                  'id',
-                                  FilterCondition(
-                                      type: FilterType.equals,
-                                      value: dbService.empleadolista));
-                              selectedName = dbService.allempleados
-                                  .firstWhere(
-                                      (element) => element.id == selectedValue)
-                                  .name
-                                  .toString();
-                              selectedpas = dbService.allempleados
-                                  .firstWhere(
-                                      (element) => element.id == selectedValue)
-                                  .department;
-                              selectedProyecto = dbService.allDepartments
-                                  .firstWhere(
-                                      (element) => element.id == selectedpas)
-                                  .title;
-                              // filterData(); // Volver a filtrar los datos cuando se selecciona una opción nueva
-                            });
-                          },
-                        ),
-                      ),
-                OutlinedButton(
-                    onPressed: () async {
-                      final selectedDate =
-                          await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                              context: context, disableFuture: true);
-                      String pickedMonth =
-                          DateFormat('MMMM yyyy').format(selectedDate);
-                      setState(() {
-                        fecha = pickedMonth;
-                        //attendanceService.attendanceHistoryMonth= fecha;
-                        _employeeDataSource.clearFilters();
-                        _employeeDataSource.addFilter(
-                          'id',
-                          FilterCondition(
-                            value: dbService.empleadolista,
-                            // filterOperator: FilterOperator.and,
-                            type: FilterType.equals,
+            dbService.allempleados.isEmpty
+                ? SizedBox(width: 60, child: const LinearProgressIndicator())
+                : Container(
+                    height: 50,
+                    width: 240,
+                    child: DropdownButtonFormField(
+                      decoration:
+                          const InputDecoration(border: OutlineInputBorder()),
+                      value: dbService.empleadolista,
+                      items: dbService.allempleados.map((UserModel item) {
+                        return DropdownMenuItem(
+                          value: item.id,
+                          child: Text(
+                            item.name.toString(),
+                            style: const TextStyle(fontSize: 14),
                           ),
                         );
-                        _employeeDataSource.addFilter(
-                          'Dia2',
-                          FilterCondition(
-                            value: fecha,
-                            filterOperator: FilterOperator.and,
-                            type: FilterType.equals,
-                          ),
-                        );
-                      });
-                    },
-                    child: const Text("Mes",
-                        style: const TextStyle(fontSize: 15))),
-                Text(
-                  fecha,
-                  style: const TextStyle(fontSize: 15),
-                ),
-                /*  MaterialButton(
-                    child: Text('Clear Filters'),
-                    onPressed: () {
-                      _employeeDataSource.clearFilters();
-                    }),*/
-                Container(
-                  width: 20,
-                ),
-                Text("Nombre: "),
-                Text(selectedName),
-                Container(
-                  width: 10,
-                ),
-                Text("Proyecto: $selectedProyecto"),
-                Container(
-                  margin: const EdgeInsets.all(12.0),
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(
-                        height: 40.0,
-                        width: 150.0,
-                        child: MaterialButton(
-                            color: Colors.blue,
-                            onPressed: () async {
-                              await _exportDataGridToExcel(
-                                  attendanceService.attendanceHistoryMonth,
-                                  selectedName,
-                                  selectedProyecto);
-                            },
-                            child: const Center(
-                                child: Text(
-                              'Export to Excel',
-                              style: TextStyle(color: Colors.white),
-                            ))),
-                      ),
-                      const Padding(padding: EdgeInsets.all(20)),
-                      SizedBox(
-                        height: 40.0,
-                        width: 150.0,
-                        child: MaterialButton(
-                            color: Colors.blue,
-                            onPressed: () async {
-                              await _exportDataGridToPdf(
-                                  fecha,
-                                  // attendanceService.attendanceHistoryMonth,
-                                  selectedName,
-                                  selectedProyecto);
-                            },
-                            child: const Center(
-                                child: Text(
-                              'Exportar a PDF',
-                              style: TextStyle(color: Colors.white),
-                            ))),
-                      ),
-                    ],
+                      }).toList(),
+                      onChanged: (selectedValue) {
+                        setState(() {
+                          dbService.empleadolista = selectedValue.toString();
+                          _employeeDataSource.clearFilters();
+                          _employeeDataSource.addFilter(
+                              'id',
+                              FilterCondition(
+                                  type: FilterType.equals,
+                                  value: dbService.empleadolista));
+                          selectedName = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == selectedValue)
+                              .name
+                              .toString();
+                          selectedpas = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == selectedValue)
+                              .department;
+                          selectedProyecto = dbService.allDepartments
+                              .firstWhere(
+                                  (element) => element.id == selectedpas)
+                              .title;
+                          // filterData(); // Volver a filtrar los datos cuando se selecciona una opción nueva
+                        });
+                      },
+                    ),
                   ),
-                ),
-              ],
+            Container(
+              width: 40,
             ),
-            Expanded(
-                child: SfDataGridTheme(
-              data: SfDataGridThemeData(),
-              child: SfDataGrid(
-                key: _key,
-                source: _employeeDataSource,
-                rowHeight: 45,
-                headerRowHeight: 30,
-                tableSummaryRows: [
-                  GridTableSummaryRow(
-                      showSummaryInRow: false,
-                      title: 'Dias trabajados: {Count2}',
-                      titleColumnSpan: 6,
-                      columns: [
-                        GridSummaryColumn(
-                            name: 'Count2',
-                            columnName: 'TotalHoras',
-                            summaryType: GridSummaryType.count),
-                      ],
-                      position: GridTableSummaryRowPosition.bottom),
+            Text(
+              fecha == '' ? "--/--" : fecha,
+              style: const TextStyle(fontSize: 15),
+            ),
+            Container(
+              width: 40,
+            ),
+            OutlinedButton(
+                onPressed: () async {
+                  final selectedDate =
+                      await SimpleMonthYearPicker.showMonthYearPickerDialog(
+                          context: context, disableFuture: true);
+                  String pickedMonth =
+                      DateFormat('MMMM yyyy').format(selectedDate);
+                  setState(() {
+                    fecha = pickedMonth;
+                    //attendanceService.attendanceHistoryMonth= fecha;
+                    _employeeDataSource.clearFilters();
+                    _employeeDataSource.addFilter(
+                      'id',
+                      FilterCondition(
+                        value: dbService.empleadolista,
+                        // filterOperator: FilterOperator.and,
+                        type: FilterType.equals,
+                      ),
+                    );
+                    _employeeDataSource.addFilter(
+                      'Dia2',
+                      FilterCondition(
+                        value: fecha,
+                        filterOperator: FilterOperator.and,
+                        type: FilterType.equals,
+                      ),
+                    );
+                  });
+                },
+                child: const Text("Mes", style: const TextStyle(fontSize: 15))),
+            Container(
+              width: 40,
+            ),
+            Container(
+              margin: const EdgeInsets.all(12.0),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    height: 40.0,
+                    width: 150.0,
+                    child: MaterialButton(
+                        color: Colors.blue,
+                        onPressed: () async {
+                          await _exportDataGridToExcel(
+                              attendanceService.attendanceHistoryMonth,
+                              selectedName,
+                              selectedProyecto);
+                        },
+                        child: const Center(
+                            child: Text(
+                          'Export to Excel',
+                          style: TextStyle(color: Colors.white),
+                        ))),
+                  ),
+                  const Padding(padding: EdgeInsets.all(20)),
+                  SizedBox(
+                    height: 40.0,
+                    width: 150.0,
+                    child: MaterialButton(
+                        color: Colors.blue,
+                        onPressed: () async {
+                          await _exportDataGridToPdf(
+                              fecha,
+                              // attendanceService.attendanceHistoryMonth,
+                              selectedName,
+                              selectedProyecto);
+                        },
+                        child: const Center(
+                            child: Text(
+                          'Exportar a PDF',
+                          style: TextStyle(color: Colors.white),
+                        ))),
+                  ),
                 ],
-
-                columnWidthCalculationRange:
-                    ColumnWidthCalculationRange.allRows,
-                //allowFiltering: true,
-                allowSorting: true,
-                allowMultiColumnSorting: true,
-                //columnWidthMode: ColumnWidthMode.auto,
-                //  gridLinesVisibility: GridLinesVisibility.both,
-                headerGridLinesVisibility: GridLinesVisibility.both,
-                //allowTriStateSorting: true,
-                columns: [
-                  GridColumn(
-                      columnName: 'id',
-                      visible: false,
-                      label: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'ID',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'Dia2',
-                      visible: false,
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Dia2',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'Dia',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Dia',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'Fecha',
-                      allowFiltering: false,
-                      allowSorting: true,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Fecha',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'Proyecto',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Proyecto',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'HoraIn',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Ingreso',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'HoraOut',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Salida',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'SuTotalH1',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'subHoras',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'Proyecto2',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Proyecto',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'HoraIn2',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Ingreso',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'HoraOut2',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Salida',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'SuTotalH2',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'subHoras',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'TotalHoras',
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Total Horas',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                  GridColumn(
-                      columnName: 'TotaldeHoras',
-                      visible: false,
-                      allowFiltering: false,
-                      allowSorting: false,
-                      label: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0),
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Total de Horas',
-                            overflow: TextOverflow.ellipsis,
-                          ))),
-                ],
-                stackedHeaderRows: <StackedHeaderRow>[
-                  StackedHeaderRow(cells: [
-                    StackedHeaderCell(
-                        columnNames: [
-                          'id',
-                          'Dia2',
-                          'Dia',
-                          'Fecha',
-                          'Proyecto',
-                          'HoraIn',
-                          'HoraOut',
-                          'SuTotalH1',
-                          'Proyecto2',
-                          'HoraIn2',
-                          'HoraOut2',
-                          'SuTotalH2',
-                          'TotalHoras',
-                          'TotaldeHoras'
-                        ],
-                        child: Container(
-                            // color: Colors.cyan[200],
-                            child: const Center(
-                                child: Text('NOMINA DE ASISTENCIA')))),
-                  ])
-                ],
-                selectionMode: SelectionMode.multiple,
               ),
-            ))
+            ),
           ],
-        ));
+        ),
+        Expanded(
+            child: SfDataGridTheme(
+          data: SfDataGridThemeData(),
+          child: SfDataGrid(
+            key: _key,
+            source: _employeeDataSource,
+            rowHeight: 45,
+            headerRowHeight: 30,
+            tableSummaryRows: [
+              GridTableSummaryRow(
+                  showSummaryInRow: false,
+                  title: 'Dias trabajados: {Count2}',
+                  titleColumnSpan: 6,
+                  columns: [
+                    GridSummaryColumn(
+                        name: 'Count2',
+                        columnName: 'TotalHoras',
+                        summaryType: GridSummaryType.count),
+                  ],
+                  position: GridTableSummaryRowPosition.bottom),
+            ],
+
+            columnWidthCalculationRange: ColumnWidthCalculationRange.allRows,
+            //allowFiltering: true,
+            allowSorting: true,
+            allowMultiColumnSorting: true,
+            columnWidthMode: ColumnWidthMode.fill,
+            //  gridLinesVisibility: GridLinesVisibility.both,
+            headerGridLinesVisibility: GridLinesVisibility.both,
+            //allowTriStateSorting: true,
+            columns: [
+              GridColumn(
+                  columnName: 'id',
+                  visible: false,
+                  label: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'ID',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'Dia2',
+                  visible: false,
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Dia2',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'Dia',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Dia',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'Fecha',
+                  allowFiltering: false,
+                  allowSorting: true,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Fecha',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'Proyecto',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Proyecto',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'HoraIn',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Ingreso',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'HoraOut',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Salida',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'SuTotalH1',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'subHoras',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'Proyecto2',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Proyecto',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'HoraIn2',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Ingreso',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'HoraOut2',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Salida',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'SuTotalH2',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'subHoras',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'TotalHoras',
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Total Horas',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+              GridColumn(
+                  columnName: 'TotaldeHoras',
+                  visible: false,
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Total de Horas',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
+            ],
+            stackedHeaderRows: <StackedHeaderRow>[
+              StackedHeaderRow(cells: [
+                StackedHeaderCell(
+                    columnNames: [
+                      'id',
+                      'Dia2',
+                      'Dia',
+                      'Fecha',
+                      'Proyecto',
+                      'HoraIn',
+                      'HoraOut',
+                      'SuTotalH1',
+                      'Proyecto2',
+                      'HoraIn2',
+                      'HoraOut2',
+                      'SuTotalH2',
+                      'TotalHoras',
+                      'TotaldeHoras'
+                    ],
+                    child: Container(
+                        // color: Colors.cyan[200],
+                        child:
+                            const Center(child: Text('NOMINA DE ASISTENCIA')))),
+              ])
+            ],
+            selectionMode: SelectionMode.multiple,
+          ),
+        ))
+      ],
+    ));
   }
 }
 
