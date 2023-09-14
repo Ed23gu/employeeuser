@@ -24,9 +24,9 @@ void main() async {
   String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
 */
   // Initialize Supabase
-  String supabaseUrl = 'https://ikuxicurbjxyvfdaqevm.supabase.co';
+  String supabaseUrl = 'https://glknpzlrktillummmbrr.supabase.co';
   String supabaseKey =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdXhpY3VyYmp4eXZmZGFxZXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1NzA3MjIsImV4cCI6MjAwMTE0NjcyMn0.M6gVfdPDTup6h-ritEoLXL37tLg_XSuVhnzqlRIcJ2w';
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
 
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
 

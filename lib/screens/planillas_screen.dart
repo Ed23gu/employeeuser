@@ -143,6 +143,12 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
       cellExport: (details) {
         if (details.cellType == DataGridExportCellType.columnHeader) {
           details.pdfCell.style.backgroundBrush = PdfBrushes.gray;
+          details.pdfCell.style.font =
+              PdfStandardFont(PdfFontFamily.timesRoman, 12);
+        }
+        if (details.cellType == DataGridExportCellType.row) {
+          details.pdfCell.style.font =
+              PdfStandardFont(PdfFontFamily.timesRoman, 11);
         }
       },
       excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
@@ -153,6 +159,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     );
     pdfGrid.draw(
       page: pdfpage,
+      bounds: Rect.fromLTWH(0, 0, 0, 0),
     );
 
     final List<int> bytes = document.saveSync();
