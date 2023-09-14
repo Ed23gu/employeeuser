@@ -1,21 +1,23 @@
+import 'dart:core';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
-import 'package:employee_attendance/services/db_service.dart';
-import 'package:employee_attendance/services/attendance_service.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart' as route;
-import 'package:simple_month_year_picker/simple_month_year_picker.dart';
-import 'package:employee_attendance/models/user_model.dart';
-import 'package:syncfusion_flutter_datagrid/datagrid.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:syncfusion_flutter_core/theme.dart';
-import 'package:open_document/my_files/init.dart';
-import 'package:syncfusion_flutter_datagrid_export/export.dart';
-import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
     as helper;
+import 'package:employee_attendance/models/user_model.dart';
+import 'package:employee_attendance/services/attendance_service.dart';
+import 'package:employee_attendance/services/db_service.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:open_document/my_files/init.dart';
+import 'package:provider/provider.dart' as route;
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:syncfusion_flutter_core/theme.dart';
+import 'package:syncfusion_flutter_datagrid/datagrid.dart';
+import 'package:syncfusion_flutter_datagrid_export/export.dart';
+import 'package:syncfusion_flutter_pdf/pdf.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column, Row;
 
 class PlanillaScreen extends StatefulWidget {
@@ -53,12 +55,111 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
 ///////////////////
   Future<void> _exportDataGridToPdf(
       String periodo, String nombre, String proyecto) async {
-    final PdfDocument document = _key.currentState!.exportToPdfDocument(
+    final PdfDocument document = PdfDocument();
+    document.pageSettings.orientation = PdfPageOrientation.landscape;
+    PdfPage pdfpage = document.pages.add();
+    document.pageSettings.margins.all = 50;
+    //PdfPage page = document.pages[0];
+
+    PdfPageTemplateElement header = PdfPageTemplateElement(
+        Rect.fromLTWH(0, 0, document.pageSettings.size.width, 40));
+
+    PdfDateTimeField dateAndTimeField = PdfDateTimeField(
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 12),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+
+    dateAndTimeField.date = DateTime.now();
+
+    dateAndTimeField.dateFormatString = "MM.dd.yyyy";
+
+    PdfCompositeField compositefields = PdfCompositeField(
+      font: PdfStandardFont(PdfFontFamily.helvetica, 12),
+      brush: PdfSolidBrush(PdfColor(0, 102, 255)),
+      text:
+          '                                       ArtConsgroup. Cia. Ltda. Asistencia',
+    );
+
+    compositefields.draw(header.graphics,
+        Offset(0, 20 - PdfStandardFont(PdfFontFamily.helvetica, 12).height));
+
+    /* header.graphics.drawString(
+      'Company Details',
+      PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
+      bounds: const Rect.fromLTWH(0, 25, 200, 60),
+    ); */
+
+    header.graphics.drawString(
+      'Proyecto: ' + proyecto,
+      PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+      bounds: const Rect.fromLTWH(170, 28, 200, 60),
+    );
+    header.graphics.drawString(
+      'Periodo:' + periodo,
+      // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
+      PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+      bounds: const Rect.fromLTWH(400, 28, 200, 60),
+    );
+    header.graphics.drawString(
+      'Nombre:' + nombre,
+      PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+      bounds: const Rect.fromLTWH(0, 28, 200, 60),
+    );
+
+    document.template.top = header;
+
+//Create the footer with specific bounds
+    PdfPageTemplateElement footer = PdfPageTemplateElement(
+        Rect.fromLTWH(0, 0, document.pageSettings.size.width, 50));
+
+//Create the page number field
+    PdfPageNumberField pageNumber = PdfPageNumberField(
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 11),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+
+//Sets the number style for page number
+    pageNumber.numberStyle = PdfNumberStyle.upperRoman;
+
+//Create the page count field
+    PdfPageCountField count = PdfPageCountField(
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 11),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+
+//set the number style for page count
+    count.numberStyle = PdfNumberStyle.upperRoman;
+
+//Create the date and time field
+    PdfDateTimeField dateTimeField = PdfDateTimeField(
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 11),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+
+//Sets the date and time format
+
+    dateAndTimeField.date = DateTime.now();
+
+    dateTimeField.dateFormatString = 'MM.dd.yyyy';
+
+//Create the composite field with page number page count
+    PdfCompositeField compositeField = PdfCompositeField(
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 11),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)),
+        text: 'Pagina {0},  Fecha:{1}',
+        fields: <PdfAutomaticField>[pageNumber, dateTimeField]);
+    compositeField.bounds = footer.bounds;
+
+//Add the composite field in footer
+    compositeField.draw(footer.graphics,
+        Offset(290, 50 - PdfStandardFont(PdfFontFamily.timesRoman, 11).height));
+
+//Add the footer at the bottom of the document
+    document.template.bottom = footer;
+
+    PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
       excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
       exportTableSummaries: true,
       exportStackedHeaders: false,
-      fitAllColumnsInOnePage: true,
-      headerFooterExport:
+      fitAllColumnsInOnePage: false,
+      autoColumnWidth: true,
+      /* headerFooterExport:
           (DataGridPdfHeaderFooterExportDetails headerFooterExport) {
         final double width = headerFooterExport.pdfPage.getClientSize().width;
         final PdfPageTemplateElement header =
@@ -75,23 +176,108 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
           bounds: const Rect.fromLTWH(400, 5, 200, 50),
         );
         header.graphics.drawString(
-          'REGISTRO DE ASISTENCIAS \n Nombre:' + nombre,
+          'REGISTRO DE ASISTENCIAS\n Nombre:' + nombre,
           PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
           bounds: const Rect.fromLTWH(0, 5, 200, 50),
         );
         headerFooterExport.pdfDocumentTemplate.top = header;
-      },
+      } */
+    );
+    pdfGrid.draw(
+      page: pdfpage,
+    );
+    /*   excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
+      exportTableSummaries: true,
+      exportStackedHeaders: false,
+      fitAllColumnsInOnePage: true,
+      //autoColumnWidth: true, */
+    /*   headerFooterExport:
+          (DataGridPdfHeaderFooterExportDetails headerFooterExport) {
+        final double width = headerFooterExport.pdfPage.getClientSize().width;
+        final PdfPageTemplateElement header =
+            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width - 1, 35));
+        header.graphics.drawString(
+          '\n Proyecto: ' + proyecto,
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+          bounds: const Rect.fromLTWH(170, 5, 200, 50),
+        );
+        header.graphics.drawString(
+          '\n Periodo:' + periodo,
+          // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+          bounds: const Rect.fromLTWH(400, 5, 200, 50),
+        );
+        header.graphics.drawString(
+          'REGISTRO DE ASISTENCIAS\n Nombre:' + nombre,
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+          bounds: const Rect.fromLTWH(0, 5, 200, 50),
+        );
+        headerFooterExport.pdfDocumentTemplate.top = header;
+      }, */
+    // );
+    //  PdfPage page = document.pages[0];
+    // page.graphics.drawString(
+    //        'Nombre:' + nombre , PdfStandardFont(PdfFontFamily.helvetica, 12),
+    //     bounds: const Rect.fromLTWH(40, 10, 400, 30));
+    //document.pageSettings.size = PdfPageSize.a4;
+    //document.pageSettings.size = Size(297, 210);
+    //document.pageSettings.orientation = PdfPageOrientation.landscape;
+    //document.pageSettings.rotate = PdfPageRotateAngle.rotateAngle90;
+    final List<int> bytes = document.saveSync();
+    await helper.saveAndLaunchFile(
+        bytes, 'Asis' + '_' + '$nombre' + '_' + '$periodo.pdf');
+    document.dispose();
+  }
+
+//
+  /* Future<void> _exportDataGridToPdf(
+      String periodo, String nombre, String proyecto) async {
+    final PdfDocument document = PdfDocument();
+    document.pageSettings.orientation = PdfPageOrientation.landscape;
+    PdfPage pdfpage = document.pages.add();
+    PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
+      excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
+      exportTableSummaries: true,
+      exportStackedHeaders: false,
+      fitAllColumnsInOnePage: true,
+      //autoColumnWidth: true,
+      /*   headerFooterExport:
+          (DataGridPdfHeaderFooterExportDetails headerFooterExport) {
+        final double width = headerFooterExport.pdfPage.getClientSize().width;
+        final PdfPageTemplateElement header =
+            PdfPageTemplateElement(Rect.fromLTWH(0, 0, width - 1, 35));
+        header.graphics.drawString(
+          '\n Proyecto: ' + proyecto,
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+          bounds: const Rect.fromLTWH(170, 5, 200, 50),
+        );
+        header.graphics.drawString(
+          '\n Periodo:' + periodo,
+          // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+          bounds: const Rect.fromLTWH(400, 5, 200, 50),
+        );
+        header.graphics.drawString(
+          'REGISTRO DE ASISTENCIAS\n Nombre:' + nombre,
+          PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
+          bounds: const Rect.fromLTWH(0, 5, 200, 50),
+        );
+        headerFooterExport.pdfDocumentTemplate.top = header;
+      }, */
     );
     //  PdfPage page = document.pages[0];
     // page.graphics.drawString(
     //        'Nombre:' + nombre , PdfStandardFont(PdfFontFamily.helvetica, 12),
     //     bounds: const Rect.fromLTWH(40, 10, 400, 30));
-    document.pageSettings.orientation = PdfPageOrientation.landscape;
+    //document.pageSettings.size = PdfPageSize.a4;
+    //document.pageSettings.size = Size(297, 210);
+    //document.pageSettings.orientation = PdfPageOrientation.landscape;
+    //document.pageSettings.rotate = PdfPageRotateAngle.rotateAngle90;
     final List<int> bytes = document.saveSync();
     await helper.saveAndLaunchFile(bytes, 'Asis$nombre$periodo.pdf');
     document.dispose();
   }
-
+ */
 ////////////////////////////////////
   Future<void> _exportDataGridToExcel(
       String periodo, String nombre, String proyecto) async {
@@ -128,7 +314,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
 
     final List<int> bytes = workbook.saveAsStream();
     workbook.dispose();
-    await helper.saveAndLaunchFile(bytes, 'Asis$nombre$periodo.xlsx');
+    await helper.saveAndLaunchFile(
+        bytes, 'Asis' + '_' + '$nombre' + '_' + '$periodo.xlsx');
   }
 
   //////////////////////////////
@@ -318,6 +505,9 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                     onPressed: () {
                       _employeeDataSource.clearFilters();
                     }),*/
+                Container(
+                  width: 20,
+                ),
                 Text("Nombre: "),
                 Text(selectedName),
                 Container(
@@ -353,7 +543,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             color: Colors.blue,
                             onPressed: () async {
                               await _exportDataGridToPdf(
-                                  attendanceService.attendanceHistoryMonth,
+                                  fecha,
+                                  // attendanceService.attendanceHistoryMonth,
                                   selectedName,
                                   selectedProyecto);
                             },
