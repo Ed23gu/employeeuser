@@ -51,21 +51,19 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     });
   }
 
-///////////////////
   Future<void> _exportDataGridToPdf(
       String periodo, String nombre, String proyecto) async {
     final PdfDocument document = PdfDocument();
+
     document.pageSettings.orientation = PdfPageOrientation.landscape;
     PdfPage pdfpage = document.pages.add();
-    //document.pageSettings.margins.all = 200;
-    //PdfPage page = document.pages[0];
 
     PdfPageTemplateElement header = PdfPageTemplateElement(
         Rect.fromLTWH(0, 0, document.pageSettings.size.width, 40));
 
-      PdfDateTimeField dateAndTimeField = PdfDateTimeField(
-          font: PdfStandardFont(PdfFontFamily.timesRoman, 12),
-          brush: PdfSolidBrush(PdfColor(0, 0, 0)));
+    PdfDateTimeField dateAndTimeField = PdfDateTimeField(
+        font: PdfStandardFont(PdfFontFamily.timesRoman, 12),
+        brush: PdfSolidBrush(PdfColor(0, 0, 0)));
 
     PdfCompositeField compositefields = PdfCompositeField(
       font: PdfStandardFont(PdfFontFamily.helvetica, 12),
@@ -76,26 +74,19 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
 
     compositefields.draw(header.graphics,
         Offset(0, 20 - PdfStandardFont(PdfFontFamily.helvetica, 12).height));
-
-    /* header.graphics.drawString(
-      'Company Details',
-      PdfStandardFont(PdfFontFamily.helvetica, 12, style: PdfFontStyle.bold),
-      bounds: const Rect.fromLTWH(0, 25, 200, 60),
-    ); */
-
     header.graphics.drawString(
       'Proyecto: ' + proyecto,
       PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
       bounds: const Rect.fromLTWH(170, 28, 200, 60),
     );
     header.graphics.drawString(
-      'Periodo:' + periodo,
+      'Periodo: ' + periodo,
       // '\n Fecha:' + DateFormat.yMMMd().format(DateTime.now()),
       PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
       bounds: const Rect.fromLTWH(400, 28, 200, 60),
     );
     header.graphics.drawString(
-      'Nombre:' + nombre,
+      'Nombre: ' + nombre,
       PdfStandardFont(PdfFontFamily.helvetica, 9, style: PdfFontStyle.bold),
       bounds: const Rect.fromLTWH(0, 28, 200, 60),
     );
@@ -149,6 +140,11 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     document.template.bottom = footer;
 
     PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
+      cellExport: (details) {
+        if (details.cellType == DataGridExportCellType.columnHeader) {
+          details.pdfCell.style.backgroundBrush = PdfBrushes.gray;
+        }
+      },
       excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
       exportTableSummaries: true,
       exportStackedHeaders: false,
@@ -246,50 +242,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
 
     return Scaffold(
-        /*   appBar: AppBar(
-          leading: Builder(builder: (BuildContext context) {
-            return Container(
-              child: Image(image: AssetImage('/icon/icon.png')),
-            );
-          }),
-          title: Text(
-            "ArtConsGroup",
-            style: TextStyle(fontSize: 17),
-          ),
-          actions: [
-            Row(
-              children: [
-                Icon(
-                  Icons.brightness_2_outlined,
-                  size: 17, // Icono para tema claro
-                  color:
-                      AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                          ? Colors.grey
-                          : Colors.white,
-                ),
-                Switch(
-                    value: AdaptiveTheme.of(context).mode ==
-                        AdaptiveThemeMode.light,
-                    onChanged: (bool value) {
-                      if (value) {
-                        AdaptiveTheme.of(context).setLight();
-                      } else {
-                        AdaptiveTheme.of(context).setDark();
-                      }
-                    }),
-                Icon(
-                  Icons.brightness_low_rounded,
-                  size: 20, // Icono para tema oscuro
-                  color:
-                      AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                          ? Colors.white
-                          : Colors.grey,
-                ),
-              ],
-            )
-          ],
-        ),
-        */
         body: Column(
       children: [
         Container(
@@ -545,7 +497,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         overflow: TextOverflow.ellipsis,
                       ))),
               GridColumn(
-                  columnName: 'SuTotalH1',
+                  columnName: 'SubTH1',
                   allowFiltering: false,
                   allowSorting: false,
                   label: Container(
@@ -589,7 +541,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         overflow: TextOverflow.ellipsis,
                       ))),
               GridColumn(
-                  columnName: 'SuTotalH2',
+                  columnName: 'SubTH2',
                   allowFiltering: false,
                   allowSorting: false,
                   label: Container(
@@ -611,7 +563,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         overflow: TextOverflow.ellipsis,
                       ))),
               GridColumn(
-                  columnName: 'TotaldeHoras',
+                  columnName: 'Total',
                   visible: false,
                   allowFiltering: false,
                   allowSorting: false,
@@ -634,13 +586,13 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                       'Proyecto',
                       'HoraIn',
                       'HoraOut',
-                      'SuTotalH1',
+                      'SubTH1',
                       'Proyecto2',
                       'HoraIn2',
                       'HoraOut2',
-                      'SuTotalH2',
+                      'SubTH2',
                       'TotalHoras',
-                      'TotaldeHoras'
+                      'Total'
                     ],
                     child: Container(
                         // color: Colors.cyan[200],
@@ -723,7 +675,7 @@ class EmployeeDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'HoraIn', value: e.HoraIn),
               DataGridCell<String>(columnName: 'HoraOut', value: e.HoraOut),
               DataGridCell<String>(
-                  columnName: 'SuTotalH1',
+                  columnName: 'SubTH1',
                   value: (e.HoraIn == "null" || e.HoraOut == "null")
                       ? "00:00"
                       : Tiempo(e.HoraOut, e.HoraIn)
@@ -733,14 +685,14 @@ class EmployeeDataSource extends DataGridSource {
               DataGridCell<String>(columnName: 'HoraIn2', value: e.HoraIn2),
               DataGridCell<String>(columnName: 'HoraOut2', value: e.HoraOut2),
               DataGridCell<String>(
-                  columnName: 'SuTotalH2',
+                  columnName: 'SubTH2',
                   value: (e.HoraIn2 == "null" || e.HoraOut2 == "null")
                       ? "00:00"
                       : Tiempo(e.HoraOut2, e.HoraIn2)
                           .obtenerDiferenciaTiempo()
                           .toString()),
               DataGridCell<String>(
-                  columnName: 'TotaldeHoras',
+                  columnName: 'Total',
                   value: obtenerSumaDeTiempo(
                       e.HoraOut, e.HoraIn, e.HoraOut2, e.HoraIn2)),
               DataGridCell<int>(
