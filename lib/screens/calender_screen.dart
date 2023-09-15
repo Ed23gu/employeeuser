@@ -324,7 +324,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       ])),
                                       Row(
                                         children: [
-                                          Text('Observaciones: '),
+                                          Text(attendanceData.lugar_1
+                                              .toString()),
                                           Container(child: Text('d'))
                                         ],
                                       )

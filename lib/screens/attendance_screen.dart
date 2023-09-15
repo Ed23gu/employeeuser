@@ -1450,7 +1450,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 margin: const EdgeInsets.only(top: 5),
                 child: Builder(builder: (context) {
                   return SlideAction(
-                    height: 60,
+                    height: 55,
                     text: (attendanceService.attendanceModel?.checkIn != null &&
                             attendanceService.attendanceModel?.checkOut != null)
                         ? "Gracias por completar el registro"
@@ -1793,7 +1793,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             ? "Registre el ingreso"
                             : "Registre la salida",
                     //alignment: Alignment.topCenter,
-                    height: 60,
+                    height: 55,
                     textStyle: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).brightness == Brightness.light
