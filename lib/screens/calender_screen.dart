@@ -117,7 +117,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             color: AdaptiveTheme.of(context)
                                                         .mode ==
                                                     AdaptiveThemeMode.light
-                                                ? Color(0xFF001D32)
+                                                ? Color(0xFF006689)
                                                 : Color(0xFFFFFFFF),
                                             fontWeight: FontWeight.bold),
                                       ),
