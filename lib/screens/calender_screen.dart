@@ -98,18 +98,31 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
+                                      child: Container(
                                     width: 50,
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .tertiaryContainer,
-                                    child: Text(
-                                      DateFormat("EE \n dd", "es_ES")
-                                          .format(attendanceData.createdAt),
-                                      style: const TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
+                                    decoration: BoxDecoration(
+                                      color: AdaptiveTheme.of(context).mode ==
+                                              AdaptiveThemeMode.light
+                                          ? Color(0xFFCDE5FF)
+                                          : Color(0xFF00639A),
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
                                     ),
-                                  ),
+                                    child: Center(
+                                      child: Text(
+                                        DateFormat("EE \n dd", "es_ES")
+                                            .format(attendanceData.createdAt),
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: AdaptiveTheme.of(context)
+                                                        .mode ==
+                                                    AdaptiveThemeMode.light
+                                                ? Color(0xFF001D32)
+                                                : Color(0xFFFFFFFF),
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  )),
                                   Expanded(
                                     child: Column(children: [
                                       Expanded(
