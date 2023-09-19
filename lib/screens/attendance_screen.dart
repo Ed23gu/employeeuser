@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
@@ -42,6 +43,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading4 = false;
   bool flat = false;
 
+  var rellenoScrolliz = 10.0;
+  var rellenoScrollarr = 5.0;
+  var rellenoScrollder = 10.0;
+  var rellenoScrollabajo = 10.0;
+  var lineSizeancho = 60.0;
+  var grosorDivider = 1.0;
+  var margenPanelfotos = 7.0;
+  var margenPanelfotos2 = 0.0;
+  var anchoSizedivider = 80.0;
+  var altoSlider = 55.0;
+  var altoImagen = 126.0;
   int imageq = 100;
   int qt = 85;
   int per = 15;
@@ -590,14 +602,13 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     if (!kIsWeb) {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
+      await subirubi.markAttendance3(context);
+      if (getUrl == "NULL") {
+        setState(() {
+          flagborrar = true;
+        });
+      }
       if (pickedFile != null) {
-        await subirubi.markAttendance3(context);
-        if (getUrl == "NULL") {
-          setState(() {
-            flagborrar = true;
-          });
-        }
-
         if (flagborrar == false) {
           _images = File(pickedFile.path);
           File? imagescom =
@@ -1053,7 +1064,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
         body: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 10),
+          padding: EdgeInsets.fromLTRB(rellenoScrolliz, rellenoScrolliz,
+              rellenoScrolliz, rellenoScrolliz),
           child: Column(
             children: [
               WarningWidgetValueNotifier(),
@@ -1064,26 +1076,25 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       if (snapshot.hasData) {
                         UserModel user = snapshot.data!;
                         return Container(
-                          //padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                           alignment: Alignment.centerLeft,
                           child: Text(
                             user.name != ''
-                                ? "Hola " + user.name + ","
-                                : "Hola" + "#${user.employeeId}" + ",",
+                                ? 'Hola ${user.name},'
+                                : 'Hola #${user.employeeId},',
                             style: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         );
                       }
-                      return const SizedBox(
-                        width: 60,
+                      return SizedBox(
+                        width: lineSizeancho,
                         child: LinearProgressIndicator(),
                       );
                     });
               }),
-              const SizedBox(
+              SizedBox(
                 child: Divider(
-                  thickness: 1,
+                  thickness: grosorDivider,
                 ),
               ),
               route.Consumer<DbService>(builder: (context, dbServie, child) {
@@ -1100,16 +1111,15 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ),
                         );
                       }
-                      return const SizedBox(
-                        width: 60,
+                      return SizedBox(
+                        width: lineSizeancho,
                         child: LinearProgressIndicator(),
                       );
                     });
               }), //
-
-              const SizedBox(
+              SizedBox(
                 child: Divider(
-                  thickness: 1,
+                  thickness: grosorDivider,
                 ),
               ),
 
@@ -1148,16 +1158,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     icon: const Icon(Icons.logout),
                     label: const Text("Salir")),
               ), */
-              const SizedBox(
-                width: 90,
-                child: Divider(
-                  thickness: 1,
-                ),
-              ),
+
               Container(
-                //padding: EdgeInsets.all(10.0),
-                margin: EdgeInsets.only(top: 5, bottom: 5, left: 0, right: 0),
-                height: 180,
+                margin: EdgeInsets.only(
+                    top: margenPanelfotos,
+                    bottom: margenPanelfotos,
+                    left: margenPanelfotos2,
+                    right: margenPanelfotos2),
+                height: altoContainer,
                 decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
                         ? Colors.white
@@ -1179,6 +1187,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          gapH4,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1197,15 +1206,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 2,
-                            width: 80,
-                            child: Divider(),
-                          ),
-                          const SizedBox(
-                            height: 7,
-                            width: 80,
-                          ),
+                          gapH4,
                           Row(
                             children: [
                               Column(
@@ -1292,7 +1293,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 imageUrl: attendanceService
                                                     .attendanceModel!.pic_in
                                                     .toString(),
-                                                height: 125,
+                                                height: altoImagen,
                                                 /* progressIndicatorBuilder:
                                                       (context, url,
                                                       COMPRTROBAR
@@ -1323,6 +1324,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          gapH4,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1342,15 +1344,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 2,
-                            width: 80,
-                            child: Divider(),
-                          ),
-                          const SizedBox(
-                            height: 6,
-                            width: 80,
-                          ),
+                          gapH4,
                           Row(
                             children: [
                               Column(
@@ -1434,7 +1428,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 imageUrl: attendanceService
                                                     .attendanceModel!.pic_out
                                                     .toString(),
-                                                height: 125,
+                                                height: altoImagen,
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Icon(Icons.error),
@@ -1446,11 +1440,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       )),
                     ]),
               ),
+              //gapH8,
               Container(
-                margin: const EdgeInsets.only(top: 5),
+                margin: EdgeInsets.only(top: rellenoScrollarr),
                 child: Builder(builder: (context) {
                   return SlideAction(
-                    height: 55,
+                    height: altoSlider,
                     text: (attendanceService.attendanceModel?.checkIn != null &&
                             attendanceService.attendanceModel?.checkOut != null)
                         ? "Gracias por completar el registro"
@@ -1500,13 +1495,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   );
                 }),
               ),
+              //  gapH8,
               Container(
-                height: 10,
-              ),
-              Container(
-                padding: EdgeInsets.all(10.0),
-                margin: EdgeInsets.only(top: 5, bottom: 10, left: 0, right: 0),
-                height: 180,
+                margin: EdgeInsets.only(
+                    top: margenPanelfotos,
+                    bottom: margenPanelfotos,
+                    left: margenPanelfotos2,
+                    right: margenPanelfotos2),
+                height: altoContainer,
                 decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.light
                         ? Colors.white //  color: Colors.white,
@@ -1527,6 +1523,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          gapH4,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1546,15 +1543,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 2,
-                            width: 80,
-                            child: Divider(),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                            width: 80,
-                          ),
+                          gapH4,
                           Row(
                             children: [
                               Column(
@@ -1639,7 +1628,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 imageUrl: attendanceService
                                                     .attendanceModel!.pic_in2
                                                     .toString(),
-                                                height: 125,
+                                                height: altoImagen,
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Icon(Icons.error),
@@ -1654,6 +1643,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          gapH4,
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -1673,15 +1663,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 2,
-                            width: 80,
-                            child: Divider(),
-                          ),
-                          const SizedBox(
-                            height: 5,
-                            width: 80,
-                          ),
+                          gapH4,
                           Row(
                             children: [
                               Column(
@@ -1766,7 +1748,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                 imageUrl: attendanceService
                                                     .attendanceModel!.pic_out2
                                                     .toString(),
-                                                height: 125,
+                                                height: altoImagen,
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Icon(Icons.error),
@@ -1780,7 +1762,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
               ///////////////////////////////////fotos//////////////
               Container(
-                margin: const EdgeInsets.only(top: 5),
+                margin: EdgeInsets.only(top: rellenoScrollarr),
                 child: Builder(builder: (context) {
                   return SlideAction(
                     animationDuration: Duration(milliseconds: 200),
@@ -1793,7 +1775,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             ? "Registre el ingreso"
                             : "Registre la salida",
                     //alignment: Alignment.topCenter,
-                    height: 55,
+                    height: altoSlider,
                     textStyle: TextStyle(
                         fontSize: 16,
                         color: Theme.of(context).brightness == Brightness.light
