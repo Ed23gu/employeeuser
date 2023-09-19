@@ -151,7 +151,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ExpansionTile(
                       leading: Icon(Icons.brightness_6_outlined),
                       title: Text(
-                        "   Tema",
+                        "Tema",
                         textAlign: TextAlign.left,
                       ),
                       children: <Widget>[
@@ -184,7 +184,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: const Icon(Icons.logout),
                           ),
                           Text(
-                            "     Salir",
+                            "  Salir",
                             style: TextStyle(fontSize: 17),
                           ),
                         ],
