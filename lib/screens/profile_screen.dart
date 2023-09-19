@@ -77,9 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 10,
-                    ),
+                    gapH8,
                     Text("Email: ${dbService.userModel?.email}"),
                     gapH20,
                     TextField(
@@ -111,27 +109,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               },
                             ),
                           ),
-                    /*  SizedBox(
-                                width: double.infinity,
-                                child: DropdownButtonFormField(
-                                  decoration: const InputDecoration(
-                                      border: OutlineInputBorder()),
-                                  value: dbService.employeeDepartment ??
-                                      dbService.allDepartments.first.id,
-                                  items: dbService.allDepartments
-                                      .map((DepartmentModel item) {
-                                    return DropdownMenuItem(
-                                        value: item.id,
-                                        child: Text(
-                                          item.title,
-                                          style: const TextStyle(fontSize: 20),
-                                        ));
-                                  }).toList(),
-                                  onChanged: (selectedValue) {
-                                    dbService.employeeDepartment = selectedValue;
-                                  },
-                                ),
-                              ),*/
                     gapH16,
                     SizedBox(
                       height: 50,

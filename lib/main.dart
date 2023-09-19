@@ -14,8 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final internetChecker = CheckInternetConnection();
-///////////////////////////ADMIN OPCION//////
-//////version 2 administrado////////////////////////////////
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // load env

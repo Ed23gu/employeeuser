@@ -42,7 +42,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading3 = false;
   bool isUploading4 = false;
   bool flat = false;
-
   var rellenoScrolliz = 10.0;
   var rellenoScrollarr = 5.0;
   var rellenoScrollder = 10.0;

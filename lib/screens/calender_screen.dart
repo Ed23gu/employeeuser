@@ -17,7 +17,6 @@ class CalenderScreen extends StatefulWidget {
 class _CalenderScreenState extends State<CalenderScreen> {
   var padd0 = 0.0;
   var padd4 = 4.0;
-
   var padd8 = 8.0;
   var padd12 = 12.0;
   var padd16 = 16.0;
