@@ -14,6 +14,14 @@ class CalenderScreen extends StatefulWidget {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
+  var padd0 = 0.0;
+  var padd4 = 4.0;
+
+  var padd8 = 8.0;
+  var padd12 = 12.0;
+  var padd16 = 16.0;
+  var altoContainer = 150.0;
+  var anchoDia = 50.0;
   @override
   Widget build(BuildContext context) {
     final attendanceService = Provider.of<AttendanceService>(context);
@@ -21,7 +29,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
         body: Column(
       children: [
         Container(
-          padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+          padding: EdgeInsets.fromLTRB(padd8, padd4, padd8, padd4),
           alignment: Alignment.centerLeft,
           child: Text(
             "Registro de Asitencias",
@@ -32,7 +40,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              padding: EdgeInsets.fromLTRB(padd8, padd4, padd8, padd4),
               child: Text(
                 attendanceService.attendanceHistoryMonth,
                 style: const TextStyle(fontSize: 18),
@@ -76,8 +84,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 snapshot.data[index];
                             return Container(
                               margin: EdgeInsets.only(
-                                  top: 12, left: 15, right: 15, bottom: 10),
-                              height: 150,
+                                  top: padd8,
+                                  left: padd16,
+                                  right: padd16,
+                                  bottom: padd8),
+                              height: altoContainer,
                               decoration: BoxDecoration(
                                   color: AdaptiveTheme.of(context).mode ==
                                           AdaptiveThemeMode.light
@@ -99,7 +110,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 children: [
                                   Container(
                                       child: Container(
-                                    width: 50,
+                                    width: anchoDia,
                                     decoration: BoxDecoration(
                                       color: AdaptiveTheme.of(context).mode ==
                                               AdaptiveThemeMode.light
@@ -147,7 +158,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             ),
                                             Container(
                                               margin: EdgeInsets.fromLTRB(
-                                                  4, 0, 4, 0),
+                                                  padd4, padd0,  padd4, padd0),
                                               child: Text(
                                                 attendanceData.obra
                                                         ?.toString() ??
@@ -334,8 +345,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 ],
                               ),
                             );
-
-                           
                           });
                     } else {
                       return const Center(
