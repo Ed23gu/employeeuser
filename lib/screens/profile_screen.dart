@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
@@ -29,15 +30,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ? Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  height: 50,
-                ),
+                gapH52,
                 const Center(
                   child: CircularProgressIndicator(),
                 ),
-                SizedBox(
-                  height: 50,
-                ),
+                gapH52,
                 Container(
                   child: IconButton(
                       onPressed: () {
@@ -84,17 +81,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 10,
                     ),
                     Text("Email: ${dbService.userModel?.email}"),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    gapH20,
                     TextField(
                       controller: nameController,
                       decoration: const InputDecoration(
                           label: Text("Nombre"), border: OutlineInputBorder()),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    gapH16,
                     dbService.allDepartments.isEmpty
                         ? const LinearProgressIndicator()
                         : SizedBox(
@@ -139,9 +132,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   },
                                 ),
                               ),*/
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    gapH16,
                     SizedBox(
                       height: 50,
                       width: 200,
@@ -156,13 +147,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ),
+                    gapH16,
                     ExpansionTile(
                       leading: Icon(Icons.brightness_6_outlined),
                       title: Text(
-                        "Tema",
+                        "   Tema",
                         textAlign: TextAlign.left,
                       ),
                       children: <Widget>[

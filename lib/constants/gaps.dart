@@ -36,9 +36,18 @@ const gapH56 = SizedBox(height: Dimens.gap_dp56);
 const gapH60 = SizedBox(height: Dimens.gap_dp60);
 const gapH64 = SizedBox(height: Dimens.gap_dp64);
 
+ const Widget line = Divider();
 
+  const Widget vLine = SizedBox(
+    width: 0.6,
+    height: 24.0,
+    child: VerticalDivider(),
+  );
 
-
+ const Widget linea = SizedBox(
+    height: 0.6,
+    child:Divider(),
+  );
 
 
 

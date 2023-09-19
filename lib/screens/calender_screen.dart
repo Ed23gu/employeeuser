@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:flutter/material.dart';
@@ -152,13 +153,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 fontSize: 15,
                                               ),
                                             ),
-                                            const SizedBox(
-                                              height: 5,
-                                              child: Divider(),
-                                            ),
+                                            linea,
                                             Container(
                                               margin: EdgeInsets.fromLTRB(
-                                                  padd4, padd0,  padd4, padd0),
+                                                  padd4, padd0, padd4, padd0),
                                               child: Text(
                                                 attendanceData.obra
                                                         ?.toString() ??
@@ -185,11 +183,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontSize: 15,
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
+                                                  linea,
                                                   Text(
                                                     attendanceData.checkIn
                                                             ?.toString() ??
@@ -215,11 +209,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontSize: 15,
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
+                                                  linea,
                                                   Text(
                                                     attendanceData.checkOut
                                                             ?.toString() ??
@@ -233,10 +223,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             ])),
                                           ],
                                         )),
-                                        const SizedBox(
-                                          height: 10,
-                                          width: 5,
-                                        ),
+                                        gapW4,
                                         Expanded(
                                             child: Column(
                                           mainAxisAlignment:
@@ -251,13 +238,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 fontSize: 15,
                                               ),
                                             ),
-                                            const SizedBox(
-                                              height: 5,
-                                              child: Divider(),
-                                            ),
+                                            linea,
                                             Container(
                                               margin: EdgeInsets.fromLTRB(
-                                                  4, 0, 4, 0),
+                                                  padd4, padd0, padd4, padd0),
                                               child: Text(
                                                 attendanceData.obra2
                                                         ?.toString() ??
@@ -284,11 +268,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontSize: 15,
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
+                                                  linea,
                                                   Text(
                                                     attendanceData.checkIn2
                                                             ?.toString() ??
@@ -314,11 +294,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       fontSize: 15,
                                                     ),
                                                   ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
+                                                  linea,
                                                   Text(
                                                     attendanceData.checkOut2
                                                             ?.toString() ??
