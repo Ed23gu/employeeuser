@@ -157,13 +157,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       alignment: Alignment.topLeft,
                       child: Row(
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              Provider.of<AuthService>(context, listen: false)
-                                  .signOut();
-                            },
-                            icon: const Icon(Icons.logout),
-                          ),
+                        
                           IconButton(
                             onPressed: () {
                               Provider.of<AuthService>(context, listen: false)
@@ -175,10 +169,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             "     Salir",
                             style: TextStyle(fontSize: 17),
                           ),
-                          Text(
-                            "     Salir",
-                            style: TextStyle(fontSize: 17),
-                          ),
+                       
                         ],
                       ),
                     ),
