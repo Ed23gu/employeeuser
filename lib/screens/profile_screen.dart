@@ -164,6 +164,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             },
                             icon: const Icon(Icons.logout),
                           ),
+                          IconButton(
+                            onPressed: () {
+                              Provider.of<AuthService>(context, listen: false)
+                                  .signOut();
+                            },
+                            icon: const Icon(Icons.logout),
+                          ),
+                          Text(
+                            "     Salir",
+                            style: TextStyle(fontSize: 17),
+                          ),
                           Text(
                             "     Salir",
                             style: TextStyle(fontSize: 17),
