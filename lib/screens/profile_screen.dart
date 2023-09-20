@@ -16,6 +16,10 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   TextEditingController nameController = TextEditingController();
+  var anchoPerfil = 80.0;
+  var altoPerfil = 80.0;
+  var altoBoton50 = 50.0;
+  var anchoBoton200 = 200.0;
 
   @override
   Widget build(BuildContext context) {
@@ -64,8 +68,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(top: 10),
-                      height: 80,
-                      width: 80,
+                      height: altoPerfil,
+                      width: anchoPerfil,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                           color: Colors.blue),
@@ -111,8 +115,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
                     gapH16,
                     SizedBox(
-                      height: 50,
-                      width: 200,
+                      height: altoBoton50,
+                      width: anchoBoton200,
                       child: ElevatedButton(
                         onPressed: () {
                           dbService.updateProfile(
@@ -149,7 +153,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 5, left: 5),
+                      margin: const EdgeInsets.only(top: 5, left: 8),
                       alignment: Alignment.topLeft,
                       child: Row(
                         children: [
@@ -161,7 +165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: const Icon(Icons.logout),
                           ),
                           Text(
-                            "  Salir",
+                            "     Salir",
                             style: TextStyle(fontSize: 17),
                           ),
                         ],
