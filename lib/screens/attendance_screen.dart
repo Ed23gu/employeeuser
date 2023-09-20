@@ -42,6 +42,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool isUploading3 = false;
   bool isUploading4 = false;
   bool flat = false;
+  var pad16 = 16.0;
+  var pad8 = 8.0;
+  var pad4 = 4.0;
   var rellenoScrolliz = 10.0;
   var rellenoScrollarr = 5.0;
   var rellenoScrollder = 10.0;
@@ -1063,8 +1066,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     final attendanceService = route.Provider.of<AttendanceService>(context);
     return Scaffold(
         body: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(rellenoScrolliz, rellenoScrolliz,
-              rellenoScrolliz, rellenoScrolliz),
+          padding: EdgeInsets.fromLTRB(pad16, pad4, pad16, pad4),
           child: Column(
             children: [
               WarningWidgetValueNotifier(),

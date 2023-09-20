@@ -127,7 +127,7 @@ class AttendanceService extends ChangeNotifier {
       } on PostgrestException catch (error) {
         print(error);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          //message: error.message
+         
 
           content: Text("$error Algo ha salido mal, intentelo nuevamente"),
           backgroundColor: Colors.red,
@@ -248,7 +248,7 @@ class AttendanceService extends ChangeNotifier {
       if (placemarks.isNotEmpty) {
         Placemark placeMark = placemarks[4];
         Placemark placeMark2 = placemarks[0];
-        //   String name = placeMark.name!;
+    
         String? subLocality = placeMark.subLocality;
         String? locality = placeMark.locality;
         //String? administrativeArea = placeMark.administrativeArea;
@@ -257,7 +257,7 @@ class AttendanceService extends ChangeNotifier {
         //String? country = placeMark.country;
         String? thoroughfare = placeMark.thoroughfare;
         String? street = placeMark2.street;
-        //String address = "${name},${subLocality},${locality},${administrativeArea},${postalCode}, ${country}";
+      
 
         address =
             "$street,$thoroughfare,$subLocality,$locality,$subadministrativeArea";

@@ -20,6 +20,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var altoPerfil = 80.0;
   var altoBoton50 = 50.0;
   var anchoBoton200 = 200.0;
+  var pad16 = 16.0;
+  var pad6 = 6.0;
 
   @override
   Widget build(BuildContext context) {
@@ -60,14 +62,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ],
             )
           : Padding(
-              padding: const EdgeInsets.all(10),
+              padding: EdgeInsets.all(pad16),
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(top: 10),
                       height: altoPerfil,
                       width: anchoPerfil,
                       decoration: BoxDecoration(
@@ -83,7 +84,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     gapH8,
                     Text("Email: ${dbService.userModel?.email}"),
-                    gapH20,
+                    gapH16,
                     TextField(
                       controller: nameController,
                       decoration: const InputDecoration(
@@ -153,11 +154,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 5, left: 8),
+                      padding: EdgeInsets.only(left: pad6),
                       alignment: Alignment.topLeft,
                       child: Row(
                         children: [
-                        
                           IconButton(
                             onPressed: () {
                               Provider.of<AuthService>(context, listen: false)
@@ -166,10 +166,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             icon: const Icon(Icons.logout),
                           ),
                           Text(
-                            "     Salir",
+                            "Salir",
                             style: TextStyle(fontSize: 17),
                           ),
-                       
                         ],
                       ),
                     ),

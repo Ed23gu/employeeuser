@@ -219,29 +219,16 @@ class ObsService extends ChangeNotifier {
     }
   }
 
-  Future<List<AttendanceModel>> getAttendanceHistory() async {
+  Future<List<ObsModel>> getAy() async {
     final List data = await _supabase
-        .from(Constants.attendancetable)
+        .from(Constants.obstable)
         .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
+        .eq('user_id', _supabase.auth.currentUser!.id)
         .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
-        .order('created_at', ascending: false);
-    return data
-        .map((attendance) => AttendanceModel.fromJson(attendance))
-        .toList();
+        .order('create_at', ascending: false);
+    return data.map((obs) => ObsModel.fromJson(obs)).toList();
   }
 
-  Future<List<AttendanceModel>> getAttendanceHistory2(context) async {
-    final List data = await _supabase
-        .from(Constants.attendancetable)
-        .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
-        .order('created_at', ascending: false);
-    return data
-        .map((attendance) => AttendanceModel.fromJson(attendance))
-        .toList();
-  }
 
   Future<List<ObsModel>> getObsHistory() async {
     final List obsdata = await _supabase

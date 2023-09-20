@@ -53,7 +53,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
     _readStream = supabase
         .from('todos')
         .stream(primaryKey: ['id'])
-        .eq('user_id', supabase.auth.currentUser!.id)
+        // .eq('user_id', supabase.auth.currentUser!.id)
         .eq(
           'date',
           DateFormat("dd MMMM yyyy").format(DateTime.now()),

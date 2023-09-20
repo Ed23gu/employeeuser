@@ -1,7 +1,7 @@
 class ObsModel {
   final int user_id;
   final String title;
-  final String create_at;
+  final DateTime create_at;
   final String date;
   final String horain;
 
@@ -16,7 +16,7 @@ class ObsModel {
     return ObsModel(
         user_id: data['user_id'],
         title: data['title'],
-        create_at: data['create_at'],
+        create_at: DateTime.parse(data['created_at']),
         date: data['date'],
         horain: data['horain']);
   }

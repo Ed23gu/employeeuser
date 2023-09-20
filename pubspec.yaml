@@ -74,6 +74,7 @@ dependencies:
   connectivity_plus: ^4.0.2
   flutter_speed_dial: ^7.0.0
   gap: ^3.0.1
+  readmore: ^2.2.0
 
 dev_dependencies:
   flutter_test:
