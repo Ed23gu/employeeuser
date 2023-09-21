@@ -1,13 +1,11 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/gaps.dart';
-import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/obs_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 
 class CalenderScreen extends StatefulWidget {
@@ -76,7 +74,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 child: const Text("Seleccionar mes")),
           ],
         ),
-        Expanded(
+        /*   Expanded(
             child: FutureBuilder(
                 future: attendanceService.getAttendanceHistory(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -348,6 +346,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   );
                 })),
 
+        */
         // comentarios
 
         Expanded(
