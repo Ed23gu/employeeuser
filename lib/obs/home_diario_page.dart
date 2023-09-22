@@ -220,9 +220,10 @@ class _ComentariosPageState extends State<ComentariosPage> {
               onPressed: () {
                 setState(() {
                   _readStream = supabase
-                      .from('todos')
+                      .from('todos:user_id=eq.${supabase.auth.currentUser!.id}')
                       .stream(primaryKey: ['id'])
-                      .eq('user_id', supabase.auth.currentUser!.id)
+                      //.eq('user_id', supabase.auth.currentUser!.id)
+
                       .eq(
                         'date',
                         DateFormat("dd MMMM yyyy").format(DateTime.now()),

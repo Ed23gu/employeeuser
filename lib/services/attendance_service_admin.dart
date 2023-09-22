@@ -25,7 +25,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
   int? employeeDepartment;
   int? employeeDepartment2;
 
-  String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
+  String todayDate = DateFormat("dd MMMM yyyy" ,"es_ES").format(DateTime.now());
 
   bool _isLoading = false;
 
@@ -46,7 +46,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
   }
 
   String _attendanceHistoryMonth =
-      DateFormat('MMMM yyyy').format(DateTime.now());
+      DateFormat("MMMM yyyy","es_ES").format(DateTime.now());
 
   String get attendanceHistoryMonth => _attendanceHistoryMonth;
 
@@ -202,7 +202,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
         .select()
         // .eq('employee_id', _supabase.auth.currentUser!.id)
         .eq('employee_id', "$attendanceusuario")
-        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
+        .textSearch('date', "'$attendanceHistoryMonth'")
         .order('created_at', ascending: false);
     print("'$attendanceusuario'");
     return data

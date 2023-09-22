@@ -93,7 +93,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
                           context: context, disableFuture: true);
                   String pickedMonth =
-                      DateFormat('MMMM yyyy').format(selectedDate);
+                      DateFormat("MMMM yyyy","es_ES").format(selectedDate);
                   attendanceService.attendanceHistoryMonth = pickedMonth;
                 },
                 child: const Text("Seleccionar mes")),

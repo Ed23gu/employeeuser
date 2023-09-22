@@ -1,11 +1,13 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/gaps.dart';
+import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/obs_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 
 class CalenderScreen extends StatefulWidget {
@@ -24,6 +26,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   var padd20 = 20.0;
   var altoContainer = 150.0;
   var anchoDia = 50.0;
+
   @override
   Widget build(BuildContext context) {
     final attendanceService = Provider.of<AttendanceService>(context);
@@ -32,49 +35,57 @@ class _CalenderScreenState extends State<CalenderScreen> {
         body: Column(
       children: [
         Container(
-          padding: EdgeInsets.fromLTRB(padd8, padd4, padd8, padd4),
+          padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
           alignment: Alignment.centerLeft,
           child: Text(
             "Registro de Asitencias",
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              padding: EdgeInsets.fromLTRB(padd8, padd4, padd8, padd4),
+              padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
               child: Text(
                 attendanceService.attendanceHistoryMonth,
-                style: const TextStyle(fontSize: 18),
+                style: const TextStyle(fontSize: 16),
               ),
             ),
-            ElevatedButton(
-                style: ButtonStyle(),
-                onPressed: () async {
-                  final selectedDate =
-                      await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                          backgroundColor: AdaptiveTheme.of(context).mode ==
-                                  AdaptiveThemeMode.light
-                              ? Colors.white
-                              //  color: Colors.white,
-                              : Colors.black,
-                          selectionColor: AdaptiveTheme.of(context).mode ==
-                                  AdaptiveThemeMode.light
-                              ? Colors.blue
-                              //  color: Colors.white,
-                              : Colors.white,
-                          context: context,
-                          disableFuture: true);
+            gapW36,
+            Localizations.override(
+              context: context,
+              locale: const Locale('es'),
+              child: ElevatedButton(
+                  //style: ButtonStyle(),
+                  onPressed: () async {
+                    final selectedDate =
+                        await SimpleMonthYearPicker.showMonthYearPickerDialog(
+                            backgroundColor: AdaptiveTheme.of(context).mode ==
+                                    AdaptiveThemeMode.light
+                                ? Colors.white
+                                //  color: Colors.white,
+                                : Colors.black,
+                            selectionColor: AdaptiveTheme.of(context).mode ==
+                                    AdaptiveThemeMode.light
+                                ? Colors.blue
+                                //  color: Colors.white,
+                                : Colors.white,
+                            context: context,
+                            disableFuture: true);
 
-                  String pickedMonth =
-                      DateFormat('MMMM yyyy').format(selectedDate);
-                  attendanceService.attendanceHistoryMonth = pickedMonth;
-                },
-                child: const Text("Seleccionar mes")),
+                    String pickedMonth =
+                        DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
+                    attendanceService.attendanceHistoryMonth = pickedMonth;
+                  },
+                  child: const Text(
+                    "Seleccionar mes",
+                    style: const TextStyle(fontSize: 16),
+                  )),
+            )
           ],
         ),
-        /*   Expanded(
+        Expanded(
             child: FutureBuilder(
                 future: attendanceService.getAttendanceHistory(),
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -314,15 +325,86 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                       Row(
                                         children: [
                                           Expanded(
-                                            child: ReadMoreText(
-                                              attendanceData.lugar_1.toString(),
-                                              trimLines: 1,
-                                              // colorClickableText: Colors.pink,
-                                              trimMode: TrimMode.Line,
-                                              trimCollapsedText: '...Leer mas',
-                                              trimExpandedText: ' menos',
-                                            ),
-                                          ),
+                                              child: FutureBuilder(
+                                                  future: obsService
+                                                      .getObsHistory(),
+                                                  builder: (BuildContext
+                                                          context,
+                                                      AsyncSnapshot snapshot) {
+                                                    if (snapshot.hasData) {
+                                                      if (snapshot.data.length >
+                                                          0) {
+                                                        return ListView.builder(
+                                                            itemCount: snapshot
+                                                                .data.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              ObsModel obsData =
+                                                                  snapshot.data[
+                                                                      index];
+                                                              return Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .center,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                children: [
+                                                                  Text(
+                                                                    DateFormat(
+                                                                            "EE dd",
+                                                                            "es_ES")
+                                                                        .format(
+                                                                            obsData.create_at),
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
+                                                                            ? Color(
+                                                                                0xFF006689)
+                                                                            : Color(
+                                                                                0xFFFFFFFF),
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child:
+                                                                        ReadMoreText(
+                                                                      obsData
+                                                                          .title
+                                                                          .toString(),
+                                                                      trimLines:
+                                                                          1,
+                                                                      // colorClickableText: Colors.pink,
+                                                                      trimMode:
+                                                                          TrimMode
+                                                                              .Line,
+                                                                      trimCollapsedText:
+                                                                          '...Leer mas',
+                                                                      trimExpandedText:
+                                                                          ' menos',
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              );
+                                                            });
+                                                      } else {
+                                                        return const Center(
+                                                          child: Text(
+                                                            "Datos no disponibles",
+                                                            style: TextStyle(
+                                                                fontSize: 25),
+                                                          ),
+                                                        );
+                                                      }
+                                                    }
+                                                    return const LinearProgressIndicator(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      color: Colors.grey,
+                                                    );
+                                                  })),
                                         ],
                                       ),
                                     ]),
@@ -346,168 +428,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   );
                 })),
 
-        */
         // comentarios
-
-        Expanded(
-            child: FutureBuilder(
-                future: obsService.getObsHistory(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasData) {
-                    if (snapshot.data.length > 0) {
-                      return ListView.builder(
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, index) {
-                            ObsModel obsData = snapshot.data[index];
-                            return Container(
-                              margin: EdgeInsets.only(
-                                  top: padd8,
-                                  left: padd16,
-                                  right: padd16,
-                                  bottom: padd8),
-                              height: altoContainer,
-                              decoration: BoxDecoration(
-                                  color: AdaptiveTheme.of(context).mode ==
-                                          AdaptiveThemeMode.light
-                                      ? Colors.white
-                                      //  color: Colors.white,
-                                      : Color.fromARGB(255, 43, 41, 41),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color:
-                                            Color.fromARGB(110, 18, 148, 255),
-                                        blurRadius: 5,
-                                        offset: Offset(2, 2)),
-                                  ],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                      child: Container(
-                                    width: anchoDia,
-                                    decoration: BoxDecoration(
-                                      color: AdaptiveTheme.of(context).mode ==
-                                              AdaptiveThemeMode.light
-                                          ? Color(0xFFCDE5FF)
-                                          : Color(0xFF00639A),
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        DateFormat("EE \n dd", "es_ES")
-                                            .format(obsData.create_at),
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: AdaptiveTheme.of(context)
-                                                        .mode ==
-                                                    AdaptiveThemeMode.light
-                                                ? Color(0xFF006689)
-                                                : Color(0xFFFFFFFF),
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
-                                  )),
-                                  Expanded(
-                                    child: Column(children: [
-                                      Expanded(
-                                          child: Row(children: [
-                                        Expanded(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Proyecto",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            linea,
-                                            Container(
-                                              margin: EdgeInsets.fromLTRB(
-                                                  padd4, padd0, padd4, padd0),
-                                              child: Text(
-                                                obsData.title.toString(),
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                                child: Row(children: [
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Ingreso",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                  linea,
-                                                  Text(
-                                                    obsData.horain.toString(),
-                                                    style: TextStyle(
-                                                      fontSize: 12,
-                                                    ),
-                                                  )
-                                                ],
-                                              )),
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Salida",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                    ),
-                                                  ),
-                                                  linea,
-                                                ],
-                                              )),
-                                            ])),
-                                          ],
-                                        )),
-                                      ])),
-                                    ]),
-                                  ),
-                                ],
-                              ),
-                            );
-                          });
-                    } else {
-                      return const Center(
-                        child: Text(
-                          "Datos no disponibles",
-                          style: TextStyle(fontSize: 25),
-                        ),
-                      );
-                    }
-                  }
-                  return const LinearProgressIndicator(
-                    backgroundColor: Colors.white,
-                    color: Colors.grey,
-                  );
-                })),
       ],
     ));
   }

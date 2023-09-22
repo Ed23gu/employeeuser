@@ -60,7 +60,7 @@ class ArtAsis extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
               ],
               supportedLocales: const [
-                Locale('es', 'ES')
+                Locale("es")
               ],
               debugShowCheckedModeBanner: false,
               title: 'Asistencia',

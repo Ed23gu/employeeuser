@@ -28,7 +28,7 @@ class AttendanceScreen extends StatefulWidget {
 class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
-  String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
+  String todayDate = DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now());
   String getUrl = "INICIAL";
   int segundos = 1;
   bool flagborrar = false;
@@ -172,8 +172,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -185,7 +186,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
             await supabase.from('attendance').insert({
               'employee_id': supabase.auth.currentUser!.id,
-              'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+              'date':
+                  DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
               'pic_in': getUrl,
             });
             setState(() {
@@ -217,8 +219,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -280,7 +283,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -295,7 +298,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               supabase.storage.from('imageip').getPublicUrl(urllisto);
           await supabase.from('attendance').insert({
             'employee_id': supabase.auth.currentUser!.id,
-            'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+            'date': DateFormat("dd MMMM yyyy" ,"es_ES").format(DateTime.now()),
             'pic_in': getUrl,
           });
 
@@ -325,7 +328,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       } else {
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -392,8 +395,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading2 = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -441,8 +445,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading2 = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -504,7 +509,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -553,7 +558,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       } else {
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -619,8 +624,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading3 = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -668,8 +674,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading3 = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -731,7 +738,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -779,7 +786,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       } else {
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -846,8 +853,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading4 = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -895,8 +903,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading4 = true;
           });
-          String fecharuta =
-              DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+              .format(DateTime.now())
+              .toString();
           DateTime now = DateTime.now();
           String fileName =
               DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -958,7 +967,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -1007,7 +1016,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
       } else {
         var pickedFile = webImage;
         String fecharuta =
-            DateFormat("ddMMMMyyyy").format(DateTime.now()).toString();
+            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -1083,7 +1092,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 ? 'Hola ${user.name},'
                                 : 'Hola #${user.employeeId},',
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 22, fontWeight: FontWeight.bold),
                           ),
                         );
                       }
@@ -1093,11 +1102,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }),
-              SizedBox(
-                child: Divider(
-                  thickness: grosorDivider,
-                ),
-              ),
+              gapH8,
               route.Consumer<DbService>(builder: (context, dbServie, child) {
                 return FutureBuilder(
                     future: dbServie.getTodaydep(),
@@ -1108,7 +1113,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             user2.title != "" ? user2.title.toString() : " ",
-                            style: const TextStyle(fontSize: 13),
+                            style: const TextStyle(fontSize: 16),
                           ),
                         );
                       }
@@ -1118,12 +1123,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }), //
-              SizedBox(
-                child: Divider(
-                  thickness: grosorDivider,
-                ),
-              ),
-
+              // SizedBox(
+              //child: Divider(
+              //   thickness: grosorDivider,
+              //   ),
+              //   ),
+              gapH16,
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
                   builder: (context, snapshot) {
@@ -1138,7 +1143,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               Container(
                 alignment: Alignment.center,
                 child: Text(
-                  DateFormat("dd MMMM yyyy").format(DateTime.now()),
+                  DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
                   style: const TextStyle(fontSize: 14),
                 ),
               ),

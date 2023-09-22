@@ -30,7 +30,7 @@ class AttendanceService extends ChangeNotifier {
 
   String address = " ";
 
-  String todayDate = DateFormat("dd MMMM yyyy").format(DateTime.now());
+  String todayDate = DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now());
 
   bool _isLoading = false;
 
@@ -51,7 +51,7 @@ class AttendanceService extends ChangeNotifier {
   }
 
   String _attendanceHistoryMonth =
-      DateFormat('MMMM yyyy').format(DateTime.now());
+      DateFormat("MMMM yyyy" , "es_ES").format(DateTime.now());
 
   String get attendanceHistoryMonth => _attendanceHistoryMonth;
 
@@ -127,8 +127,6 @@ class AttendanceService extends ChangeNotifier {
       } on PostgrestException catch (error) {
         print(error);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-         
-
           content: Text("$error Algo ha salido mal, intentelo nuevamente"),
           backgroundColor: Colors.red,
         ));
@@ -220,7 +218,7 @@ class AttendanceService extends ChangeNotifier {
         .from(Constants.attendancetable)
         .select()
         .eq('employee_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
+        .textSearch('date', "'$attendanceHistoryMonth'")
         .order('created_at', ascending: false);
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
@@ -232,7 +230,7 @@ class AttendanceService extends ChangeNotifier {
         .from(Constants.attendancetable)
         .select()
         .eq('employee_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
+        .textSearch('date', "'$attendanceHistoryMonth'")
         .order('created_at', ascending: false);
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
@@ -248,7 +246,7 @@ class AttendanceService extends ChangeNotifier {
       if (placemarks.isNotEmpty) {
         Placemark placeMark = placemarks[4];
         Placemark placeMark2 = placemarks[0];
-    
+
         String? subLocality = placeMark.subLocality;
         String? locality = placeMark.locality;
         //String? administrativeArea = placeMark.administrativeArea;
@@ -257,7 +255,6 @@ class AttendanceService extends ChangeNotifier {
         //String? country = placeMark.country;
         String? thoroughfare = placeMark.thoroughfare;
         String? street = placeMark2.street;
-      
 
         address =
             "$street,$thoroughfare,$subLocality,$locality,$subadministrativeArea";

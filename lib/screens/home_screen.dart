@@ -1,4 +1,5 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/screens/errores/error_page_asis.dart';
 import 'package:employee_attendance/screens/errores/error_page_calen.dart';
 import 'package:employee_attendance/screens/errores/error_page_perfi.dart';
@@ -11,6 +12,9 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _page = 1;
+  var pad16 = 16.0;
+  var pad8 = 8.0;
+  var pad4 = 4.0;
 
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   @override
@@ -18,18 +22,23 @@ class _BottomNavBarState extends State<BottomNavBar> {
     return Scaffold(
       appBar: AppBar(
         leading: Builder(builder: (BuildContext context) {
-          return SizedBox(
-              child: Center(
-            child: Image.asset(
-              'assets/icon/icon.png',
-              width: 40,
-            ),
-          ));
+          return Row(
+            children: [
+              gapW16,
+              SizedBox(
+                  child: Center(
+                child: Image.asset(
+                  'assets/icon/icon.png',
+                  width: 40,
+                ),
+              )),
+            ],
+          );
         }),
         title: Text(
-          "ArtConsGroup.",
+          "ArtconsGroup.",
           style: TextStyle(
-            fontSize: 23,
+            fontSize: 28,
           ),
         ),
       ),
