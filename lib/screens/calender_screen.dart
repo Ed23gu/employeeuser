@@ -24,8 +24,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
   var padd12 = 12.0;
   var padd16 = 16.0;
   var padd20 = 20.0;
-  var altoContainer = 150.0;
+  var altoContainer = 200.0;
   var anchoDia = 50.0;
+  var fontSizetitulo = 15.0;
+  var fontSizeinfo = 12.0;
 
   @override
   Widget build(BuildContext context) {
@@ -123,7 +125,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   Container(
-                                      child: Container(
                                     width: anchoDia,
                                     decoration: BoxDecoration(
                                       color: AdaptiveTheme.of(context).mode ==
@@ -147,7 +148,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                  )),
+                                  ),
                                   Expanded(
                                     child: Column(children: [
                                       Expanded(
@@ -155,54 +156,60 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                         Expanded(
                                             child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.center,
+                                              MainAxisAlignment.start,
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              "Proyecto",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            linea,
                                             Container(
-                                              margin: EdgeInsets.fromLTRB(
-                                                  padd4, padd0, padd4, padd0),
-                                              child: Text(
-                                                attendanceData.obra
-                                                        ?.toString() ??
-                                                    '--/--',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
+                                                child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.apartment_sharp),
+                                                Container(
+                                                  height: padd20,
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      padd8,
+                                                      padd8,
+                                                      padd8,
+                                                      padd8),
+                                                  child: Text(
+                                                    attendanceData.obra
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: fontSizeinfo,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            )),
+                                            linea,
                                             Expanded(
                                                 child: Row(children: [
                                               Expanded(
                                                   child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                    MainAxisAlignment.start,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
+                                                  gapH4,
                                                   Text(
                                                     "Ingreso",
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 15,
+                                                      fontSize: fontSizetitulo,
                                                     ),
                                                   ),
-                                                  linea,
+                                                  gapH4,
                                                   Text(
                                                     attendanceData.checkIn
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 12,
+                                                      fontSize: fontSizeinfo,
                                                     ),
                                                   )
                                                 ],
@@ -210,25 +217,26 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               Expanded(
                                                   child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                    MainAxisAlignment.start,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
+                                                  gapH4,
                                                   Text(
                                                     "Salida",
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 15,
+                                                      fontSize: fontSizetitulo,
                                                     ),
                                                   ),
-                                                  linea,
+                                                  gapH4,
                                                   Text(
                                                     attendanceData.checkOut
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 12,
+                                                      fontSize: fontSizeinfo,
                                                     ),
                                                   )
                                                 ],
@@ -244,78 +252,86 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              "Proyecto",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                              ),
-                                            ),
-                                            linea,
                                             Container(
-                                              margin: EdgeInsets.fromLTRB(
-                                                  padd4, padd0, padd4, padd0),
-                                              child: Text(
-                                                attendanceData.obra2
-                                                        ?.toString() ??
-                                                    '--/--',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                ),
-                                              ),
-                                            ),
+                                                child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Icon(Icons.apartment_sharp),
+                                                Container(
+                                                  height: padd20,
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      padd8,
+                                                      padd8,
+                                                      padd8,
+                                                      padd8),
+                                                  child: Text(
+                                                    attendanceData.obra2
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: fontSizeinfo,
+                                                    ),
+                                                  ),
+                                                )
+                                              ],
+                                            )),
+                                            linea,
                                             Expanded(
                                                 child: Row(children: [
                                               Expanded(
                                                   child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                    MainAxisAlignment.start,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
+                                                  gapH4,
                                                   Text(
                                                     "Ingreso",
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 15,
+                                                      fontSize: fontSizetitulo,
                                                     ),
                                                   ),
-                                                  linea,
+                                                  gapH4,
                                                   Text(
                                                     attendanceData.checkIn2
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 12,
+                                                      fontSize: fontSizeinfo,
                                                     ),
-                                                  )
+                                                  ),
+                                                  gapH4,
                                                 ],
                                               )),
                                               Expanded(
                                                   child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                    MainAxisAlignment.start,
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
                                                 children: [
+                                                  gapH4,
                                                   Text(
                                                     "Salida",
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 15,
+                                                      fontSize: fontSizetitulo,
                                                     ),
                                                   ),
-                                                  linea,
+                                                  gapH4,
                                                   Text(
                                                     attendanceData.checkOut2
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 12,
+                                                      fontSize: fontSizeinfo,
                                                     ),
-                                                  )
+                                                  ),
                                                 ],
                                               )),
                                             ])),
