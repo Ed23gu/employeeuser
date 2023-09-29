@@ -338,91 +338,87 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           ],
                                         )),
                                       ])),
-                                      Row(
-                                        children: [
-                                          Expanded(
-                                              child: FutureBuilder(
-                                                  future: obsService
-                                                      .getObsHistory(),
-                                                  builder: (BuildContext
-                                                          context,
-                                                      AsyncSnapshot snapshot) {
-                                                    if (snapshot.hasData) {
-                                                      if (snapshot.data.length >
-                                                          0) {
-                                                        return ListView.builder(
-                                                            itemCount: snapshot
-                                                                .data.length,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              ObsModel obsData =
-                                                                  snapshot.data[
-                                                                      index];
-                                                              return Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .center,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .center,
-                                                                children: [
-                                                                  Text(
-                                                                    DateFormat(
-                                                                            "EE dd",
-                                                                            "es_ES")
-                                                                        .format(
-                                                                            obsData.create_at),
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light
-                                                                            ? Color(
-                                                                                0xFF006689)
-                                                                            : Color(
-                                                                                0xFFFFFFFF),
-                                                                        fontWeight:
-                                                                            FontWeight.bold),
-                                                                  ),
-                                                                  Expanded(
-                                                                    child:
-                                                                        ReadMoreText(
-                                                                      obsData
-                                                                          .title
-                                                                          .toString(),
-                                                                      trimLines:
-                                                                          1,
-                                                                      // colorClickableText: Colors.pink,
-                                                                      trimMode:
-                                                                          TrimMode
-                                                                              .Line,
-                                                                      trimCollapsedText:
-                                                                          '...Leer mas',
-                                                                      trimExpandedText:
-                                                                          ' menos',
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              );
-                                                            });
-                                                      } else {
-                                                        return const Center(
-                                                          child: Text(
-                                                            "Datos no disponibles",
-                                                            style: TextStyle(
-                                                                fontSize: 25),
-                                                          ),
-                                                        );
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                                child: FutureBuilder(
+                                                    future: obsService
+                                                        .getObsHistory(),
+                                                    builder:
+                                                        (BuildContext context,
+                                                            AsyncSnapshot
+                                                                snapshot) {
+                                                      if (snapshot.hasData) {
+                                                        if (snapshot
+                                                                .data.length >
+                                                            0) {
+                                                          return ListView
+                                                              .builder(
+                                                                  itemCount:
+                                                                      snapshot
+                                                                          .data
+                                                                          .length,
+                                                                  itemBuilder:
+                                                                      (context,
+                                                                          index) {
+                                                                    ObsModel
+                                                                        obsData =
+                                                                        snapshot
+                                                                            .data[index];
+                                                                    return Row(
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .center,
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .center,
+                                                                      children: [
+                                                                        Text(
+                                                                          DateFormat("EE dd", "es_ES")
+                                                                              .format(obsData.create_at),
+                                                                          style: TextStyle(
+                                                                              fontSize: 12,
+                                                                              color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light ? Color(0xFF006689) : Color(0xFFFFFFFF),
+                                                                              fontWeight: FontWeight.bold),
+                                                                        ),
+                                                                        Expanded(
+                                                                          child:
+                                                                              ReadMoreText(
+                                                                            obsData.title.toString(),
+                                                                            trimLines:
+                                                                                1,
+                                                                            // colorClickableText: Colors.pink,
+                                                                            trimMode:
+                                                                                TrimMode.Line,
+                                                                            trimCollapsedText:
+                                                                                '...Leer mas',
+                                                                            trimExpandedText:
+                                                                                ' menos',
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    );
+                                                                  });
+                                                        } else {
+                                                          return const Center(
+                                                            child: Text(
+                                                              "Datos no disponibles",
+                                                              style: TextStyle(
+                                                                  fontSize: 25),
+                                                            ),
+                                                          );
+                                                        }
                                                       }
-                                                    }
-                                                    return const LinearProgressIndicator(
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      color: Colors.grey,
-                                                    );
-                                                  })),
-                                        ],
-                                      ),
+                                                      return const LinearProgressIndicator(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        color: Colors.grey,
+                                                      );
+                                                    })),
+                                          ],
+                                        ),
+                                      )
                                     ]),
                                   ),
                                 ],
