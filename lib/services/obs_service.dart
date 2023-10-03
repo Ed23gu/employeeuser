@@ -234,7 +234,8 @@ class ObsService extends ChangeNotifier {
         .from(Constants.obstable)
         .select()
         .eq('user_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
+        .textSearch('date', 'October 2023', config: 'english')
+        //.textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
     return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }
