@@ -237,7 +237,7 @@ class ObsService extends ChangeNotifier {
         .textSearch('date', 'October 2023', config: 'english')
         //.textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
-    return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
+    return obsdata.map((obs) => ObsModel.fromJson(obs)).where((obs) => obs["date"].con ).toList();
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {
