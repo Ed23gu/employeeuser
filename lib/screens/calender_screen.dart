@@ -366,39 +366,49 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                         obsData =
                                                                         snapshot
                                                                             .data[index];
-                                                                    return Row(
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .center,
-                                                                      crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .center,
-                                                                      children: [
-                                                                        Text(
-                                                                          DateFormat("EE dd", "es_ES")
-                                                                              .format(obsData.create_at),
-                                                                          style: TextStyle(
-                                                                              fontSize: 12,
-                                                                              color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light ? Color(0xFF006689) : Color(0xFFFFFFFF),
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                        Expanded(
-                                                                          child:
-                                                                              ReadMoreText(
-                                                                            obsData.title.toString(),
-                                                                            trimLines:
-                                                                                1,
-                                                                            // colorClickableText: Colors.pink,
-                                                                            trimMode:
-                                                                                TrimMode.Line,
-                                                                            trimCollapsedText:
-                                                                                '...Leer mas',
-                                                                            trimExpandedText:
-                                                                                ' menos',
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    );
+                                                                    return 
+                                                                    ListTile(
+                                title: Container(
+                                    // color: Colors.purple,
+                                    padding: const EdgeInsets.all(10),
+                                    margin:
+                                        const EdgeInsets.symmetric(vertical: 9),
+                                    decoration: BoxDecoration(
+                                      color: Colors.lightBlue,
+                                      borderRadius: BorderRadius.circular(11),
+                                      boxShadow: [
+                                        BoxShadow(
+                                            color: Colors.cyan.withOpacity(0.2),
+                                            spreadRadius: 2,
+                                            blurRadius: 4,
+                                            offset: const Offset(2, 4)),
+                                      ],
+                                    ),
+                                    child: Text(
+                                      obsData['title'],
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    )),
+                                subtitle: Text(
+                                    obsData['created_at']
+                                        .split('.')[0]
+                                        .replaceAll("T", "-")
+                                        .toString(),
+                                    style: TextStyle(
+                                        color: AdaptiveTheme.of(context).mode ==
+                                                AdaptiveThemeMode.light
+                                            ? Colors.black45
+                                            : Colors.grey,
+                                        fontSize: 12)),
+                               
+                                
+                                );
+                                                                    
+                                                                  
+
+
+
+
                                                                   });
                                                         } else {
                                                           return const Center(

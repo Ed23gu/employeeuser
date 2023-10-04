@@ -236,7 +236,7 @@ class ObsService extends ChangeNotifier {
         .eq('user_id', _supabase.auth.currentUser!.id)
         .textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
         .order('created_at', ascending: false);
-    return obsdata.map((obs) => ObsModel.fromJson(obs)).where((obs) => obs["date"].con ).toList();
+    return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {

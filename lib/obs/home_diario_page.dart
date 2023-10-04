@@ -97,37 +97,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
     }
   }
 
-/*   Future insertData() async {
-    setState(() {
-      isLoading = true;
-    });
-    try {
-      String userId = supabase.auth.currentUser!.id;
-      await supabase.from('todos').insert({
-        'title': titleController.text,
-        'user_id': userId,
-        'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
-        'horain': DateFormat('HH:mm').format(DateTime.now()),
-      });
-      setState(() {
-        isLoading = false;
-      });
-      clearText();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Observación guardada"),
-          width: 180,
-          duration: new Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating));
-      //  Navigator.pop(context);
-    } catch (e) {
-      setState(() {
-        isLoading = false;
-      });
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Algo ha salido mal")));
-    }
-  }
- */
   Future<void> _showMyDialog(int editId2) async {
     return showDialog<void>(
       context: context,
@@ -271,7 +240,9 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       return ListView.builder(
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, int index) {
-                            var data = snapshot.data[index]; // {} map
+                            var data = snapshot.data[index];
+                            
+                             // {} map
                             return ListTile(
                                 title: Container(
                                     // color: Colors.purple,
