@@ -7,7 +7,6 @@ import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 
 class CalenderScreen extends StatefulWidget {
@@ -344,7 +343,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             Expanded(
                                                 child: FutureBuilder(
                                                     future: obsService
-                                                        .getObsHistory(),
+                                                        .getObsHistory(DateFormat(
+                                                                'dd MMMM yyyy')
+                                                            .format(
+                                                                attendanceData
+                                                                    .createdAt)),
                                                     builder:
                                                         (BuildContext context,
                                                             AsyncSnapshot
@@ -366,56 +369,22 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                         obsData =
                                                                         snapshot
                                                                             .data[index];
-                                                                    return 
-                                                                    ListTile(
-                                title: Container(
-                                    // color: Colors.purple,
-                                    padding: const EdgeInsets.all(10),
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 9),
-                                    decoration: BoxDecoration(
-                                      color: Colors.lightBlue,
-                                      borderRadius: BorderRadius.circular(11),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.cyan.withOpacity(0.2),
-                                            spreadRadius: 2,
-                                            blurRadius: 4,
-                                            offset: const Offset(2, 4)),
-                                      ],
-                                    ),
-                                    child: Text(
-                                      obsData['title'],
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    )),
-                                subtitle: Text(
-                                    obsData['created_at']
-                                        .split('.')[0]
-                                        .replaceAll("T", "-")
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: AdaptiveTheme.of(context).mode ==
-                                                AdaptiveThemeMode.light
-                                            ? Colors.black45
-                                            : Colors.grey,
-                                        fontSize: 12)),
-                               
-                                
-                                );
-                                                                    
-                                                                  
-
-
-
-
+                                                                    return ListTile(
+                                                                      title: Row(
+                                                                          children: [
+                                                                            Text(obsData.create_at.toString().split('.')[0].replaceAll("T", "-").split(' ')[1].toString(),
+                                                                                style: TextStyle(color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light ? Colors.black45 : Colors.grey, fontSize: 12)),
+                                                                            gapW4,
+                                                                            Text(
+                                                                              obsData.title.toString(),
+                                                                            ),
+                                                                          ]),
+                                                                    );
                                                                   });
                                                         } else {
                                                           return const Center(
                                                             child: Text(
                                                               "Datos no disponibles",
-                                                              style: TextStyle(
-                                                                  fontSize: 25),
                                                             ),
                                                           );
                                                         }

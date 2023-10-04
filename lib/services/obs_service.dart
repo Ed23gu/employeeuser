@@ -215,6 +215,7 @@ class ObsService extends ChangeNotifier {
     } else {
       Utils.showSnackBar("No se puede obtener su ubicacion", context,
           color: Colors.blue);
+      print('aaaaaaaaaaaaaaaaa');
       getTodayAttendance();
     }
   }
@@ -229,14 +230,17 @@ class ObsService extends ChangeNotifier {
     return data.map((obs) => ObsModel.fromJson(obs)).toList();
   }
 
-  Future<List<ObsModel>> getObsHistory() async {
+  Future<List<ObsModel>> getObsHistory(String fecha) async {
     final List obsdata = await _supabase
         .from(Constants.obstable)
         .select()
         .eq('user_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', 'October 2023', config: 'english')
-        //.textSearch('date', "'$attendanceHistoryMonth'", config: 'english')
+        //.textSearch('date', 'October 2023', config: 'english')
+        .textSearch('date', "'$fecha'", config: 'english')
         .order('created_at', ascending: false);
+    print('eeeeeeee');
+    print(obsdata);
+    //notifyListeners();
     return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }
 

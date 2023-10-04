@@ -38,7 +38,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
   bool isLoadingdel = false;
   TextEditingController titleController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  // final attendanceService = root.Provider.of<ObsService>();
   final ObsService obsfiltro = ObsService();
 
   @override
@@ -53,11 +52,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
     _readStream = supabase
         .from('todos')
         .stream(primaryKey: ['id'])
-        // .eq('user_id', supabase.auth.currentUser!.id)
-        .eq(
-          'date',
-          DateFormat("dd MMMM yyyy").format(DateTime.now()),
-        )
+        .eq('user_id', supabase.auth.currentUser!.id)
+        //.eq( 'date', DateFormat("dd MMMM yyyy").format(DateTime.now()),)
         .order('id', ascending: false);
     super.initState();
   }
@@ -183,7 +179,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Observaciones"),
+        title: const Text("Historial de Observaciones"),
         actions: [
           IconButton(
               onPressed: () {
@@ -241,8 +237,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
                           itemCount: snapshot.data.length,
                           itemBuilder: (context, int index) {
                             var data = snapshot.data[index];
-                            
-                             // {} map
+
+                            // {} map
                             return ListTile(
                                 title: Container(
                                     // color: Colors.purple,
@@ -313,7 +309,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       decoration: InputDecoration(
                         focusedBorder: InputBorder.none,
                         contentPadding: const EdgeInsets.all(8),
-                        hintText: "Ingrese aquí su observación.",
+                        hintText: "Ingrese aquí la observación del dia de hoy.",
                         hintStyle: TextStyle(fontSize: 12),
                         border: const OutlineInputBorder(),
                         suffixIcon: Align(
