@@ -313,7 +313,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       decoration: InputDecoration(
                         focusedBorder: InputBorder.none,
                         contentPadding: const EdgeInsets.all(8),
-                        hintText: "Ingrese aquí su observación",
+                        hintText: "Ingrese aquí su observación.",
                         hintStyle: TextStyle(fontSize: 12),
                         border: const OutlineInputBorder(),
                         suffixIcon: Align(
