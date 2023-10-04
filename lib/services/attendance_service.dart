@@ -2,7 +2,6 @@ import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
-import 'package:employee_attendance/services/location_service.dart';
 import 'package:employee_attendance/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -51,7 +50,7 @@ class AttendanceService extends ChangeNotifier {
   }
 
   String _attendanceHistoryMonth =
-      DateFormat("MMMM yyyy" , "es_ES").format(DateTime.now());
+      DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
 
   String get attendanceHistoryMonth => _attendanceHistoryMonth;
 
@@ -145,6 +144,7 @@ class AttendanceService extends ChangeNotifier {
           .update({
             'check_out': DateFormat('HH:mm').format(DateTime.now()),
             'check_out_location': getLocation,
+            'lugar_2': ubicacion
           })
           .eq('employee_id', _supabase.auth.currentUser!.id)
           .eq('date', todayDate);
@@ -178,39 +178,34 @@ class AttendanceService extends ChangeNotifier {
         .eq("id", employeeDepartment2);
     depModel22 = DepartmentModel.fromJson(result32.first);
 
-    Map? getLocation =
-        await LocationService().initializeAndGetLocation(context);
-    print("Location Data2 :");
+    Position? getLocation = await _determinePosition();
     print(getLocation);
-    if (getLocation != null) {
-      if (attendanceModel?.checkIn2 == null) {
-        await _supabase
-            .from(Constants.attendancetable)
-            .update({
-              'check_in2': DateFormat('HH:mm').format(DateTime.now()),
-              'check_in_location2': getLocation,
-              'obraid2': depModel22!.title,
-            })
-            .eq('employee_id', _supabase.auth.currentUser!.id)
-            .eq('date', todayDate);
-      } else if (attendanceModel?.checkOut2 == null) {
-        await _supabase
-            .from(Constants.attendancetable)
-            .update({
-              'check_out2': DateFormat('HH:mm').format(DateTime.now()),
-              'check_out_location2': getLocation,
-            })
-            .eq('employee_id', _supabase.auth.currentUser!.id)
-            .eq('date', todayDate);
-      } else {
-        Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
-      }
-      getTodayAttendance();
+    String ubicacion = await obtenerNombreUbicacion(getLocation);
+    if (attendanceModel?.checkIn2 == null) {
+      await _supabase
+          .from(Constants.attendancetable)
+          .update({
+            'check_in2': DateFormat('HH:mm').format(DateTime.now()),
+            'check_in_location2': getLocation,
+            'obraid2': depModel22!.title,
+            'lugar_3': ubicacion
+          })
+          .eq('employee_id', _supabase.auth.currentUser!.id)
+          .eq('date', todayDate);
+    } else if (attendanceModel?.checkOut2 == null) {
+      await _supabase
+          .from(Constants.attendancetable)
+          .update({
+            'check_out2': DateFormat('HH:mm').format(DateTime.now()),
+            'check_out_location2': getLocation,
+            'lugar_4': ubicacion
+          })
+          .eq('employee_id', _supabase.auth.currentUser!.id)
+          .eq('date', todayDate);
     } else {
-      Utils.showSnackBar("No se puede obtener su ubicacion", context,
-          color: Colors.blue);
-      getTodayAttendance();
+      Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
     }
+    getTodayAttendance();
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {

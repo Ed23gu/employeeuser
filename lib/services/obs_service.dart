@@ -241,6 +241,7 @@ class ObsService extends ChangeNotifier {
     print('eeeeeeee');
     print(obsdata);
     //notifyListeners();
+    getTodayAttendance();
     return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }
 

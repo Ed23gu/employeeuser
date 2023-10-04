@@ -7,6 +7,7 @@ import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 
 class CalenderScreen extends StatefulWidget {
@@ -337,8 +338,9 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           ],
                                         )),
                                       ])),
+                                      linea,
                                       Expanded(
-                                        child: Row(
+                                        child: Column(
                                           children: [
                                             Expanded(
                                                 child: FutureBuilder(
@@ -373,10 +375,18 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                       title: Row(
                                                                           children: [
                                                                             Text(obsData.create_at.toString().split('.')[0].replaceAll("T", "-").split(' ')[1].toString(),
-                                                                                style: TextStyle(color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light ? Colors.black45 : Colors.grey, fontSize: 12)),
+                                                                                style: TextStyle(color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light ? Colors.black45 : Colors.grey, fontSize: fontSizeinfo)),
                                                                             gapW4,
-                                                                            Text(
-                                                                              obsData.title.toString(),
+                                                                            Expanded(
+                                                                              child: ReadMoreText(
+                                                                                obsData.title.toString(),
+                                                                                style: TextStyle(fontSize: fontSizeinfo),
+                                                                                trimLines: 1,
+                                                                                // colorClickableText: Colors.pink,
+                                                                                trimMode: TrimMode.Line,
+                                                                                trimCollapsedText: '...Leer mas',
+                                                                                trimExpandedText: ' Menos',
+                                                                              ),
                                                                             ),
                                                                           ]),
                                                                     );
