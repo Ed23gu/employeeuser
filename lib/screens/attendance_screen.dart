@@ -45,16 +45,14 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   var pad16 = 16.0;
   var pad8 = 8.0;
   var pad4 = 4.0;
-  var rellenoScrolliz = 10.0;
-  var rellenoScrollarr = 5.0;
-  var rellenoScrollder = 10.0;
-  var rellenoScrollabajo = 10.0;
   var lineSizeancho = 60.0;
   var grosorDivider = 1.0;
-  var margenPanelfotos = 7.0;
+  var margenSuperior = 5.0;
+  var margenInferior = 5.0;
   var margenPanelfotos2 = 0.0;
   var anchoSizedivider = 80.0;
   var altoSlider = 55.0;
+  var elevacion = 3.0;
   var altoImagen = 126.0;
   int imageq = 100;
   int qt = 85;
@@ -298,7 +296,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               supabase.storage.from('imageip').getPublicUrl(urllisto);
           await supabase.from('attendance').insert({
             'employee_id': supabase.auth.currentUser!.id,
-            'date': DateFormat("dd MMMM yyyy" ,"es_ES").format(DateTime.now()),
+            'date': DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
             'pic_in': getUrl,
           });
 
@@ -1167,8 +1165,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
               Container(
                 margin: EdgeInsets.only(
-                    top: margenPanelfotos,
-                    bottom: margenPanelfotos,
+                    top: margenSuperior,
+                    bottom: margenInferior,
                     left: margenPanelfotos2,
                     right: margenPanelfotos2),
                 height: altoContainer,
@@ -1448,9 +1446,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
               //gapH8,
               Container(
-                margin: EdgeInsets.only(top: rellenoScrollarr),
+                margin: EdgeInsets.only(bottom: margenInferior),
                 child: Builder(builder: (context) {
                   return SlideAction(
+                    elevation: elevacion,
                     height: altoSlider,
                     text: (attendanceService.attendanceModel?.checkIn != null &&
                             attendanceService.attendanceModel?.checkOut != null)
@@ -1504,8 +1503,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               //  gapH8,
               Container(
                 margin: EdgeInsets.only(
-                    top: margenPanelfotos,
-                    bottom: margenPanelfotos,
+                    top: margenSuperior,
+                    bottom: margenInferior,
                     left: margenPanelfotos2,
                     right: margenPanelfotos2),
                 height: altoContainer,
@@ -1768,9 +1767,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               ),
               ///////////////////////////////////fotos//////////////
               Container(
-                margin: EdgeInsets.only(top: rellenoScrollarr),
+                margin: EdgeInsets.only(bottom: margenInferior),
                 child: Builder(builder: (context) {
                   return SlideAction(
+                    elevation: elevacion,
+
                     animationDuration: Duration(milliseconds: 200),
                     text: (attendanceService.attendanceModel?.checkIn2 !=
                                 null &&

@@ -166,13 +166,13 @@ class _MyHomePageState extends State<MyHomePage> {
       if (placemarks.isNotEmpty) {
         Placemark placeMark = placemarks[4];
         Placemark placeMark2 = placemarks[0];
-        String name = placeMark.name!;
+       // String name = placeMark.name!;
         String? subLocality = placeMark.subLocality;
         String? locality = placeMark.locality;
         String? administrativeArea = placeMark.administrativeArea;
         String? subadministrativeArea = placeMark.subAdministrativeArea;
-        String? postalCode = placeMark.postalCode;
-        String? country = placeMark.country;
+      //  String? postalCode = placeMark.postalCode;
+       // String? country = placeMark.country;
         String? thoroughfare = placeMark.thoroughfare;
         String? street = placeMark2.street;
         //String address = "${name},${subLocality},${locality},${administrativeArea},${postalCode}, ${country}";
