@@ -18,6 +18,9 @@ class AttendanceModel {
   final String? pic_out2;
   final String? usuario;
   final String? lugar_1;
+  final String? lugar_2;
+  final String? lugar_3;
+  final String? lugar_4;
 
   AttendanceModel(
       {required this.id,
@@ -38,7 +41,10 @@ class AttendanceModel {
       this.pic_out,
       this.pic_in2,
       this.pic_out2,
-      this.lugar_1});
+      this.lugar_1,
+      this.lugar_2,
+      this.lugar_3,
+      this.lugar_4});
 
   factory AttendanceModel.fromJson(Map<String, dynamic> data) {
     return AttendanceModel(
@@ -60,6 +66,9 @@ class AttendanceModel {
         pic_out: data['pic_out'],
         pic_in2: data['pic_in2'],
         pic_out2: data['pic_out2'],
-        lugar_1: data['lugar_1']);
+        lugar_1: data['lugar_1'],
+        lugar_2: data['lugar_2'],
+        lugar_3: data['lugar_3'],
+        lugar_4: data['lugar_4']);
   }
 }

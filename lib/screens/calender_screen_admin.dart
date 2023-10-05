@@ -6,6 +6,7 @@ import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -33,6 +34,32 @@ Future<void> _openmap(String lat, String lon) async {
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
+  final controller = ScrollController();
+  var sizeicono = 22.0;
+  var sizeletra = 12.0;
+
+  @override
+  void initState() {
+    super.initState();
+
+    controller.addListener(() {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        fetch();
+      }
+    });
+  }
+
+  Future fetch() async {
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final attendanceService = Provider.of<AttendanceServiceadmin>(context);
@@ -93,7 +120,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
                           context: context, disableFuture: true);
                   String pickedMonth =
-                      DateFormat("MMMM yyyy","es_ES").format(selectedDate);
+                      DateFormat("MMMM yyyy", "es_ES").format(selectedDate);
                   attendanceService.attendanceHistoryMonth = pickedMonth;
                 },
                 child: const Text("Seleccionar mes")),
@@ -106,332 +133,444 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   if (snapshot.hasData) {
                     if (snapshot.data.length > 0) {
                       return ListView.builder(
-                          itemCount: snapshot.data.length,
+                          itemCount: snapshot.data.length + 1,
                           itemBuilder: (context, index) {
-                            AttendanceModel attendanceData =
-                                snapshot.data[index];
-                            return Container(
-                              margin: EdgeInsets.only(
-                                  top: 12, left: 20, right: 20, bottom: 10),
-                              height: 220,
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.light
-                                      ? Colors.white
-                                      //  color: Colors.white,
-                                      : Color.fromARGB(255, 43, 41, 41),
-                                  boxShadow: [
-                                    BoxShadow(
-                                        color:
-                                            Color.fromARGB(110, 18, 148, 255),
-                                        blurRadius: 10,
-                                        offset: Offset(2, 2)),
-                                  ],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(20))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                      child: Container(
-                                    width: 50,
-                                    decoration: const BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius:
-                                          BorderRadius.all(Radius.circular(20)),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        DateFormat("EE \n dd", "es_ES")
-                                            .format(attendanceData.createdAt),
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white,
-                                            fontWeight: FontWeight.bold),
+                            if (index < snapshot.data.length) {
+                              AttendanceModel attendanceData =
+                                  snapshot.data[index];
+                              return Container(
+                                margin: EdgeInsets.only(
+                                    top: 12, left: 20, right: 20, bottom: 10),
+                                height: 250,
+                                decoration: BoxDecoration(
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.light
+                                        ? Colors.white
+                                        //  color: Colors.white,
+                                        : Color.fromARGB(255, 43, 41, 41),
+                                    boxShadow: [
+                                      BoxShadow(
+                                          color:
+                                              Color.fromARGB(110, 18, 148, 255),
+                                          blurRadius: 10,
+                                          offset: Offset(2, 2)),
+                                    ],
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(20))),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                        child: Container(
+                                      width: 50,
+                                      decoration: const BoxDecoration(
+                                        color: Colors.blue,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(20)),
                                       ),
-                                    ),
-                                  )),
+                                      child: Center(
+                                        child: Text(
+                                          DateFormat("EE \n dd", "es_ES")
+                                              .format(attendanceData.createdAt),
+                                          style: const TextStyle(
+                                              fontSize: 18,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                    )),
 
-                                  Expanded(
-                                    child: Column(children: [
-                                      Container(
-                                        height: 20,
-                                        child: Row(
+                                    Expanded(
+                                      child: Column(children: [
+                                        Container(
+                                          height: 20,
+                                          child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "Nombre:",
+                                                  style: TextStyle(
+                                                    decorationThickness: 2.2,
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 15,
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.light
+                                                        ? Colors.black
+                                                        //  color: Colors.white,
+                                                        : Colors.white,
+                                                  ),
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                  attendanceData.usuario ??
+                                                      '--/--',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.light
+                                                        ? Colors.black
+                                                        //  color: Colors.white,
+                                                        : Colors.white,
+                                                  ),
+                                                ),
+                                              ]),
+                                        ),
+                                        const SizedBox(
+                                          child: Divider(),
+                                        ),
+                                        Expanded(
+                                            child: Row(children: [
+                                          Expanded(
+                                              child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.center,
                                             children: [
-                                              Text(
-                                                "Nombre:",
-                                                style: TextStyle(
-                                                  decorationThickness: 2.2,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      //  color: Colors.white,
-                                                      : Colors.white,
-                                                ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.apartment_sharp,
+                                                    size: sizeicono,
+                                                  ),
+                                                  Text(
+                                                    attendanceData.obra
+                                                            ?.toString() ??
+                                                        '--/--',
+                                                    style: TextStyle(
+                                                      fontSize: 12,
+                                                      color: Theme.of(context)
+                                                                  .brightness ==
+                                                              Brightness.light
+                                                          ? Colors.black
+                                                          //  color: Colors.white,
+                                                          : Colors.white,
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
                                               const SizedBox(
-                                                width: 10,
+                                                height: 10,
+                                                child: Divider(),
                                               ),
-                                              Text(
-                                                attendanceData.usuario ??
-                                                    '--/--',
-                                                style: TextStyle(
-                                                  fontSize: 15,
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.light
-                                                      ? Colors.black
-                                                      //  color: Colors.white,
-                                                      : Colors.white,
-                                                ),
-                                              ),
-                                            ]),
-                                      ),
-                                      const SizedBox(
-                                        child: Divider(),
-                                      ),
-                                      Expanded(
-                                          child: Row(children: [
-                                        Expanded(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Proyecto",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
-                                              ),
-                                            ),
-                                            Text(
-                                              attendanceData.obra?.toString() ??
-                                                  '--/--',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
-                                              ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                              child: Divider(),
-                                            ),
-                                            Expanded(
-                                                child: Row(children: [
                                               Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Ingreso",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                  child: Row(children: [
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          "Ingreso: ",
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          attendanceData.checkIn
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkIn
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                    const SizedBox(
+                                                      height: 10,
+                                                      width: 80,
+                                                      child: Divider(),
                                                     ),
-                                                  ),
-                                                  IconButton(
-                                                      icon: Icon(
-                                                          Icons.location_on),
-                                                      onPressed: () {
-                                                        var lat = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkInLocation!)
-                                                            .latitude;
-                                                        var lon = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkInLocation!)
-                                                            .longitude;
-                                                        print("latitude");
-                                                        print(lat);
-                                                        print("longitude");
-                                                        print(lon);
-                                                        _openmap(lat.toString(),
-                                                            lon.toString());
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkIn
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )),
-                                              //////
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    child: attendanceData
-                                                                .pic_in ==
-                                                            null
-                                                        ? Icon(Icons.photo)
-                                                        : attendanceData
-                                                                    .pic_in ==
-                                                                "NULL"
-                                                            ? const CircularProgressIndicator()
-                                                            : Container(
-                                                                height: 115,
-                                                                width: 90,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .rectangle,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              15)),
-                                                                  image:
-                                                                      DecorationImage(
-                                                                    fit: BoxFit
-                                                                        .fill,
-                                                                    image:
-                                                                        CachedNetworkImageProvider(
-                                                                      attendanceData
-                                                                          .pic_in
-                                                                          .toString(),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                  ),
-                                                ],
-                                              )),
+                                                    Row(
+                                                      children: [
+                                                        IconButton(
+                                                            icon: Icon(
+                                                              Icons.location_on,
+                                                              size: sizeicono,
+                                                            ),
+                                                            onPressed: () {
+                                                              var lat = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkInLocation!)
+                                                                  .latitude;
+                                                              var lon = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkInLocation!)
+                                                                  .longitude;
 
-                                              /////////
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Salida",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                              _openmap(
+                                                                  lat.toString(),
+                                                                  lon.toString());
+                                                            }),
+                                                        Expanded(
+                                                          child: ReadMoreText(
+                                                            attendanceData
+                                                                    .lugar_1
+                                                                    ?.toString() ??
+                                                                '--/--',
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    sizeletra),
+                                                            trimLines: 2,
+                                                            // colorClickableText: Colors.pink,
+                                                            trimMode:
+                                                                TrimMode.Line,
+                                                            trimCollapsedText:
+                                                                '...Leer mas',
+                                                            trimExpandedText:
+                                                                ' Menos',
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkOut
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                  ],
+                                                )),
+                                                //////
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      child: attendanceData
+                                                                  .pic_in ==
+                                                              null
+                                                          ? Icon(Icons.photo)
+                                                          : attendanceData
+                                                                      .pic_in ==
+                                                                  "NULL"
+                                                              ? const CircularProgressIndicator()
+                                                              : Container(
+                                                                  height: 115,
+                                                                  width: 90,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .rectangle,
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(15)),
+                                                                    image:
+                                                                        DecorationImage(
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      image:
+                                                                          CachedNetworkImageProvider(
+                                                                        attendanceData
+                                                                            .pic_in
+                                                                            .toString(),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
                                                     ),
-                                                  ),
-                                                  IconButton(
-                                                      icon: Icon(
-                                                          Icons.location_on),
-                                                      onPressed: () {
-                                                        var lat = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkOutLocation!)
-                                                            .latitude;
-                                                        var lon = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkOutLocation!)
-                                                            .longitude;
+                                                  ],
+                                                )),
 
-                                                        _openmap(lat.toString(),
-                                                            lon.toString());
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
+                                                /////////
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          "Salida: ",
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          attendanceData
+                                                                  .checkOut
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    const SizedBox(
+                                                      height: 10,
+                                                      width: 80,
+                                                      child: Divider(),
+                                                    ),
+                                                    Row(
+                                                      children: [
+                                                        IconButton(
+                                                            icon: Icon(
+                                                              Icons.location_on,
+                                                              size: sizeicono,
+                                                            ),
+                                                            onPressed: () {
+                                                              var lat = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkOutLocation!)
+                                                                  .latitude;
+                                                              var lon = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkOutLocation!)
+                                                                  .longitude;
+
+                                                              _openmap(
+                                                                  lat.toString(),
+                                                                  lon.toString());
+                                                            }),
+                                                        Expanded(
+                                                          child: ReadMoreText(
+                                                            attendanceData
+                                                                    .lugar_2
+                                                                    ?.toString() ??
+                                                                '--/--',
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    sizeletra),
+                                                            trimLines: 2,
+                                                            // colorClickableText: Colors.pink,
+                                                            trimMode:
+                                                                TrimMode.Line,
+                                                            trimCollapsedText:
+                                                                '...Leer mas',
+                                                            trimExpandedText:
+                                                                ' Menos',
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )),
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      child: attendanceData
+                                                                  .pic_out ==
+                                                              null
+                                                          ? Icon(Icons.photo)
+                                                          : attendanceData
+                                                                      .pic_out ==
+                                                                  "NULL"
+                                                              ? const CircularProgressIndicator()
+                                                              : Container(
+                                                                  height: 115,
+                                                                  width: 90,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .rectangle,
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(15)),
+                                                                    image:
+                                                                        DecorationImage(
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      image:
+                                                                          CachedNetworkImageProvider(
+                                                                        attendanceData
+                                                                            .pic_out
+                                                                            .toString(),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                    ),
+                                                  ],
+                                                )),
+                                              ])),
+                                            ],
+                                          )),
+                                          const SizedBox(
+                                            height: 10,
+                                            width: 5,
+                                          ),
+                                          Expanded(
+                                              child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  Icon(
+                                                    Icons.apartment_sharp,
+                                                    size: sizeicono,
                                                   ),
                                                   Text(
-                                                    attendanceData.checkOut
+                                                    attendanceData.obra2
                                                             ?.toString() ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 15,
+                                                      fontSize: 12,
                                                       color: Theme.of(context)
                                                                   .brightness ==
                                                               Brightness.light
@@ -441,353 +580,306 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     ),
                                                   ),
                                                 ],
-                                              )),
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    child: attendanceData
-                                                                .pic_out ==
-                                                            null
-                                                        ? Icon(Icons.photo)
-                                                        : attendanceData
-                                                                    .pic_out ==
-                                                                "NULL"
-                                                            ? const CircularProgressIndicator()
-                                                            : Container(
-                                                                height: 115,
-                                                                width: 90,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .rectangle,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              15)),
-                                                                  image:
-                                                                      DecorationImage(
-                                                                    fit: BoxFit
-                                                                        .fill,
-                                                                    image:
-                                                                        CachedNetworkImageProvider(
-                                                                      attendanceData
-                                                                          .pic_out
-                                                                          .toString(),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                  ),
-                                                ],
-                                              )),
-                                            ])),
-                                          ],
-                                        )),
-                                        const SizedBox(
-                                          height: 10,
-                                          width: 5,
-                                        ),
-                                        Expanded(
-                                            child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Text(
-                                              "Proyecto",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
                                               ),
-                                            ),
-                                            Text(
-                                              attendanceData.obra2
-                                                      ?.toString() ??
-                                                  '--/--',
-                                              style: TextStyle(
-                                                fontSize: 12,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.light
-                                                    ? Colors.black
-                                                    //  color: Colors.white,
-                                                    : Colors.white,
+                                              const SizedBox(
+                                                height: 10,
+                                                child: Divider(),
                                               ),
-                                            ),
-                                            const SizedBox(
-                                              height: 10,
-                                              child: Divider(),
-                                            ),
-                                            Expanded(
-                                                child: Row(children: [
                                               Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Ingreso",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                  child: Row(children: [
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          "Ingreso: ",
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          attendanceData
+                                                                  .checkIn2
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkIn2
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                    const SizedBox(
+                                                      height: 10,
+                                                      width: 80,
+                                                      child: Divider(),
                                                     ),
-                                                  ),
-                                                  IconButton(
-                                                      icon: Icon(
-                                                          Icons.location_on),
-                                                      onPressed: () {
-                                                        var lat = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkInLocation2!)
-                                                            .latitude;
-                                                        var lon = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkInLocation2!)
-                                                            .longitude;
-                                                        /*  print("latitude");
-                            print(lat);
-                            print("longitude");
-                            print(lon); */
-                                                        _openmap(lat.toString(),
-                                                            lon.toString());
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkIn2
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                    Row(
+                                                      children: [
+                                                        IconButton(
+                                                            icon: Icon(
+                                                              Icons.location_on,
+                                                              size: sizeicono,
+                                                            ),
+                                                            onPressed: () {
+                                                              var lat = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkInLocation2!)
+                                                                  .latitude;
+                                                              var lon = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkInLocation2!)
+                                                                  .longitude;
+
+                                                              _openmap(
+                                                                  lat.toString(),
+                                                                  lon.toString());
+                                                            }),
+                                                        Expanded(
+                                                          child: ReadMoreText(
+                                                            attendanceData
+                                                                    .lugar_3
+                                                                    ?.toString() ??
+                                                                '--/--',
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    sizeletra),
+                                                            trimLines: 2,
+                                                            // colorClickableText: Colors.pink,
+                                                            trimMode:
+                                                                TrimMode.Line,
+                                                            trimCollapsedText:
+                                                                '...Leer mas',
+                                                            trimExpandedText:
+                                                                ' Menos',
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                ],
-                                              )),
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    child: attendanceData
-                                                                .pic_in2 ==
-                                                            null
-                                                        ? Icon(Icons.photo)
-                                                        : attendanceData
-                                                                    .pic_in2 ==
-                                                                "NULL"
-                                                            ? const CircularProgressIndicator()
-                                                            : Container(
-                                                                height: 115,
-                                                                width: 90,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .rectangle,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              15)),
-                                                                  image:
-                                                                      DecorationImage(
-                                                                    fit: BoxFit
-                                                                        .fill,
+                                                  ],
+                                                )),
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      child: attendanceData
+                                                                  .pic_in2 ==
+                                                              null
+                                                          ? Icon(Icons.photo)
+                                                          : attendanceData
+                                                                      .pic_in2 ==
+                                                                  "NULL"
+                                                              ? const CircularProgressIndicator()
+                                                              : Container(
+                                                                  height: 115,
+                                                                  width: 90,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .rectangle,
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(15)),
                                                                     image:
-                                                                        CachedNetworkImageProvider(
-                                                                      attendanceData
-                                                                          .pic_in2
-                                                                          .toString(),
+                                                                        DecorationImage(
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      image:
+                                                                          CachedNetworkImageProvider(
+                                                                        attendanceData
+                                                                            .pic_in2
+                                                                            .toString(),
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                  ),
-                                                ],
-                                              )),
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    "Salida",
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
                                                     ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkOut2
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                  ],
+                                                )),
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Text(
+                                                          "Salida: ",
+                                                          style: TextStyle(
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          attendanceData
+                                                                  .checkOut2
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                            fontSize: 15,
+                                                            color: Theme.of(context)
+                                                                        .brightness ==
+                                                                    Brightness
+                                                                        .light
+                                                                ? Colors.black
+                                                                //  color: Colors.white,
+                                                                : Colors.white,
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ),
-                                                  IconButton(
-                                                      icon: Icon(
-                                                          Icons.location_on),
-                                                      onPressed: () {
-                                                        var lat = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkOutLocation2!)
-                                                            .latitude;
-                                                        var lon = UbiModel.fromJson(
-                                                                attendanceData
-                                                                    .checkOutLocation2!)
-                                                            .longitude;
-                                                        /*  print("latitude");
-                            print(lat);
-                            print("longitude");
-                            print(lon); */
-                                                        _openmap(lat.toString(),
-                                                            lon.toString());
-                                                      }),
-                                                  const SizedBox(
-                                                    height: 10,
-                                                    width: 80,
-                                                    child: Divider(),
-                                                  ),
-                                                  Text(
-                                                    attendanceData.checkOut2
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: 15,
-                                                      color: Theme.of(context)
-                                                                  .brightness ==
-                                                              Brightness.light
-                                                          ? Colors.black
-                                                          //  color: Colors.white,
-                                                          : Colors.white,
+                                                    const SizedBox(
+                                                      height: 10,
+                                                      width: 80,
+                                                      child: Divider(),
                                                     ),
-                                                  ),
-                                                ],
-                                              )),
-                                              Expanded(
-                                                  child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    child: attendanceData
-                                                                .pic_out2 ==
-                                                            null
-                                                        ? Icon(Icons.photo)
-                                                        : attendanceData
-                                                                    .pic_out2 ==
-                                                                "NULL"
-                                                            ? const CircularProgressIndicator()
-                                                            : Container(
-                                                                height: 115,
-                                                                width: 90,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  shape: BoxShape
-                                                                      .rectangle,
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          Radius.circular(
-                                                                              15)),
-                                                                  image:
-                                                                      DecorationImage(
-                                                                    fit: BoxFit
-                                                                        .fill,
+                                                    Row(
+                                                      children: [
+                                                        IconButton(
+                                                            icon: Icon(
+                                                              Icons.location_on,
+                                                              size: sizeicono,
+                                                            ),
+                                                            onPressed: () {
+                                                              var lat = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkOutLocation2!)
+                                                                  .latitude;
+                                                              var lon = UbiModel
+                                                                      .fromJson(
+                                                                          attendanceData
+                                                                              .checkOutLocation2!)
+                                                                  .longitude;
+
+                                                              _openmap(
+                                                                  lat.toString(),
+                                                                  lon.toString());
+                                                            }),
+                                                        Expanded(
+                                                          child: ReadMoreText(
+                                                            attendanceData
+                                                                    .lugar_4
+                                                                    ?.toString() ??
+                                                                '--/--',
+                                                            style: TextStyle(
+                                                                fontSize:
+                                                                    sizeletra),
+                                                            trimLines: 2,
+                                                            // colorClickableText: Colors.pink,
+                                                            trimMode:
+                                                                TrimMode.Line,
+                                                            trimCollapsedText:
+                                                                '...Leer mas',
+                                                            trimExpandedText:
+                                                                ' Menos',
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                )),
+                                                Expanded(
+                                                    child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      child: attendanceData
+                                                                  .pic_out2 ==
+                                                              null
+                                                          ? Icon(Icons.photo)
+                                                          : attendanceData
+                                                                      .pic_out2 ==
+                                                                  "NULL"
+                                                              ? const CircularProgressIndicator()
+                                                              : Container(
+                                                                  height: 115,
+                                                                  width: 90,
+                                                                  decoration:
+                                                                      BoxDecoration(
+                                                                    shape: BoxShape
+                                                                        .rectangle,
+                                                                    borderRadius:
+                                                                        BorderRadius.all(
+                                                                            Radius.circular(15)),
                                                                     image:
-                                                                        CachedNetworkImageProvider(
-                                                                      attendanceData
-                                                                          .pic_out2
-                                                                          .toString(),
+                                                                        DecorationImage(
+                                                                      fit: BoxFit
+                                                                          .fill,
+                                                                      image:
+                                                                          CachedNetworkImageProvider(
+                                                                        attendanceData
+                                                                            .pic_out2
+                                                                            .toString(),
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                  ),
-                                                ],
-                                              )),
-                                            ])),
-                                          ],
-                                        )),
-                                      ])),
-                                    ]),
-                                  ),
+                                                    ),
+                                                  ],
+                                                )),
+                                              ])),
+                                            ],
+                                          )),
+                                        ])),
+                                      ]),
+                                    ),
 ///////////////////////////
-                                ],
-                              ),
-                            );
+                                  ],
+                                ),
+                              );
+                            } else {
+                              return Padding(
+                                padding: EdgeInsets.symmetric(vertical: 32),
+                                child:
+                                    Center(child: CircularProgressIndicator()),
+                              );
+                            }
 
                             ///////////////////////
                           });

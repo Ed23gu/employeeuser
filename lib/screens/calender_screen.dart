@@ -21,7 +21,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   var padd12 = 12.0;
   var padd16 = 16.0;
   var padd20 = 20.0;
-  var altoContainer = 85.0;
+  var altoContainer = 90.0;
   var anchoDia = 42.0;
   var sizeicono = 22.0;
   var fontSizetitulo = 15.0;
