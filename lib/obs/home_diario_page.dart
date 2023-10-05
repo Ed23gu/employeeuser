@@ -1,5 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
-import 'package:employee_attendance/obs/historial_page.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -53,7 +53,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
         .from('todos')
         .stream(primaryKey: ['id'])
         .eq('user_id', supabase.auth.currentUser!.id)
-        //.eq( 'date', DateFormat("dd MMMM yyyy").format(DateTime.now()),)
         .order('id', ascending: false);
     super.initState();
   }
@@ -155,10 +154,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
           'user_id',
           supabase.auth.currentUser!.id,
         )
-        .eq(
-          'date',
-          DateFormat("dd MMMM yyyy").format(DateTime.now()),
-        )
         .order('id', ascending: false);
     return result;
   }
@@ -184,31 +179,12 @@ class _ComentariosPageState extends State<ComentariosPage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  _readStream = supabase
-                      .from('todos:user_id=eq.${supabase.auth.currentUser!.id}')
-                      .stream(primaryKey: ['id'])
-                      //.eq('user_id', supabase.auth.currentUser!.id)
-
-                      .eq(
-                        'date',
-                        DateFormat("dd MMMM yyyy").format(DateTime.now()),
-                      )
-                      .order('id', ascending: false);
+                  _readStream = supabase.from('todos').stream(
+                      primaryKey: ['id']).order('created_at', ascending: false);
                 });
               },
               icon: const Icon(Icons.refresh_outlined)),
-          IconButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ComentariosHisPage()));
-              },
-              icon: Image.asset(
-                'assets/historial.png',
-                width: 30,
-                height: 40,
-              ))
+          gapW8
         ],
       ),
       body: Column(

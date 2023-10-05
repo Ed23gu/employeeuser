@@ -1,13 +1,10 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
-import 'package:employee_attendance/models/obs_model.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
-import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 
 class CalenderScreen extends StatefulWidget {
@@ -24,15 +21,15 @@ class _CalenderScreenState extends State<CalenderScreen> {
   var padd12 = 12.0;
   var padd16 = 16.0;
   var padd20 = 20.0;
-  var altoContainer = 200.0;
-  var anchoDia = 50.0;
+  var altoContainer = 85.0;
+  var anchoDia = 42.0;
+  var sizeicono = 22.0;
   var fontSizetitulo = 15.0;
   var fontSizeinfo = 12.0;
 
   @override
   Widget build(BuildContext context) {
     final attendanceService = Provider.of<AttendanceService>(context);
-    final obsService = Provider.of<ObsService>(context);
     return Scaffold(
         body: Column(
       children: [
@@ -59,19 +56,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
               context: context,
               locale: const Locale('es'),
               child: ElevatedButton(
-                  //style: ButtonStyle(),
                   onPressed: () async {
                     final selectedDate =
                         await SimpleMonthYearPicker.showMonthYearPickerDialog(
                             backgroundColor: AdaptiveTheme.of(context).mode ==
                                     AdaptiveThemeMode.light
                                 ? Colors.white
-                                //  color: Colors.white,
                                 : Colors.black,
                             selectionColor: AdaptiveTheme.of(context).mode ==
                                     AdaptiveThemeMode.light
                                 ? Colors.blue
-                                //  color: Colors.white,
                                 : Colors.white,
                             context: context,
                             disableFuture: true);
@@ -165,23 +159,29 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.apartment_sharp),
+                                                Icon(
+                                                  Icons.apartment_sharp,
+                                                  size: sizeicono,
+                                                ),
                                                 Container(
-                                                  height: padd20,
-                                                  margin: EdgeInsets.fromLTRB(
-                                                      padd8,
-                                                      padd8,
-                                                      padd8,
-                                                      padd8),
-                                                  child: Text(
-                                                    attendanceData.obra
-                                                            ?.toString() ??
-                                                        '--/--',
-                                                    style: TextStyle(
-                                                      fontSize: fontSizeinfo,
-                                                    ),
-                                                  ),
-                                                )
+                                                    height: padd20,
+                                                    margin: EdgeInsets.fromLTRB(
+                                                        padd8,
+                                                        padd8,
+                                                        padd8,
+                                                        padd8),
+                                                    child: Text(
+                                                      maxLines: 1,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      softWrap: false,
+                                                      attendanceData.obra
+                                                              ?.toString() ??
+                                                          '--/--',
+                                                      style: TextStyle(
+                                                        fontSize: fontSizeinfo,
+                                                      ),
+                                                    )),
                                               ],
                                             )),
                                             linea,
@@ -257,7 +257,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
                                               children: [
-                                                Icon(Icons.apartment_sharp),
+                                                Icon(
+                                                  Icons.apartment_sharp,
+                                                  size: sizeicono,
+                                                ),
                                                 Container(
                                                   height: padd20,
                                                   margin: EdgeInsets.fromLTRB(
@@ -338,76 +341,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           ],
                                         )),
                                       ])),
-                                      linea,
-                                      Expanded(
-                                        child: Column(
-                                          children: [
-                                            Expanded(
-                                                child: FutureBuilder(
-                                                    future: obsService
-                                                        .getObsHistory(DateFormat(
-                                                                'dd MMMM yyyy')
-                                                            .format(
-                                                                attendanceData
-                                                                    .createdAt)),
-                                                    builder:
-                                                        (BuildContext context,
-                                                            AsyncSnapshot
-                                                                snapshot) {
-                                                      if (snapshot.hasData) {
-                                                        if (snapshot
-                                                                .data.length >
-                                                            0) {
-                                                          return ListView
-                                                              .builder(
-                                                                  itemCount:
-                                                                      snapshot
-                                                                          .data
-                                                                          .length,
-                                                                  itemBuilder:
-                                                                      (context,
-                                                                          index) {
-                                                                    ObsModel
-                                                                        obsData =
-                                                                        snapshot
-                                                                            .data[index];
-                                                                    return ListTile(
-                                                                      title: Row(
-                                                                          children: [
-                                                                            Text(obsData.create_at.toString().split('.')[0].replaceAll("T", "-").split(' ')[1].toString(),
-                                                                                style: TextStyle(color: AdaptiveTheme.of(context).mode == AdaptiveThemeMode.light ? Colors.black45 : Colors.grey, fontSize: fontSizeinfo)),
-                                                                            gapW4,
-                                                                            Expanded(
-                                                                              child: ReadMoreText(
-                                                                                obsData.title.toString(),
-                                                                                style: TextStyle(fontSize: fontSizeinfo),
-                                                                                trimLines: 1,
-                                                                                // colorClickableText: Colors.pink,
-                                                                                trimMode: TrimMode.Line,
-                                                                                trimCollapsedText: '...Leer mas',
-                                                                                trimExpandedText: ' Menos',
-                                                                              ),
-                                                                            ),
-                                                                          ]),
-                                                                    );
-                                                                  });
-                                                        } else {
-                                                          return const Center(
-                                                            child: Text(
-                                                              "Datos no disponibles",
-                                                            ),
-                                                          );
-                                                        }
-                                                      }
-                                                      return const LinearProgressIndicator(
-                                                        backgroundColor:
-                                                            Colors.white,
-                                                        color: Colors.grey,
-                                                      );
-                                                    })),
-                                          ],
-                                        ),
-                                      )
                                     ]),
                                   ),
                                 ],

@@ -68,6 +68,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Uint8List webI2 = Uint8List(8);
   Uint8List webI3 = Uint8List(8);
   Uint8List webI4 = Uint8List(8);
+  final sizesalin = 18.0;
   final SupabaseClient supabase = Supabase.instance.client;
   final AttendanceService subirubi = AttendanceService();
 
@@ -1121,11 +1122,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }), //
-              // SizedBox(
-              //child: Divider(
-              //   thickness: grosorDivider,
-              //   ),
-              //   ),
               gapH16,
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
@@ -1134,7 +1130,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       alignment: Alignment.center,
                       child: Text(
                         DateFormat("HH:mm:ss").format(DateTime.now()),
-                        style: const TextStyle(fontSize: 27),
+                        style: TextStyle(
+                            fontSize: 27,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.primary),
                       ),
                     );
                   }),
@@ -1142,7 +1141,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 alignment: Alignment.center,
                 child: Text(
                   DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
-                  style: const TextStyle(fontSize: 14),
+                  style: TextStyle(
+                      fontSize: 14,
+                      color: Theme.of(context).colorScheme.onSurface),
                 ),
               ),
               /* Container(
@@ -1196,10 +1197,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 "Ingreso:  ",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
@@ -1333,10 +1334,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 "Salida:  ",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
                                   /*color: Colors.black5*/
                                 ),
@@ -1533,10 +1534,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 "Ingreso:  ",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
                                   /*color: Colors.black5*/
                                 ),
@@ -1653,10 +1654,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              const Text(
+                              Text(
                                 "Salida:  ",
                                 style: TextStyle(
-                                  fontSize: 18,
+                                  fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
                                   /*color: Colors.black5*/
                                 ),
@@ -1878,7 +1879,11 @@ void _mostrarAlerta(BuildContext context, String titulo) {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(17.0),
             ),
-            title: Text(titulo, textAlign: TextAlign.center),
+            title: Text(
+              titulo,
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 18),
+            ),
             actions: [
               TextButton(
                   child: Text("OK"),

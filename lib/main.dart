@@ -14,7 +14,6 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final internetChecker = CheckInternetConnection();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // load env
@@ -55,6 +54,7 @@ class ArtAsis extends StatelessWidget {
           ],
           child: MaterialApp(
               localizationsDelegates: const [
+                
                 GlobalMaterialLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
