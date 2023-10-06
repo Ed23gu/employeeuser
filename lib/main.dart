@@ -13,7 +13,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-final internetChecker = CheckInternetConnection();
+final internetChecker = CheckInternetConnection();|
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // load env
