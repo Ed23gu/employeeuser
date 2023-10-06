@@ -54,8 +54,7 @@ class ArtAsis extends StatelessWidget {
           ],
           child: MaterialApp(
               localizationsDelegates: const [
-                
-                GlobalMaterialLocalizations.delegate,
+                                GlobalMaterialLocalizations.delegate,
                 GlobalCupertinoLocalizations.delegate,
                 GlobalWidgetsLocalizations.delegate,
               ],
