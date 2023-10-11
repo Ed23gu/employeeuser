@@ -28,12 +28,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _avatarUrl;
   var _loading = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _getProfile();
-  }
-
   /// Called once a user id is received within `onAuthenticated()`
   Future<void> _getProfile() async {
     setState(() {
@@ -74,7 +68,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final userId = _supabase.auth.currentUser!.id;
       await _supabase.from('employees').upsert({
-        'id': userId,
+        // 'id': userId,
         'avatar_url': imageUrl,
       });
       if (mounted) {
@@ -100,6 +94,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _avatarUrl = imageUrl;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getProfile();
   }
 
   @override
