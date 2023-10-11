@@ -19,6 +19,7 @@ class Avatar extends StatefulWidget {
 }
 
 class _AvatarState extends State<Avatar> {
+  final SupabaseClient _supabase = Supabase.instance.client;
   bool _isLoading = false;
   var altoPerfil = 130.0;
   var anchoPerfil = 120.0;
@@ -27,7 +28,7 @@ class _AvatarState extends State<Avatar> {
   var anchofoto = 120.0;
   var tamanoDeicono = 110.0;
 
-  final SupabaseClient _supabase = Supabase.instance.client;
+  
   @override
   Widget build(BuildContext context) {
     return Column(
