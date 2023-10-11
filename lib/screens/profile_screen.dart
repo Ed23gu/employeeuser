@@ -1,10 +1,12 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/department_model.dart';
+import 'package:employee_attendance/perfil/components/avatar.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as route;
+import 'package:supabase_flutter/supabase_flutter.dart';
 //import 'package:employee_attendance/models/user_model.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,6 +17,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  final SupabaseClient _supabase = Supabase.instance.client;
   TextEditingController nameController = TextEditingController();
   var anchoPerfil = 80.0;
   var altoPerfil = 80.0;
@@ -22,10 +25,86 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var anchoBoton200 = 200.0;
   var pad16 = 16.0;
   var pad6 = 6.0;
+  String? _avatarUrl;
+  var _loading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _getProfile();
+  }
+
+  /// Called once a user id is received within `onAuthenticated()`
+  Future<void> _getProfile() async {
+    setState(() {
+      _loading = true;
+    });
+
+    try {
+      final userId = _supabase.auth.currentUser!.id;
+      final data = await _supabase
+          .from('employees')
+          .select<Map<String, dynamic>>()
+          .eq('id', userId)
+          .single();
+      // _usernameController.text = (data['username'] ?? '') as String;
+      // _websiteController.text = (data['website'] ?? '') as String;
+      _avatarUrl = (data['avatar_url'] ?? '') as String;
+    } on PostgrestException catch (error) {
+      SnackBar(
+        content: Text(error.message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } catch (error) {
+      SnackBar(
+        content: const Text('Unexpected error occurred'),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
+  }
+
+  /// Called when image has been uploaded to Supabase storage from within Avatar widget
+  Future<void> _onUpload(String imageUrl) async {
+    try {
+      final userId = _supabase.auth.currentUser!.id;
+      await _supabase.from('employees').upsert({
+        'id': userId,
+        'avatar_url': imageUrl,
+      });
+      if (mounted) {
+        const SnackBar(
+          content: Text('Updated your profile image!'),
+        );
+      }
+    } on PostgrestException catch (error) {
+      SnackBar(
+        content: Text(error.message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } catch (error) {
+      SnackBar(
+        content: const Text('Unexpected error occurred'),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    }
+    if (!mounted) {
+      return;
+    }
+
+    setState(() {
+      _avatarUrl = imageUrl;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final dbService = Provider.of<DbService>(context);
+    final dbService = route.Provider.of<DbService>(context);
     // Using below conditions because build can be called multiple times
     dbService.allDepartments.isEmpty ? dbService.getAllDepartments() : null;
     nameController.text.isEmpty
@@ -68,20 +147,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Container(
-                      height: altoPerfil,
-                      width: anchoPerfil,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: Colors.blue),
-                      child: const Center(
-                        child: Icon(
-                          Icons.person,
-                          size: 50,
-                          color: Colors.white,
-                        ),
-                      ),
+// Todo: Zona de perfil
+
+                    Avatar(
+                      imageUrl: _avatarUrl,
+                      onUpload: _onUpload,
                     ),
+                    ////////////////////////
                     gapH8,
                     Text("Email: ${dbService.userModel?.email}"),
                     gapH16,
@@ -106,7 +178,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     value: item.id,
                                     child: Text(
                                       item.title,
-                                      //style: const TextStyle(fontSize: 20),
                                     ));
                               }).toList(),
                               onChanged: (selectedValue) {
@@ -160,7 +231,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              Provider.of<AuthService>(context, listen: false)
+                              route.Provider.of<AuthService>(context,
+                                      listen: false)
                                   .signOut();
                             },
                             icon: const Icon(Icons.logout),

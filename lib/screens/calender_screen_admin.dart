@@ -70,10 +70,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
         WarningWidgetValueNotifier(),
         Container(
           alignment: Alignment.centerLeft,
-          margin: const EdgeInsets.only(left: 20, top: 60, bottom: 10),
+          margin: const EdgeInsets.only(left: 20, top: 10, bottom: 10),
           child: const Text(
             "Mi Asistencia",
-            style: TextStyle(fontSize: 25),
+            style: TextStyle(fontSize: 22),
           ),
         ),
         Row(
@@ -104,7 +104,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                         setState(() {
                           attendanceService.attendanceusuario =
                               selectedValue.toString();
-                          print(selectedValue);
+
                           // filterData(); // Volver a filtrar los datos cuando se selecciona una opción nueva
                         });
                       },

@@ -80,7 +80,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         await supabase.storage
             .from('imageip')
             .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
-        print(supabase.auth.currentUser!.id + "/" + url2 + "/" + url3);
+        
         await supabase
             .from('attendance')
             .update({
@@ -1122,7 +1122,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }), //
-              gapH16,
+              gapH12,
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
                   builder: (context, snapshot) {
@@ -1274,7 +1274,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               .markAttendance3(context);
                                         });
 
-                                        print("borrarrr"); // disableButton();
+                                       // disableButton();
                                       }),
                                 ],
                               ),
@@ -1409,7 +1409,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         }
                                         attendanceService
                                             .markAttendance3(context);
-                                        print("borrarrr");
+                                        
                                       }),
                                 ],
                               ),
@@ -1610,7 +1610,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         }
                                         attendanceService
                                             .markAttendance3(context);
-                                        print("borrarrr"); // disableButton();
+                                         // disableButton();
                                       })
                                 ],
                               ),
@@ -1730,7 +1730,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         }
                                         attendanceService
                                             .markAttendance3(context);
-                                        print("borrarrr"); // disableButton();
+                                        // disableButton();
                                       })
                                 ],
                               ),

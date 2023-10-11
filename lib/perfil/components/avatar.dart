@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class Avatar extends StatelessWidget {
+class Avatar extends StatefulWidget {
   const Avatar({
     super.key,
     required this.imageUrl,
@@ -10,59 +12,111 @@ class Avatar extends StatelessWidget {
   });
 
   final String? imageUrl;
-  final void Function(String imageUrl) onUpload;
+  final void Function(String) onUpload;
 
   @override
+  State<Avatar> createState() => _AvatarState();
+}
+
+class _AvatarState extends State<Avatar> {
+  bool _isLoading = false;
+  var altoPerfil = 130.0;
+  var anchoPerfil = 120.0;
+  var altoBoton50 = 50.0;
+  var altofoto = 130.0;
+  var anchofoto = 120.0;
+  var tamanoDeicono = 110.0;
+
+  final SupabaseClient _supabase = Supabase.instance.client;
+  @override
   Widget build(BuildContext context) {
-    final SupabaseClient _supabase = Supabase.instance.client;
     return Column(
       children: [
-        SizedBox(
-          width: 150,
-          height: 150,
-          child: imageUrl != null
-              ? Image.network(
-                  imageUrl!,
-                  fit: BoxFit.cover,
-                )
-              : Container(
-                  color: Colors.grey,
-                  child: const Center(
-                    child: Text('No Image'),
-                  ),
+        if (widget.imageUrl == null || widget.imageUrl!.isEmpty)
+          Container(
+            height: altoPerfil,
+            width: anchoPerfil,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20), color: Colors.blue),
+            child: Center(
+              child: Icon(
+                Icons.person,
+                size: tamanoDeicono,
+                color: Colors.white,
+              ),
+            ),
+          )
+        else
+          Container(
+            height: altofoto,
+            width: anchofoto,
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.all(Radius.circular(15)),
+              image: DecorationImage(
+                fit: BoxFit.fitWidth,
+                image: CachedNetworkImageProvider(
+                  widget.imageUrl!,
                 ),
-        ),
-        const SizedBox(height: 12),
+              ),
+            ),
+          ),
+        gapH8,
         ElevatedButton(
-          onPressed: () async {
-            final ImagePicker picker = ImagePicker();
-            final XFile? image =
-                await picker.pickImage(source: ImageSource.gallery);
-            if (image == null) {
-              return;
-            }
-            final imageExtension = image.path.split('.').last.toLowerCase();
-            final imageBytes = await image.readAsBytes();
-            final userId = _supabase.auth.currentUser!.id;
-            final imagePath = '$userId/profile.jpg';
-            String ddd = await _supabase.storage.from('avatars').uploadBinary(
-                  imagePath,
-                  imageBytes,
-                  fileOptions: FileOptions(
-                    upsert: true,
-                    contentType: 'image/$imageExtension',
-                  ),
-                );
-            String imageUrl =
-                _supabase.storage.from('avatars').getPublicUrl(imagePath);
-            imageUrl = Uri.parse(imageUrl).replace(queryParameters: {
-              't': DateTime.now().millisecondsSinceEpoch.toString()
-            }).toString();
-            onUpload(imageUrl);
-          },
-          child: const Text('Upload'),
+          onPressed: _isLoading ? null : _upload,
+          child: const Text('Cargar'),
         ),
       ],
     );
+  }
+
+  Future<void> _upload() async {
+    final picker = ImagePicker();
+    final imageFile = await picker.pickImage(
+      source: ImageSource.gallery,
+      maxWidth: 320,
+      maxHeight: 320,
+    );
+    if (imageFile == null) {
+      return;
+    }
+    setState(() => _isLoading = true);
+
+    try {
+      final bytes = await imageFile.readAsBytes();
+      final fileExt = imageFile.path.split('.').last.toLowerCase();
+      final userId = _supabase.auth.currentUser!.id;
+      final filePath = '$userId/profile.$fileExt';
+      await _supabase.storage.from('avatars').uploadBinary(
+            filePath,
+            bytes,
+            fileOptions:
+                FileOptions(upsert: true, contentType: 'imageFile/$fileExt'),
+          );
+      final imageUrlResponse = await _supabase.storage
+          .from('avatars')
+          .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
+      widget.onUpload(imageUrlResponse);
+    } on StorageException catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error.message),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: const Text('Unexpected error occurred'),
+            backgroundColor: Theme.of(context).colorScheme.error,
+          ),
+        );
+      }
+    }
+
+    setState(() => _isLoading = false);
   }
 }

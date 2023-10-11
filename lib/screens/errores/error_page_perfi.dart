@@ -60,7 +60,7 @@ class ErrorPagePerfil extends StatelessWidget {
                 /*  child: Text(
                                     '${snapshot.error!.toString()}\n ${snapshot.stackTrace!.toString()}'), */
               ))
-            : const AccountPage();
+            : const ProfileScreen();
       },
     );
   }
