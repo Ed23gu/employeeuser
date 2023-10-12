@@ -69,7 +69,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   geocoding: ^2.1.0
   geolocator: ^10.0.0
-  geocode: ^1.0.3
+
   flutter_svg: ^2.0.5
   connectivity_plus: ^4.0.2
   flutter_speed_dial: ^7.0.0

@@ -106,9 +106,9 @@ class _AccountPageState extends State<AccountPage> {
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
   Future<void> _onUpload(String imageUrl) async {
     try {
-      final userId = _supabase.auth.currentUser!.id;
+      //final userId = _supabase.auth.currentUser!.id;
       await _supabase.from('employees').upsert({
-        'id': userId,
+        // 'id': userId,
         'avatar_url': imageUrl,
       });
       if (mounted) {
@@ -230,12 +230,10 @@ class _AccountPageState extends State<AccountPage> {
                               }).toList(),
                               onChanged: (selectedValue) {
                                 dbService.employeeDepartment = selectedValue;
-
-                                ;
                               },
                             ),
                           ),
-                    gapH16,
+                    gapH8,
                     ElevatedButton(
                       onPressed: () {
                         // _loading ? null : _updateProfile();
@@ -245,7 +243,8 @@ class _AccountPageState extends State<AccountPage> {
                       // onPressed: _loading ? null : _updateProfile,
                       child: Text(_loading ? 'Saving...' : 'Actualizar Perfil'),
                     ),
-                    gapH8,
+                    gapH4,
+                    Divider(),
                     ExpansionTile(
                       leading: Icon(Icons.brightness_6_outlined),
                       title: Text(
@@ -270,6 +269,7 @@ class _AccountPageState extends State<AccountPage> {
                       ],
                     ),
                     gapH8,
+                    Divider(),
                     Container(
                       padding: EdgeInsets.only(left: pad6),
                       alignment: Alignment.topLeft,

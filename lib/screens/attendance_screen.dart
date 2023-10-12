@@ -80,7 +80,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         await supabase.storage
             .from('imageip')
             .remove([supabase.auth.currentUser!.id + "/" + url2 + "/" + url3]);
-        
+
         await supabase
             .from('attendance')
             .update({
@@ -197,7 +197,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            //print("ERRROR : $e");
             setState(() {
               isUploading = false;
               Future.delayed(
@@ -247,7 +247,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            //  print("ERRROR : $e");
             setState(() {
               isUploading = false;
               Future.delayed(
@@ -423,7 +423,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            // print("ERRROR : $e");
             setState(() {
               isUploading2 = false;
               Future.delayed(
@@ -473,7 +473,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            // print("ERRROR : $e");
             setState(() {
               isUploading2 = false;
               Future.delayed(
@@ -652,7 +652,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            // print("ERRROR : $e");
             setState(() {
               isUploading3 = false;
               Future.delayed(
@@ -702,7 +702,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            //print("ERRROR : $e");
             setState(() {
               isUploading3 = false;
               Future.delayed(
@@ -881,7 +881,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            // print("ERRROR : $e");
             setState(() {
               isUploading4 = false;
               Future.delayed(
@@ -931,7 +931,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               backgroundColor: Colors.green,
             ));
           } catch (e) {
-            print("ERRROR : $e");
+            // print("ERRROR : $e");
             setState(() {
               isUploading4 = false;
               Future.delayed(
@@ -1122,7 +1122,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }), //
-              gapH12,
+              gapH8,
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
                   builder: (context, snapshot) {
@@ -1163,7 +1163,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     icon: const Icon(Icons.logout),
                     label: const Text("Salir")),
               ), */
-
+              gapH4,
               Container(
                 margin: EdgeInsets.only(
                     top: margenSuperior,
@@ -1274,7 +1274,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                               .markAttendance3(context);
                                         });
 
-                                       // disableButton();
+                                        // disableButton();
                                       }),
                                 ],
                               ),
@@ -1409,7 +1409,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         }
                                         attendanceService
                                             .markAttendance3(context);
-                                        
                                       }),
                                 ],
                               ),
@@ -1445,7 +1444,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       )),
                     ]),
               ),
-              //gapH8,
+              gapH4,
               Container(
                 margin: EdgeInsets.only(bottom: margenInferior),
                 child: Builder(builder: (context) {
@@ -1501,7 +1500,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   );
                 }),
               ),
-              //  gapH8,
+              gapH4,
               Container(
                 margin: EdgeInsets.only(
                     top: margenSuperior,
@@ -1610,7 +1609,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                         }
                                         attendanceService
                                             .markAttendance3(context);
-                                         // disableButton();
+                                        // disableButton();
                                       })
                                 ],
                               ),
@@ -1767,6 +1766,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     ]),
               ),
               ///////////////////////////////////fotos//////////////
+
+              gapH4,
               Container(
                 margin: EdgeInsets.only(bottom: margenInferior),
                 child: Builder(builder: (context) {
