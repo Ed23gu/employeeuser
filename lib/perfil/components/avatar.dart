@@ -28,7 +28,6 @@ class _AvatarState extends State<Avatar> {
   var anchofoto = 120.0;
   var tamanoDeicono = 110.0;
 
-  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -53,7 +52,7 @@ class _AvatarState extends State<Avatar> {
             width: anchofoto,
             decoration: BoxDecoration(
               shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(Radius.circular(15)),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
               image: DecorationImage(
                 fit: BoxFit.fitWidth,
                 image: CachedNetworkImageProvider(

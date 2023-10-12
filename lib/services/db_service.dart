@@ -71,13 +71,27 @@ class DbService extends ChangeNotifier {
 
   ////////
 
-  Future updateProfile(String name, BuildContext context) async {
-    await _supabase.from(Constants.employeeTable).update({
-      'name': name,
-      'department': employeeDepartment,
-    }).eq('id', _supabase.auth.currentUser!.id);
-    Utils.showSnackBar("Perfil actualizado correctamente", context,
-        color: Colors.green);
+  Future updateProfile(String name, String cargo, BuildContext context) async {
+    try {
+      await _supabase.from(Constants.employeeTable).upsert({
+        'name': name,
+        'website': cargo,
+        'department': employeeDepartment,
+        'updated_at': DateTime.now().toIso8601String(),
+      }).eq('id', _supabase.auth.currentUser!.id);
+      Utils.showSnackBar("Perfil actualizado correctamente", context,
+          color: Colors.green);
+    } on PostgrestException catch (error) {
+      SnackBar(
+        content: Text(error.message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } catch (error) {
+      SnackBar(
+        content: const Text('Unexpected error occurred'),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    }
     notifyListeners();
   }
 

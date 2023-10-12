@@ -19,6 +19,9 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final SupabaseClient _supabase = Supabase.instance.client;
   TextEditingController nameController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _websiteController = TextEditingController();
+
   var anchoPerfil = 80.0;
   var altoPerfil = 80.0;
   var altoBoton50 = 50.0;
@@ -27,6 +30,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var pad6 = 6.0;
   String? _avatarUrl;
   var _loading = true;
+  int? employeeDepartment;
 
   /// Called once a user id is received within `onAuthenticated()`
   Future<void> _getProfile() async {
@@ -41,8 +45,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           .select<Map<String, dynamic>>()
           .eq('id', userId)
           .single();
-      // _usernameController.text = (data['username'] ?? '') as String;
-      // _websiteController.text = (data['website'] ?? '') as String;
+      _usernameController.text = (data['username'] ?? '') as String;
+      _websiteController.text = (data['website'] ?? '') as String;
       _avatarUrl = (data['avatar_url'] ?? '') as String;
     } on PostgrestException catch (error) {
       SnackBar(
@@ -68,7 +72,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     try {
       final userId = _supabase.auth.currentUser!.id;
       await _supabase.from('employees').upsert({
-        // 'id': userId,
+        'id': userId,
         'avatar_url': imageUrl,
       });
       if (mounted) {
@@ -100,6 +104,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     _getProfile();
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _websiteController.dispose();
+    super.dispose();
   }
 
   @override
@@ -182,6 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               }).toList(),
                               onChanged: (selectedValue) {
                                 dbService.employeeDepartment = selectedValue;
+                                employeeDepartment = selectedValue;
                               },
                             ),
                           ),
@@ -191,8 +203,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       width: anchoBoton200,
                       child: ElevatedButton(
                         onPressed: () {
-                          dbService.updateProfile(
-                              nameController.text.trim(), context);
+                          dbService.updateProfile(nameController.text.trim(),
+                              _websiteController.text.trim(), context);
                         },
                         child: const Text(
                           "Actualizar Perfil",

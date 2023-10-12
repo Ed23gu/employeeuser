@@ -1,6 +1,5 @@
 import 'package:employee_attendance/examples/value_notifier/connection_status_value_notifier.dart';
 import 'package:employee_attendance/perfil/pages/account_page.dart';
-import 'package:employee_attendance/screens/profile_screen.dart';
 import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -60,7 +59,7 @@ class ErrorPagePerfil extends StatelessWidget {
                 /*  child: Text(
                                     '${snapshot.error!.toString()}\n ${snapshot.stackTrace!.toString()}'), */
               ))
-            : const ProfileScreen();
+            : const AccountPage();
       },
     );
   }
