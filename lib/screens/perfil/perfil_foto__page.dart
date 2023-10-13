@@ -44,7 +44,7 @@ class _AccountPageState extends State<AccountPage> {
           .eq('id', userId)
           .single();
       setState(() {
-        _usernameController.text = (data['name'] ?? '') as String;
+        nameController.text = (data['name'] ?? '') as String;
         _websiteController.text = (data['website'] ?? '') as String;
         _avatarUrl = (data['avatar_url'] ?? '') as String;
       });
@@ -70,9 +70,9 @@ class _AccountPageState extends State<AccountPage> {
   /// Called when image has been uploaded to Supabase storage from within Avatar widget
   Future<void> _onUpload(String imageUrl) async {
     try {
-      //final userId = _supabase.auth.currentUser!.id;
+      final userId = _supabase.auth.currentUser!.id;
       await _supabase.from('employees').upsert({
-        // 'id': userId,
+        'id': userId,
         'avatar_url': imageUrl,
       });
       if (mounted) {
@@ -108,7 +108,7 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    nameController.dispose();
     _websiteController.dispose();
     super.dispose();
   }
@@ -156,10 +156,7 @@ class _AccountPageState extends State<AccountPage> {
                 child: Column(
                   // padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
                   children: [
-                    Avatar(
-                      imageUrl: _avatarUrl,
-                      onUpload: _onUpload,
-                    ),
+                    Avatar(imageUrl: _avatarUrl, onUpload: _onUpload),
                     gapH8,
                     Text("Email: ${dbService.userModel?.email}"),
                     gapH16,
