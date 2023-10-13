@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/department_model.dart';
-import 'package:employee_attendance/perfil/components/avatar.dart';
+import 'package:employee_attendance/screens/perfil/avatar.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';

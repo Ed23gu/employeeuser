@@ -5,7 +5,7 @@ import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
-import 'package:employee_attendance/obs/home_diario_page.dart';
+import 'package:employee_attendance/screens/observaciones/observaciones_page.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/foundation.dart';

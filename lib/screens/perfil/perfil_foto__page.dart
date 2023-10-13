@@ -1,7 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/department_model.dart';
-import 'package:employee_attendance/perfil/components/avatar.dart';
+import 'package:employee_attendance/screens/perfil/avatar.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
 import 'package:flutter/material.dart';
@@ -43,52 +43,16 @@ class _AccountPageState extends State<AccountPage> {
           .select<Map<String, dynamic>>()
           .eq('id', userId)
           .single();
-      _usernameController.text = (data['name'] ?? '') as String;
-      _websiteController.text = (data['website'] ?? '') as String;
-      _avatarUrl = (data['avatar_url'] ?? '') as String;
+      setState(() {
+        _usernameController.text = (data['name'] ?? '') as String;
+        _websiteController.text = (data['website'] ?? '') as String;
+        _avatarUrl = (data['avatar_url'] ?? '') as String;
+      });
     } on PostgrestException catch (error) {
       SnackBar(
         content: Text(error.message),
         backgroundColor: Theme.of(context).colorScheme.error,
       );
-    } catch (error) {
-      SnackBar(
-        content: const Text('Unexpected error occurred'),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
-    }
-  }
-
-  /// Called when user taps `Update` button
-  Future<void> _updateProfile() async {
-    setState(() {
-      _loading = true;
-    });
-    final website = _websiteController.text.trim();
-    final user = _supabase.auth.currentUser;
-    final updates = {
-      'id': user!.id,
-      'website': website,
-      'updated_at': DateTime.now().toIso8601String(),
-    };
-    try {
-      await _supabase.from('employees').upsert(updates);
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Successfully updated profile!'),
-        ));
-      }
-    } on PostgrestException catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      ));
     } catch (error) {
       SnackBar(
         content: const Text('Unexpected error occurred'),
@@ -217,6 +181,7 @@ class _AccountPageState extends State<AccountPage> {
                             width: double.infinity,
                             child: DropdownButtonFormField(
                               decoration: const InputDecoration(
+                                  labelText: 'Departamento',
                                   border: OutlineInputBorder()),
                               value: dbService.employeeDepartment ??
                                   dbService.allDepartments.first.id,
@@ -243,7 +208,6 @@ class _AccountPageState extends State<AccountPage> {
                       // onPressed: _loading ? null : _updateProfile,
                       child: Text(_loading ? 'Saving...' : 'Actualizar Perfil'),
                     ),
-                    gapH4,
                     Divider(),
                     ExpansionTile(
                       leading: Icon(Icons.brightness_6_outlined),
@@ -268,7 +232,6 @@ class _AccountPageState extends State<AccountPage> {
                         )
                       ],
                     ),
-                    gapH8,
                     Divider(),
                     Container(
                       padding: EdgeInsets.only(left: pad6),
@@ -283,6 +246,7 @@ class _AccountPageState extends State<AccountPage> {
                             },
                             icon: const Icon(Icons.logout),
                           ),
+                          gapW16,
                           Text(
                             "Salir",
                             style: TextStyle(fontSize: 17),

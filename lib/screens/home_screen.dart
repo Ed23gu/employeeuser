@@ -21,6 +21,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        elevation: 15,
+        backgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
         leading: Builder(builder: (BuildContext context) {
           return Row(
             children: [
