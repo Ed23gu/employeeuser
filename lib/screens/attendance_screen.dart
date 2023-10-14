@@ -29,6 +29,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
   String todayDate = DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now());
+  bool _estacargandofoto = false;
   String getUrl = "INICIAL";
   int segundos = 1;
   bool flagborrar = false;
@@ -155,6 +156,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     if (!kIsWeb) {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
+      setState(() => _estacargandofoto = true);
       if (pickedFile != null) {
         await subirubi.getTodayAttendance();
         if (getUrl == "NULL") {
@@ -168,9 +170,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           File? imagescom =
               await customCompressed(imagePathToCompress: _images);
           _images = File(imagescom.path);
-          setState(() {
-            isUploading = true;
-          });
+          setState(() => isUploading = true);
           String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
               .format(DateTime.now())
               .toString();
@@ -261,10 +261,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             ));
           }
         }
+        setState(() => _estacargandofoto = false);
       }
     } else if (kIsWeb) {
       var pickedFileweb = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
+      setState(() => _estacargandofoto = true);
       if (pickedFileweb != null) {
         await subirubi.markAttendance3(context);
         if (getUrl == "NULL") {
@@ -371,6 +373,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ));
         }
       }
+
+      setState(() => _estacargandofoto = false);
     }
   }
 
@@ -1214,6 +1218,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                           ),
                           gapH4,
                           Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -1221,33 +1226,38 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 children: [
                                   IconButton(
                                       icon: Icon(Icons.add_a_photo),
-                                      onPressed: () async {
-                                        if (attendanceService
-                                                .attendanceModel?.pic_in !=
-                                            null) {
-                                          getUrl = attendanceService
-                                              .attendanceModel!.pic_in
-                                              .toString();
-                                        }
-                                        attendanceService
-                                                    .attendanceModel?.checkIn ==
-                                                null
-                                            ? attendanceService.attendanceModel
-                                                            ?.pic_in ==
-                                                        null ||
-                                                    attendanceService
-                                                            .attendanceModel
-                                                            ?.pic_in
-                                                            .toString() ==
-                                                        "NULL"
-                                                ? await choiceImage()
-                                                : await attendanceService
-                                                    .markAttendance3(context)
-                                            : await attendanceService
-                                                .markAttendance3(context);
-                                        await attendanceService
-                                            .markAttendance3(context);
-                                      }),
+                                      onPressed: _estacargandofoto
+                                          ? null
+                                          : () async {
+                                              if (attendanceService
+                                                      .attendanceModel
+                                                      ?.pic_in !=
+                                                  null) {
+                                                getUrl = attendanceService
+                                                    .attendanceModel!.pic_in
+                                                    .toString();
+                                              }
+                                              attendanceService.attendanceModel
+                                                          ?.checkIn ==
+                                                      null
+                                                  ? attendanceService
+                                                                  .attendanceModel
+                                                                  ?.pic_in ==
+                                                              null ||
+                                                          attendanceService
+                                                                  .attendanceModel
+                                                                  ?.pic_in
+                                                                  .toString() ==
+                                                              "NULL"
+                                                      ? await choiceImage()
+                                                      : await attendanceService
+                                                          .markAttendance3(
+                                                              context)
+                                                  : await attendanceService
+                                                      .markAttendance3(context);
+                                              await attendanceService
+                                                  .markAttendance3(context);
+                                            }),
                                   IconButton(
                                       icon: Icon(Icons.delete),
                                       color: Colors.grey,
@@ -1300,25 +1310,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                                     .attendanceModel!.pic_in
                                                     .toString(),
                                                 height: altoImagen,
-                                                /* progressIndicatorBuilder:
-                                                      (context, url,
-                                                      COMPRTROBAR
-                                                              downloadProgress) =>
-                                                          CircularProgressIndicator(
-                                                              value:
-                                                                  downloadProgress
-                                                                      .progress), */
                                                 errorWidget:
                                                     (context, url, error) =>
                                                         Icon(Icons.error),
                                               ),
-
-                                /* Image.network(
-                                                  attendanceService
-                                                      .attendanceModel!.pic_in
-                                                      .toString(),
-                                                  fit: BoxFit.fill,
-                                                  height: 120), */
                               ),
                             ],
                           )
