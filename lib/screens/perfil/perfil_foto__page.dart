@@ -17,7 +17,6 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   final SupabaseClient _supabase = Supabase.instance.client;
-  final _usernameController = TextEditingController();
   final _websiteController = TextEditingController();
   TextEditingController nameController = TextEditingController();
 
@@ -157,7 +156,7 @@ class _AccountPageState extends State<AccountPage> {
                   // padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
                   children: [
                     Avatar(imageUrl: _avatarUrl, onUpload: _onUpload),
-                    gapH8,
+                    gapH16,
                     Text("Email: ${dbService.userModel?.email}"),
                     gapH16,
                     TextField(

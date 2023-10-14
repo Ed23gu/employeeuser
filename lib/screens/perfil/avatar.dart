@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:employee_attendance/constants/gaps.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -31,39 +30,11 @@ class _AvatarState extends State<Avatar> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [
+      children: <Widget>[
         if (widget.imageUrl == null || widget.imageUrl!.isEmpty)
-          Container(
-            height: altoPerfil,
-            width: anchoPerfil,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20), color: Colors.blue),
-            child: Center(
-              child: Icon(
-                Icons.person,
-                size: tamanoDeicono,
-                color: Colors.white,
-              ),
-            ),
-          )
+          Center(child: _sinFoto())
         else
-          Container(
-            height: altofoto,
-            width: anchofoto,
-            decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              borderRadius: BorderRadius.all(Radius.circular(20)),
-              image: DecorationImage(
-                fit: BoxFit.fitWidth,
-                image: CachedNetworkImageProvider(widget.imageUrl!),
-              ),
-            ),
-          ),
-        gapH8,
-        ElevatedButton(
-          onPressed: _isLoading ? null : _upload,
-          child: const Text('Cargar'),
-        ),
+          Center(child: _buildFoto()),
       ],
     );
   }
@@ -117,4 +88,56 @@ class _AvatarState extends State<Avatar> {
 
     setState(() => _isLoading = false);
   }
+
+  Widget _sinFoto() => Stack(
+        alignment: const Alignment(0.6, 0.6),
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.blue,
+            radius: 80,
+          ),
+          Positioned(
+            bottom: 3,
+            right: 0,
+            child: CircleAvatar(
+              maxRadius: 25,
+              child: IconButton(
+                onPressed: _isLoading ? null : _upload,
+                icon: Icon(Icons.add_a_photo_outlined),
+              ),
+            ),
+          ),
+          Positioned(
+            bottom: 35,
+            right: 35,
+            child: Icon(
+              Icons.person,
+              color: Colors.white,
+              size: 90,
+            ),
+          ),
+        ],
+      );
+  // #docregion Stack
+  Widget _buildFoto() => Stack(
+        alignment: const Alignment(0.6, 0.6),
+        children: [
+          CircleAvatar(
+            backgroundColor: Color.fromARGB(0, 0, 0, 0),
+            backgroundImage: CachedNetworkImageProvider(widget.imageUrl!),
+            radius: 80,
+          ),
+          Positioned(
+            bottom: 5,
+            right: 0,
+            child: CircleAvatar(
+              maxRadius: 25,
+              child: IconButton(
+                onPressed: _isLoading ? null : _upload,
+                icon: Icon(Icons.add_a_photo_outlined),
+              ),
+            ),
+          ),
+        ],
+      );
 }

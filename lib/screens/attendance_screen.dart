@@ -1285,7 +1285,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 child: attendanceService
                                             .attendanceModel?.pic_in ==
                                         null
-                                    ? Icon(Icons.photo)
+                                    ? Icon(
+                                        Icons.add_a_photo_outlined,
+                                        size: 50,
+                                      )
                                     : attendanceService
                                                 .attendanceModel?.pic_in ==
                                             "NULL"
