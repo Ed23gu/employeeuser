@@ -237,7 +237,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         throw Exception('Error al obtener los datos de empleados');
       }
     } catch (error) {
-      print('Error al obtener los datos de empleados: $error');
+     // print('Error al obtener los datos de empleados: $error');
       return [];
     }
   }

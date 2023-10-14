@@ -107,8 +107,8 @@ class ObsService extends ChangeNotifier {
 
     Map? getLocation =
         await LocationService().initializeAndGetLocation(context);
-    print("Location Data :");
-    print(getLocation);
+    //print("Location Data :");
+   // print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn == null) {
         try {
@@ -125,7 +125,7 @@ class ObsService extends ChangeNotifier {
               .eq('employee_id', _supabase.auth.currentUser!.id)
               .eq('date', todayDate);
         } on PostgrestException catch (error) {
-          print(error);
+         // print(error);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             //message: error.message
 
@@ -133,7 +133,7 @@ class ObsService extends ChangeNotifier {
             backgroundColor: Colors.red,
           ));
         } catch (e) {
-          print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
+        //  print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
           bandera = true;
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Algo ha salido mal, intentelo nuevamente"),
@@ -186,8 +186,8 @@ class ObsService extends ChangeNotifier {
 
     Map? getLocation =
         await LocationService().initializeAndGetLocation(context);
-    print("Location Data2 :");
-    print(getLocation);
+   // print("Location Data2 :");
+   // print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn2 == null) {
         await _supabase
@@ -215,7 +215,7 @@ class ObsService extends ChangeNotifier {
     } else {
       Utils.showSnackBar("No se puede obtener su ubicacion", context,
           color: Colors.blue);
-      print('aaaaaaaaaaaaaaaaa');
+    //  print('aaaaaaaaaaaaaaaaa');
       getTodayAttendance();
     }
   }
@@ -238,8 +238,8 @@ class ObsService extends ChangeNotifier {
         //.textSearch('date', 'October 2023', config: 'english')
         .textSearch('date', "'$fecha'", config: 'english')
         .order('created_at', ascending: false);
-    print('eeeeeeee');
-    print(obsdata);
+   // print('eeeeeeee');
+   // print(obsdata);
     //notifyListeners();
     getTodayAttendance();
     return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();

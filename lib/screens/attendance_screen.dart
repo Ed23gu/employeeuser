@@ -1122,7 +1122,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }), //
-              gapH8,
+
+              Divider(),
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
                   builder: (context, snapshot) {
@@ -1285,10 +1286,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                 child: attendanceService
                                             .attendanceModel?.pic_in ==
                                         null
-                                    ? Icon(
-                                        Icons.add_a_photo_outlined,
-                                        size: 50,
-                                      )
+                                    ? Icon(Icons.photo)
                                     : attendanceService
                                                 .attendanceModel?.pic_in ==
                                             "NULL"
@@ -1452,6 +1450,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 margin: EdgeInsets.only(bottom: margenInferior),
                 child: Builder(builder: (context) {
                   return SlideAction(
+                    sliderButtonIconSize: 15,
+                    innerColor: Theme.of(context).colorScheme.primary,
                     elevation: elevacion,
                     height: altoSlider,
                     text: (attendanceService.attendanceModel?.checkIn != null &&
@@ -1776,7 +1776,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 child: Builder(builder: (context) {
                   return SlideAction(
                     elevation: elevacion,
-
+                    innerColor: Theme.of(context).colorScheme.primary,
+                    sliderButtonIconSize: 15,
                     animationDuration: Duration(milliseconds: 200),
                     text: (attendanceService.attendanceModel?.checkIn2 !=
                                 null &&

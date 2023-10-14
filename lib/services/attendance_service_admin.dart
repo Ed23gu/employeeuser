@@ -105,8 +105,8 @@ class AttendanceServiceadmin extends ChangeNotifier {
 
     Map? getLocation =
         await LocationService().initializeAndGetLocation(context);
-    print("Location Data :");
-    print(getLocation);
+   // print("Location Data :");
+    //print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn == null) {
         await _supabase
@@ -163,8 +163,8 @@ class AttendanceServiceadmin extends ChangeNotifier {
 
     Map? getLocation =
         await LocationService().initializeAndGetLocation(context);
-    print("Location Data2 :");
-    print(getLocation);
+    //print("Location Data2 :");
+   // print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn2 == null) {
         await _supabase

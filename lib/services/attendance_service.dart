@@ -106,7 +106,7 @@ class AttendanceService extends ChangeNotifier {
     depModel2 = DepartmentModel.fromJson(result2.first);
 
     Position? getLocation = await _determinePosition();
-    print(getLocation);
+   // print(getLocation);
     String ubicacion = await obtenerNombreUbicacion(getLocation);
     if (attendanceModel?.checkIn == null) {
       try {
@@ -124,13 +124,13 @@ class AttendanceService extends ChangeNotifier {
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
       } on PostgrestException catch (error) {
-        print(error);
+       // print(error);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("$error Algo ha salido mal, intentelo nuevamente"),
           backgroundColor: Colors.red,
         ));
       } catch (e) {
-        print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
+       // print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
         bandera = true;
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Algo ha salido mal, intentelo nuevamente"),
@@ -179,7 +179,7 @@ class AttendanceService extends ChangeNotifier {
     depModel22 = DepartmentModel.fromJson(result32.first);
 
     Position? getLocation = await _determinePosition();
-    print(getLocation);
+   // print(getLocation);
     String ubicacion = await obtenerNombreUbicacion(getLocation);
     if (attendanceModel?.checkIn2 == null) {
       await _supabase
@@ -257,7 +257,7 @@ class AttendanceService extends ChangeNotifier {
         address = 'No se pudo obtener el nombre de la ubicación.';
       }
     } catch (e) {
-      print("error:$e");
+     // print("error:$e");
       address = 'Error de conexión.';
     }
     return address;

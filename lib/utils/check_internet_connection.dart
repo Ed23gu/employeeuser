@@ -38,7 +38,7 @@ class CheckInternetConnection {
 
       var url = Uri.parse('http://www.supabase.com');
       final response = await http.get(url);
-      if (response.statusCode == 200) {
+      /*  if (response.statusCode == 200) {
         print('${response.statusCode} exitoso');
       } else if (response.statusCode == 404) {
         print('${response.statusCode} no encontado');
@@ -48,7 +48,7 @@ class CheckInternetConnection {
         print('${response.statusCode} sin respuesta');
       } else {
         print('${response.statusCode} error desconocido');
-      }
+      } */
 
       if (result.isNotEmpty &&
           response.statusCode == 200 &&

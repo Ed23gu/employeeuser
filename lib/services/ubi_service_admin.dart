@@ -187,7 +187,7 @@ class _MyHomePageState extends State<MyHomePage> {
       }
     } catch (e) {
       setState(() {
-        print("error:$e");
+       // print("error:$e");
         locationName = 'Error de conexión.';
       });
     }

@@ -132,10 +132,11 @@ class _ComentariosPageState extends State<ComentariosPage> {
       //Navigator.pop(context);z
       isLoadingdel = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Observación borrada"),
-          width: 180,
-          duration: new Duration(seconds: 1),
-          behavior: SnackBarBehavior.floating));
+        content: Text("Observación borrada"),
+        width: 180,
+        duration: new Duration(seconds: 1),
+        behavior: SnackBarBehavior.floating,
+      ));
     } catch (e) {
       setState(() {
         isLoadingdel = false;
@@ -158,18 +159,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
     return result;
   }
 
-  Future<List> readData2() async {
-    final result = await supabase
-        .from('todos')
-        .select()
-        .eq(
-          'user_id',
-          supabase.auth.currentUser!.id,
-        )
-        .order('id', ascending: false);
-    return result;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -179,8 +168,14 @@ class _ComentariosPageState extends State<ComentariosPage> {
           IconButton(
               onPressed: () {
                 setState(() {
-                  _readStream = supabase.from('todos').stream(
-                      primaryKey: ['id']).order('created_at', ascending: false);
+                  _readStream = supabase
+                      .from('todos')
+                      .stream(primaryKey: ['id'])
+                      .order('created_at', ascending: false)
+                      .eq(
+                        'user_id',
+                        supabase.auth.currentUser!.id,
+                      );
                 });
               },
               icon: const Icon(Icons.refresh_outlined)),
@@ -258,7 +253,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                 ));
                           });
                     }
-
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
@@ -266,7 +260,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
           Form(
               key: _formKey,
               child: Padding(
-                padding: const EdgeInsets.all(15.0),
+                padding: const EdgeInsets.fromLTRB(15.0, 25.0, 15.0, 25),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   //crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -284,7 +278,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       autofocus: false,
                       decoration: InputDecoration(
                         focusedBorder: InputBorder.none,
-                        contentPadding: const EdgeInsets.all(8),
+                        contentPadding: const EdgeInsets.all(10),
                         hintText: "Ingrese aquí la observación del dia de hoy.",
                         hintStyle: TextStyle(fontSize: 12),
                         border: const OutlineInputBorder(),
