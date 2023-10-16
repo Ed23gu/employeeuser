@@ -60,7 +60,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   int per = 15;
   final picker = ImagePicker();
   File? pickedImage;
-  File? _images;
+  dynamic _images;
   Uint8List webImage = Uint8List(8);
   Uint8List webImage2 = Uint8List(8);
   Uint8List webImage3 = Uint8List(8);

@@ -12,6 +12,13 @@ class RegisterScreen extends StatefulWidget {
 class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  var _esoculto = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _esoculto = true;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,13 +79,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 20,
                 ),
                 TextField(
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     label: Text("Contraseña"),
                     prefixIcon: Icon(Icons.lock),
+                    suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            _esoculto = !_esoculto;
+                          });
+                        },
+                        icon: _esoculto
+                            ? const Icon(Icons.visibility)
+                            : const Icon(Icons.visibility_off_outlined)),
                     border: OutlineInputBorder(),
                   ),
                   controller: _passwordController,
-                  obscureText: true,
+                  obscureText: _esoculto,
                 ),
                 const SizedBox(
                   height: 30,

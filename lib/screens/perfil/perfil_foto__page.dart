@@ -150,7 +150,7 @@ class _AccountPageState extends State<AccountPage> {
               ],
             )
           : Padding(
-              padding: EdgeInsets.all(pad16),
+              padding: EdgeInsets.fromLTRB(pad16, 5, pad16, pad16),
               child: SingleChildScrollView(
                 child: Column(
                   // padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
