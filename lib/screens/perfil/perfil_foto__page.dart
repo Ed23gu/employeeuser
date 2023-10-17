@@ -160,12 +160,14 @@ class _AccountPageState extends State<AccountPage> {
                     Text("Email: ${dbService.userModel?.email}"),
                     gapH16,
                     TextField(
+                       autofocus: false,
                       controller: nameController,
                       decoration: const InputDecoration(
                           label: Text("Nombre"), border: OutlineInputBorder()),
                     ),
                     gapH16,
                     TextField(
+                       autofocus: false,
                       controller: _websiteController,
                       decoration: const InputDecoration(
                           label: Text("Cargo"), border: OutlineInputBorder()),
@@ -198,6 +200,11 @@ class _AccountPageState extends State<AccountPage> {
                     ElevatedButton(
                       onPressed: () {
                         // _loading ? null : _updateProfile();
+                        FocusScopeNode currentFocus = FocusScope.of(context);
+                        if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                        ;
                         dbService.updateProfile(nameController.text.trim(),
                             _websiteController.text.trim(), context);
                       },
