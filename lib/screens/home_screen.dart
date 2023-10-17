@@ -65,6 +65,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
         animationDuration: Duration(milliseconds: 300),
         onTap: (index) {
           setState(() {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus) {
+              currentFocus.unfocus();
+            }
+            ;
             _page = index;
           });
         },

@@ -19,6 +19,9 @@ class _AccountPageState extends State<AccountPage> {
   final SupabaseClient _supabase = Supabase.instance.client;
   final _websiteController = TextEditingController();
   TextEditingController nameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  final focusNode = FocusNode();
+  final focusNode2 = FocusNode();
 
   String? _avatarUrl;
   var _loading = true;
@@ -120,147 +123,181 @@ class _AccountPageState extends State<AccountPage> {
         ? nameController.text = dbService.userModel?.name ?? ''
         : null;
     return Scaffold(
-      body: (_loading == true || dbService.userModel == null)
-          ? Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                gapH52,
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                gapH52,
-                Container(
-                  child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          dbService.allDepartments.isEmpty
-                              ? dbService.getAllDepartments()
-                              : null;
-                          nameController.text.isEmpty
-                              ? nameController.text =
-                                  dbService.userModel?.name ?? ''
-                              : null;
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.refresh_outlined,
-                        size: 50,
-                      )),
-                ),
-              ],
-            )
-          : Padding(
-              padding: EdgeInsets.fromLTRB(pad16, 5, pad16, pad16),
-              child: SingleChildScrollView(
-                child: Column(
-                  // padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-                  children: [
-                    Avatar(imageUrl: _avatarUrl, onUpload: _onUpload),
-                    gapH16,
-                    Text("Email: ${dbService.userModel?.email}"),
-                    gapH16,
-                    TextField(
-                       autofocus: false,
-                      controller: nameController,
-                      decoration: const InputDecoration(
-                          label: Text("Nombre"), border: OutlineInputBorder()),
-                    ),
-                    gapH16,
-                    TextField(
-                       autofocus: false,
-                      controller: _websiteController,
-                      decoration: const InputDecoration(
-                          label: Text("Cargo"), border: OutlineInputBorder()),
-                    ),
-                    gapH16,
-                    dbService.allDepartments.isEmpty
-                        ? const LinearProgressIndicator()
-                        : SizedBox(
-                            width: double.infinity,
-                            child: DropdownButtonFormField(
-                              decoration: const InputDecoration(
-                                  labelText: 'Departamento',
-                                  border: OutlineInputBorder()),
-                              value: dbService.employeeDepartment ??
-                                  dbService.allDepartments.first.id,
-                              items: dbService.allDepartments
-                                  .map((DepartmentModel item) {
-                                return DropdownMenuItem(
-                                    value: item.id,
-                                    child: Text(
-                                      item.title,
-                                    ));
-                              }).toList(),
-                              onChanged: (selectedValue) {
-                                dbService.employeeDepartment = selectedValue;
-                              },
-                            ),
-                          ),
-                    gapH8,
-                    ElevatedButton(
-                      onPressed: () {
-                        // _loading ? null : _updateProfile();
-                        FocusScopeNode currentFocus = FocusScope.of(context);
-                        if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-                        ;
-                        dbService.updateProfile(nameController.text.trim(),
-                            _websiteController.text.trim(), context);
-                      },
-                      // onPressed: _loading ? null : _updateProfile,
-                      child: Text(_loading ? 'Saving...' : 'Actualizar Perfil'),
-                    ),
-                    Divider(),
-                    ExpansionTile(
-                      leading: Icon(Icons.brightness_6_outlined),
-                      title: Text(
-                        "Tema",
-                        textAlign: TextAlign.left,
-                      ),
-                      children: <Widget>[
-                        ListTile(
-                          leading: Icon(Icons.wb_sunny),
-                          title: Text("Claro"),
-                          onTap: () {
-                            AdaptiveTheme.of(context).setLight();
+        body: (_loading == true || dbService.userModel == null)
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  gapH52,
+                  const Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                  gapH52,
+                  Container(
+                    child: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            dbService.allDepartments.isEmpty
+                                ? dbService.getAllDepartments()
+                                : null;
+                            nameController.text.isEmpty
+                                ? nameController.text =
+                                    dbService.userModel?.name ?? ''
+                                : null;
+                          });
+                        },
+                        icon: const Icon(
+                          Icons.refresh_outlined,
+                          size: 50,
+                        )),
+                  ),
+                ],
+              )
+            : Padding(
+                padding: EdgeInsets.fromLTRB(pad16, 6, pad16, pad16),
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      // padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+                      children: [
+                        Avatar(imageUrl: _avatarUrl, onUpload: _onUpload),
+                        gapH16,
+                        Text("Email: ${dbService.userModel?.email}"),
+                        gapH16,
+                        TextFormField(
+                          focusNode: focusNode,
+                          onTapOutside: ((event) {
+                            focusNode.unfocus();
+                          }),
+                          // autofocus: false,
+                          controller: nameController,
+                          decoration: const InputDecoration(
+                              label: Text("Nombre"),
+                              border: OutlineInputBorder()),
+                          textInputAction: TextInputAction.next,
+                          onFieldSubmitted: (_) =>
+                              FocusScope.of(context).nextFocus(),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Por favor, rellene este campo.";
+                            }
+                            return null;
                           },
                         ),
-                        ListTile(
-                          leading: Icon(Icons.brightness_2_outlined),
-                          title: Text("Oscuro"),
-                          onTap: () {
-                            AdaptiveTheme.of(context).setDark();
+                        gapH16,
+                        TextFormField(
+                          focusNode: focusNode2,
+                          onTapOutside: ((event) {
+                            focusNode2.unfocus();
+                          }),
+                          // autofocus: false,
+                          controller: _websiteController,
+                          decoration: const InputDecoration(
+                              label: Text("Cargo"),
+                              border: OutlineInputBorder()),
+                          textInputAction: TextInputAction.next,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return "Por favor, rellene este campo.";
+                            }
+                            return null;
                           },
-                        )
+                        ),
+                        gapH16,
+                        dbService.allDepartments.isEmpty
+                            ? const LinearProgressIndicator()
+                            : SizedBox(
+                                width: double.infinity,
+                                child: DropdownButtonFormField(
+                                  decoration: const InputDecoration(
+                                      labelText: 'Departamento',
+                                      border: OutlineInputBorder()),
+                                  value: dbService.employeeDepartment ??
+                                      dbService.allDepartments.first.id,
+                                  items: dbService.allDepartments
+                                      .map((DepartmentModel item) {
+                                    return DropdownMenuItem(
+                                        value: item.id,
+                                        child: Text(
+                                          item.title,
+                                        ));
+                                  }).toList(),
+                                  onChanged: (selectedValue) {
+                                    dbService.employeeDepartment =
+                                        selectedValue;
+                                  },
+                                ),
+                              ),
+                        gapH8,
+                        ElevatedButton(
+                          onPressed: () {
+                            /* FocusScopeNode currentFocus = FocusScope.of(context);
+                          if (!currentFocus.hasPrimaryFocus) {
+                          currentFocus.unfocus();
+                        }
+                        ; */
+                            final isValid = _formKey.currentState?.validate();
+                            if (isValid != true) {
+                              return;
+                            }
+                            ;
+                            dbService.updateProfile(nameController.text.trim(),
+                                _websiteController.text.trim(), context);
+                          },
+                          // onPressed: _loading ? null : _updateProfile,
+                          child: Text(
+                              _loading ? 'Saving...' : 'Actualizar Perfil'),
+                        ),
+                        Divider(),
+                        ExpansionTile(
+                          leading: Icon(Icons.brightness_6_outlined),
+                          title: Text(
+                            "Tema",
+                            textAlign: TextAlign.left,
+                          ),
+                          children: <Widget>[
+                            ListTile(
+                              leading: Icon(Icons.wb_sunny),
+                              title: Text("Claro"),
+                              onTap: () {
+                                AdaptiveTheme.of(context).setLight();
+                              },
+                            ),
+                            ListTile(
+                              leading: Icon(Icons.brightness_2_outlined),
+                              title: Text("Oscuro"),
+                              onTap: () {
+                                AdaptiveTheme.of(context).setDark();
+                              },
+                            )
+                          ],
+                        ),
+                        Divider(),
+                        Container(
+                          padding: EdgeInsets.only(left: pad6),
+                          alignment: Alignment.topLeft,
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  route.Provider.of<AuthService>(context,
+                                          listen: false)
+                                      .signOut();
+                                },
+                                icon: const Icon(Icons.logout),
+                              ),
+                              gapW16,
+                              Text(
+                                "Salir",
+                                style: TextStyle(fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    Divider(),
-                    Container(
-                      padding: EdgeInsets.only(left: pad6),
-                      alignment: Alignment.topLeft,
-                      child: Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {
-                              route.Provider.of<AuthService>(context,
-                                      listen: false)
-                                  .signOut();
-                            },
-                            icon: const Icon(Icons.logout),
-                          ),
-                          gapW16,
-                          Text(
-                            "Salir",
-                            style: TextStyle(fontSize: 17),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
-            ),
-    );
+              ));
   }
 }

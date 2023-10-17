@@ -8,6 +8,7 @@ import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/screens/observaciones/observaciones_page.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
+import 'package:employee_attendance/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
@@ -263,6 +264,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
         setState(() => _estacargandofoto = false);
       }
+      setState(() => _estacargandofoto = false);
     } else if (kIsWeb) {
       var pickedFileweb = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
@@ -376,6 +378,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
       setState(() => _estacargandofoto = false);
     }
+    setState(() => _estacargandofoto = false);
   }
 
   Future choiceImage2() async {
@@ -1468,32 +1471,42 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     //   innerColor: Colors.red,
                     key: key,
                     onSubmit: () async {
-                      if (attendanceService.attendanceModel?.checkIn != null &&
-                          attendanceService.attendanceModel?.checkOut != null) {
-                        _mostrarAlerta(
-                            context, "Asistencia exitosamente subida.");
-                      } else if (attendanceService.attendanceModel?.checkIn ==
-                              null &&
-                          attendanceService.attendanceModel?.pic_in != "NULL" &&
-                          attendanceService.attendanceModel?.pic_in != null) {
-                        final bool flat =
-                            await attendanceService.markAttendance(context);
-                        flat == true
-                            ? key.currentState!.reset()
-                            : key.currentState;
-                      } else if (attendanceService.attendanceModel?.pic_in ==
-                          null) {
-                        _mostrarAlerta(context, "Suba una foto por favor.");
-                      } else if (attendanceService.attendanceModel?.pic_out !=
-                              null &&
-                          attendanceService.attendanceModel?.pic_out !=
-                              "NULL") {
-                        await attendanceService.markAttendance(context);
-                      } else {
-                        _mostrarAlerta(context, "Suba una foto por favor.");
-                      }
+                      try {
+                        if (attendanceService.attendanceModel?.checkIn !=
+                                null &&
+                            attendanceService.attendanceModel?.checkOut !=
+                                null) {
+                          _mostrarAlerta(
+                              context, "Asistencia exitosamente subida.");
+                        } else if (attendanceService.attendanceModel?.checkIn ==
+                                null &&
+                            attendanceService.attendanceModel?.pic_in !=
+                                "NULL" &&
+                            attendanceService.attendanceModel?.pic_in != null) {
+                          final bool flat =
+                              await attendanceService.markAttendance(context);
+                          flat == true
+                              ? key.currentState!.reset()
+                              : key.currentState;
+                        } else if (attendanceService.attendanceModel?.pic_in ==
+                            null) {
+                          _mostrarAlerta(context, "Suba una foto por favor.");
+                        } else if (attendanceService.attendanceModel?.pic_out !=
+                                null &&
+                            attendanceService.attendanceModel?.pic_out !=
+                                "NULL") {
+                          await attendanceService.markAttendance(context);
+                        } else {
+                          _mostrarAlerta(context, "Suba una foto por favor.");
+                        }
 
-                      key.currentState!.reset();
+                        key.currentState!.reset();
+                      } catch (e) {
+                        // Aquí puedes manejar el error y mostrar un mensaje al usuario.
+                        // Por ejemplo:
+                        print(e);
+                        Utils.showSnackBar("$e", context);
+                      }
                     },
                   );
                 }),
