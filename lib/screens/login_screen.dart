@@ -1,4 +1,3 @@
-import 'package:employee_attendance/screens/register_screen.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -107,14 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
-                TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const RegisterScreen()));
-                    },
-                    child: const Text("Eres Nuevo? Registrate aquí"))
               ],
             ),
           ),

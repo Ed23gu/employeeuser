@@ -1481,11 +1481,11 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             attendanceService.attendanceModel?.pic_in !=
                                 "NULL" &&
                             attendanceService.attendanceModel?.pic_in != null) {
-                          final bool flat =
-                              await attendanceService.markAttendance(context);
-                          flat == true
+                          /*      final bool flat = */
+                          await attendanceService.markAttendance(context);
+                          /* flat == true
                               ? key.currentState!.reset()
-                              : key.currentState;
+                              : key.currentState; */
                         } else if (attendanceService.attendanceModel?.pic_in ==
                             null) {
                           _mostrarAlerta(context, "Suba una foto por favor.");
@@ -1840,7 +1840,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         floatingActionButton: SpeedDial(
           //Speed dial menus
           // marginBottom: 10, //margin bottom
-          icon: Icons.message_outlined , //icon on Floating action button
+          icon: Icons.message_outlined, //icon on Floating action button
           activeIcon: Icons.close, //icon when menu is expanded on button
           //backgroundColor: Colors.deepOrangeAccent, //background color of button
           // foregroundColor: Colors.white, //font color, icon color in button

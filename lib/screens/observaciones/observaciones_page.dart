@@ -3,6 +3,7 @@ import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 // Filters
 
@@ -39,6 +40,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
   TextEditingController titleController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final ObsService obsfiltro = ObsService();
+  String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
+  // String pickedMonth = DateFormat("dd MMMM yyyy").format(DateTime.now());
 
   @override
   void dispose() {
@@ -54,11 +57,23 @@ class _ComentariosPageState extends State<ComentariosPage> {
         .stream(primaryKey: ['id'])
         .eq('user_id', supabase.auth.currentUser!.id)
         .order('id', ascending: false);
+    todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
     super.initState();
   }
 
   void clearText() {
     titleController.clear();
+  }
+
+  List<dynamic> _filterpormes(List<dynamic> dataList, String fecha) {
+    final filteredList = dataList.where((element) {
+      final createdAt = DateTime.parse(element['created_at']);
+      final format = DateFormat('MMMM yyyy', "ES_es");
+      final monthYear = format.format(createdAt);
+      return monthYear == fecha;
+    }).toList();
+
+    return filteredList;
   }
 
   Future insertData() async {
@@ -155,6 +170,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
           'user_id',
           supabase.auth.currentUser!.id,
         )
+        //.eq('date', todayDate)
         .order('id', ascending: false);
     return result;
   }
@@ -184,6 +200,31 @@ class _ComentariosPageState extends State<ComentariosPage> {
       ),
       body: Column(
         children: [
+          ElevatedButton(
+              onPressed: () async {
+                final selectedDate =
+                    await SimpleMonthYearPicker.showMonthYearPickerDialog(
+                        backgroundColor: AdaptiveTheme.of(context).mode ==
+                                AdaptiveThemeMode.light
+                            ? Colors.white
+                            : Colors.black,
+                        selectionColor: AdaptiveTheme.of(context).mode ==
+                                AdaptiveThemeMode.light
+                            ? Colors.blue
+                            : Colors.white,
+                        context: context,
+                        disableFuture: true);
+                String pickedMonth =
+                    DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
+                setState(() {
+                  todayDate = pickedMonth;
+                });
+              },
+              child: const Text(
+                "Seleccionar mes",
+                style: const TextStyle(fontSize: 16),
+              )),
+          Text(todayDate),
           Expanded(
               child: StreamBuilder(
                   stream: _readStream,
@@ -199,62 +240,74 @@ class _ComentariosPageState extends State<ComentariosPage> {
                     }
 
                     if (snapshot.hasData) {
+                      final dataList = _filterpormes(snapshot.data, todayDate);
+                      if (dataList.isNotEmpty) {
+                        if (dataList.length == 0) {
+                          return const Center(
+                            child: Text("Aun no ha subido observaciones"),
+                          );
+                        }
+
+                        return ListView.builder(
+                            itemCount: dataList.length,
+                            itemBuilder: (context, int index) {
+                              var data = dataList[index];
+
+                              // {} map
+                              return ListTile(
+                                  title: Container(
+                                      // color: Colors.purple,
+                                      padding: const EdgeInsets.all(10),
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 9),
+                                      decoration: BoxDecoration(
+                                        color: Colors.lightBlue,
+                                        borderRadius: BorderRadius.circular(11),
+                                        boxShadow: [
+                                          BoxShadow(
+                                              color:
+                                                  Colors.cyan.withOpacity(0.2),
+                                              spreadRadius: 2,
+                                              blurRadius: 4,
+                                              offset: const Offset(2, 4)),
+                                        ],
+                                      ),
+                                      child: Text(
+                                        data['title'],
+                                        style: const TextStyle(
+                                            color: Colors.white),
+                                      )),
+                                  subtitle: Text(
+                                      data['created_at']
+                                          .split('.')[0]
+                                          .replaceAll("T", "-")
+                                          .toString(),
+                                      style: TextStyle(
+                                          color:
+                                              AdaptiveTheme.of(context).mode ==
+                                                      AdaptiveThemeMode.light
+                                                  ? Colors.black45
+                                                  : Colors.grey,
+                                          fontSize: 12)),
+                                  trailing: SizedBox(
+                                    child: IconButton(
+                                      onPressed: () {
+                                        _showMyDialog(data['id']);
+                                      },
+                                      icon: Icon(Icons.delete_outline),
+                                    ),
+                                  ));
+                            });
+                      }
                       if (snapshot.data.length == 0) {
                         return const Center(
-                          child: Text("Aun no ha subido observaciones"),
+                          child: Text("Aun no ha subido observaciones otro"),
                         );
                       }
-                      return ListView.builder(
-                          itemCount: snapshot.data.length,
-                          itemBuilder: (context, int index) {
-                            var data = snapshot.data[index];
-
-                            // {} map
-                            return ListTile(
-                                title: Container(
-                                    // color: Colors.purple,
-                                    padding: const EdgeInsets.all(10),
-                                    margin:
-                                        const EdgeInsets.symmetric(vertical: 9),
-                                    decoration: BoxDecoration(
-                                      color: Colors.lightBlue,
-                                      borderRadius: BorderRadius.circular(11),
-                                      boxShadow: [
-                                        BoxShadow(
-                                            color: Colors.cyan.withOpacity(0.2),
-                                            spreadRadius: 2,
-                                            blurRadius: 4,
-                                            offset: const Offset(2, 4)),
-                                      ],
-                                    ),
-                                    child: Text(
-                                      data['title'],
-                                      style:
-                                          const TextStyle(color: Colors.white),
-                                    )),
-                                subtitle: Text(
-                                    data['created_at']
-                                        .split('.')[0]
-                                        .replaceAll("T", "-")
-                                        .toString(),
-                                    style: TextStyle(
-                                        color: AdaptiveTheme.of(context).mode ==
-                                                AdaptiveThemeMode.light
-                                            ? Colors.black45
-                                            : Colors.grey,
-                                        fontSize: 12)),
-                                trailing: SizedBox(
-                                  child: IconButton(
-                                    onPressed: () {
-                                      _showMyDialog(data['id']);
-                                    },
-                                    icon: Icon(Icons.delete_outline),
-                                  ),
-                                ));
-                          });
                     }
+
                     return const Center(
-                      child: CircularProgressIndicator(),
+                      child: Text("Aun no ha subido observaciones  cotdfs"),
                     );
                   })),
           Form(

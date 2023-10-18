@@ -25,7 +25,6 @@ class AttendanceService extends ChangeNotifier {
   AttendanceModel? userModel3;
   int? employeeDepartment;
   int? employeeDepartment2;
-  bool bandera = false;
 
   String address = " ";
 
@@ -87,7 +86,7 @@ class AttendanceService extends ChangeNotifier {
     return userModel!;
   }
 
-  Future<bool> markAttendance(BuildContext context) async {
+  Future markAttendance(BuildContext context) async {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
@@ -104,9 +103,7 @@ class AttendanceService extends ChangeNotifier {
         .select()
         .eq("id", employeeDepartment);
     depModel2 = DepartmentModel.fromJson(result2.first);
-
     Position? getLocation = await _determinePosition();
-    // print(getLocation);
     String ubicacion = await obtenerNombreUbicacion(getLocation);
     if (attendanceModel?.checkIn == null) {
       try {
@@ -123,37 +120,43 @@ class AttendanceService extends ChangeNotifier {
             })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
-      } on PostgrestException catch (error) {
-        // print(error);
+      } on PostgrestException {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("$error Algo ha salido mal, intentelo nuevamente"),
+          content: Text("Algo ha salido mal intentelo nuevamente"),
           backgroundColor: Colors.red,
         ));
       } catch (e) {
-        // print("ERRROR DE PUERBADCSVDFKNVKDNVDNV: $e");
-        bandera = true;
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Algo ha salido mal, intentelo nuevamente"),
           backgroundColor: Colors.red,
         ));
-        return bandera;
       }
     } else if (attendanceModel?.checkOut == null) {
-      await _supabase
-          .from(Constants.attendancetable)
-          .update({
-            'check_out': DateFormat('HH:mm').format(DateTime.now()),
-            'check_out_location': getLocation,
-            'lugar_2': ubicacion
-          })
-          .eq('employee_id', _supabase.auth.currentUser!.id)
-          .eq('date', todayDate);
+      try {
+        await _supabase
+            .from(Constants.attendancetable)
+            .update({
+              'check_out': DateFormat('HH:mm').format(DateTime.now()),
+              'check_out_location': getLocation,
+              'lugar_2': ubicacion
+            })
+            .eq('employee_id', _supabase.auth.currentUser!.id)
+            .eq('date', todayDate);
+      } on PostgrestException {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Algo ha salido mal intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Algo ha salido mal, intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      }
     } else {
       Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
     }
     getTodayAttendance();
-
-    return bandera;
   }
 
   Future markAttendance3(BuildContext context) async {
@@ -179,29 +182,53 @@ class AttendanceService extends ChangeNotifier {
     depModel22 = DepartmentModel.fromJson(result32.first);
 
     Position? getLocation = await _determinePosition();
-    // print(getLocation);
+
     String ubicacion = await obtenerNombreUbicacion(getLocation);
     if (attendanceModel?.checkIn2 == null) {
-      await _supabase
-          .from(Constants.attendancetable)
-          .update({
-            'check_in2': DateFormat('HH:mm').format(DateTime.now()),
-            'check_in_location2': getLocation,
-            'obraid2': depModel22!.title,
-            'lugar_3': ubicacion
-          })
-          .eq('employee_id', _supabase.auth.currentUser!.id)
-          .eq('date', todayDate);
+      try {
+        await _supabase
+            .from(Constants.attendancetable)
+            .update({
+              'check_in2': DateFormat('HH:mm').format(DateTime.now()),
+              'check_in_location2': getLocation,
+              'obraid2': depModel22!.title,
+              'lugar_3': ubicacion
+            })
+            .eq('employee_id', _supabase.auth.currentUser!.id)
+            .eq('date', todayDate);
+      } on PostgrestException {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Algo ha salido mal intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Algo ha salido mal, intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      }
     } else if (attendanceModel?.checkOut2 == null) {
-      await _supabase
-          .from(Constants.attendancetable)
-          .update({
-            'check_out2': DateFormat('HH:mm').format(DateTime.now()),
-            'check_out_location2': getLocation,
-            'lugar_4': ubicacion
-          })
-          .eq('employee_id', _supabase.auth.currentUser!.id)
-          .eq('date', todayDate);
+      try {
+        await _supabase
+            .from(Constants.attendancetable)
+            .update({
+              'check_out2': DateFormat('HH:mm').format(DateTime.now()),
+              'check_out_location2': getLocation,
+              'lugar_4': ubicacion
+            })
+            .eq('employee_id', _supabase.auth.currentUser!.id)
+            .eq('date', todayDate);
+      } on PostgrestException {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Algo ha salido mal intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text("Algo ha salido mal, intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      }
     } else {
       Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
     }

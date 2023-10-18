@@ -41,46 +41,39 @@ class _CalenderScreenState extends State<CalenderScreen> {
             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
           ),
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
-              child: Text(
-                attendanceService.attendanceHistoryMonth,
-                style: const TextStyle(fontSize: 16),
-              ),
+        Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+          Container(
+            padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
+            child: Text(
+              attendanceService.attendanceHistoryMonth,
+              style: const TextStyle(fontSize: 16),
             ),
-            gapW36,
-            Localizations.override(
-              context: context,
-              locale: const Locale('es'),
-              child: ElevatedButton(
-                  onPressed: () async {
-                    final selectedDate =
-                        await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                            backgroundColor: AdaptiveTheme.of(context).mode ==
-                                    AdaptiveThemeMode.light
-                                ? Colors.white
-                                : Colors.black,
-                            selectionColor: AdaptiveTheme.of(context).mode ==
-                                    AdaptiveThemeMode.light
-                                ? Colors.blue
-                                : Colors.white,
-                            context: context,
-                            disableFuture: true);
+          ),
+          gapW36,
+          ElevatedButton(
+              onPressed: () async {
+                final selectedDate =
+                    await SimpleMonthYearPicker.showMonthYearPickerDialog(
+                        backgroundColor: AdaptiveTheme.of(context).mode ==
+                                AdaptiveThemeMode.light
+                            ? Colors.white
+                            : Colors.black,
+                        selectionColor: AdaptiveTheme.of(context).mode ==
+                                AdaptiveThemeMode.light
+                            ? Colors.blue
+                            : Colors.white,
+                        context: context,
+                        disableFuture: true);
 
-                    String pickedMonth =
-                        DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
-                    attendanceService.attendanceHistoryMonth = pickedMonth;
-                  },
-                  child: const Text(
-                    "Seleccionar mes",
-                    style: const TextStyle(fontSize: 16),
-                  )),
-            )
-          ],
-        ),
+                String pickedMonth =
+                    DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
+                attendanceService.attendanceHistoryMonth = pickedMonth;
+              },
+              child: const Text(
+                "Seleccionar mes",
+                style: const TextStyle(fontSize: 16),
+              )),
+        ]),
         Expanded(
             child: FutureBuilder(
                 future: attendanceService.getAttendanceHistory(),
