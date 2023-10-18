@@ -1838,9 +1838,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           ),
         ),
         floatingActionButton: SpeedDial(
-          //Speed dial menu
+          //Speed dial menus
           // marginBottom: 10, //margin bottom
-          icon: Icons.message_outlined, //icon on Floating action button
+          icon: Icons.message_outlined , //icon on Floating action button
           activeIcon: Icons.close, //icon when menu is expanded on button
           //backgroundColor: Colors.deepOrangeAccent, //background color of button
           // foregroundColor: Colors.white, //font color, icon color in button
