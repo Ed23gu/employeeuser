@@ -244,7 +244,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       if (dataList.isNotEmpty) {
                         if (dataList.length == 0) {
                           return const Center(
-                            child: Text("Aun no ha subido observaciones"),
+                            child: Text("Aun no ha subido observaciones adentro"),
                           );
                         }
 
