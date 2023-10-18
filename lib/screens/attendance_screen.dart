@@ -1808,25 +1808,35 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     // innerColor: ,
                     key: key2,
                     onSubmit: () async {
-                      if (attendanceService.attendanceModel?.checkIn2 != null &&
-                          attendanceService.attendanceModel?.checkOut2 !=
-                              null) {
-                        _mostrarAlerta(
-                            context, "Asistencia subida exitosamente.");
-                      } else if (attendanceService.attendanceModel?.checkIn2 ==
-                              null &&
-                          attendanceService.attendanceModel?.pic_in2 != null) {
-                        await attendanceService.markAttendance2(context);
-                      } else if (attendanceService.attendanceModel?.checkIn2 ==
-                          null) {
-                        _mostrarAlerta(context, "Suba una foto por favor.");
-                      } else if (attendanceService.attendanceModel?.pic_out2 !=
-                          null) {
-                        await attendanceService.markAttendance2(context);
-                      } else {
-                        _mostrarAlerta(context, "Suba una foto por favor.");
+                      try {
+                        if (attendanceService.attendanceModel?.checkIn2 !=
+                                null &&
+                            attendanceService.attendanceModel?.checkOut2 !=
+                                null) {
+                          _mostrarAlerta(
+                              context, "Asistencia subida exitosamente.");
+                        } else if (attendanceService
+                                    .attendanceModel?.checkIn2 ==
+                                null &&
+                            attendanceService.attendanceModel?.pic_in2 !=
+                                null) {
+                          await attendanceService.markAttendance2(context);
+                        } else if (attendanceService
+                                .attendanceModel?.checkIn2 ==
+                            null) {
+                          _mostrarAlerta(context, "Suba una foto por favor.");
+                        } else if (attendanceService
+                                .attendanceModel?.pic_out2 !=
+                            null) {
+                          await attendanceService.markAttendance2(context);
+                        } else {
+                          _mostrarAlerta(context, "Suba una foto por favor.");
+                        }
+                        key2.currentState!.reset();
+                      } catch (e) {
+                        print(e);
+                        Utils.showSnackBar("$e", context);
                       }
-                      key2.currentState!.reset();
                     },
                   );
                 }),

@@ -241,7 +241,6 @@ class AttendanceService extends ChangeNotifier {
       if (placemarks.isNotEmpty) {
         Placemark placeMark = placemarks[4];
         Placemark placeMark2 = placemarks[0];
-
         String? subLocality = placeMark.subLocality;
         String? locality = placeMark.locality;
         //String? administrativeArea = placeMark.administrativeArea;
@@ -282,7 +281,7 @@ class AttendanceService extends ChangeNotifier {
     }
     if (permission == LocationPermission.deniedForever) {
       return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+          'Los permisos de ubicación están permanentemente denegados, no podemos solicitar permisos. Otorgue permisos manualmente');
     }
 
     return await Geolocator.getCurrentPosition();
