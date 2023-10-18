@@ -1287,8 +1287,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           attendanceService
                                               .markAttendance3(context);
                                         });
-
-                                        // disableButton();
                                       }),
                                 ],
                               ),
@@ -1499,12 +1497,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         } else {
                           _mostrarAlerta(context, "Suba una foto por favor.");
                         }
-
                         key.currentState!.reset();
                       } catch (e) {
-                        // Aquí puedes manejar el error y mostrar un mensaje al usuario.
-                        // Por ejemplo:
-                        print(e);
                         Utils.showSnackBar("$e", context);
                       }
                     },
@@ -1834,7 +1828,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                         }
                         key2.currentState!.reset();
                       } catch (e) {
-                        print(e);
                         Utils.showSnackBar("$e", context);
                       }
                     },
