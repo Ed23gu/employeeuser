@@ -37,7 +37,6 @@ class _AccountPageState extends State<AccountPage> {
     setState(() {
       _loading = true;
     });
-
     try {
       final userId = _supabase.auth.currentUser!.id;
       final data = await _supabase
@@ -231,11 +230,6 @@ class _AccountPageState extends State<AccountPage> {
                         gapH8,
                         ElevatedButton(
                           onPressed: () {
-                            /* FocusScopeNode currentFocus = FocusScope.of(context);
-                          if (!currentFocus.hasPrimaryFocus) {
-                          currentFocus.unfocus();
-                        }
-                        ; */
                             final isValid = _formKey.currentState?.validate();
                             if (isValid != true) {
                               return;
