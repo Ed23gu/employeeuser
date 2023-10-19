@@ -1,3 +1,4 @@
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/connection_status_value_notifier.dart';
 import 'package:employee_attendance/screens/calender_screen.dart';
 import 'package:employee_attendance/utils/check_internet_connection.dart';
@@ -17,39 +18,38 @@ class ErrorPageCalen extends StatelessWidget {
                 child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    //WarningWidgetValueNotifier(),
+                    // WarningWidgetValueNotifier(),
                     SvgPicture.asset(
                       'assets/nocone22.svg',
-                      width: 300,
-                      height: 300,
+                      width: imgenerror300,
+                      height: imgenerror300,
                     ),
-                    const SizedBox(height: 5.0),
+                    gapH4,
                     const Text('Sin Conexión.\n',
                         style: TextStyle(
                           //  color: Colors.grey,
                           fontWeight: FontWeight.bold,
-                          fontSize: 17,
+                          fontSize: sizeresul17,
                         )),
                     RichText(
                         textAlign: TextAlign.left,
                         text: TextSpan(
                             style: TextStyle(
-                              fontSize: 13,
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSecondaryContainer,
-                            ),
+                                fontSize: fontsize13,
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSecondaryContainer),
                             children: <TextSpan>[
-                              TextSpan(text: 'Asegurese de:\n \n'),
-                              TextSpan(
+                              const TextSpan(text: 'Asegurese de:\n \n'),
+                              const TextSpan(
                                 text:
                                     '     - Activar sus Datos mobiles o Wifi.\n     - Buscar un lugar con mejor cobertura. \n \n',
                               ),
-                              TextSpan(text: 'y vuelva a '),
-                              TextSpan(
+                              const TextSpan(text: 'y vuelva a '),
+                              const TextSpan(
                                   text: 'intentarlo.',
                                   style:
                                       TextStyle(fontWeight: FontWeight.bold)),
@@ -57,7 +57,7 @@ class ErrorPageCalen extends StatelessWidget {
                   ],
                 ),
               ))
-            : CalenderScreen();
+            : const CalenderScreen();
       },
     );
   }

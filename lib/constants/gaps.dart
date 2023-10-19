@@ -17,8 +17,7 @@ const gapW52 = SizedBox(width: Dimens.gap_dp52);
 const gapW56 = SizedBox(width: Dimens.gap_dp56);
 const gapW60 = SizedBox(width: Dimens.gap_dp60);
 const gapW64 = SizedBox(width: Dimens.gap_dp64);
-const altoContainer = 180.0;
-const anchoContainerobs = 250.0;
+
 const gapH4 = SizedBox(height: Dimens.gap_dp4);
 const gapH8 = SizedBox(height: Dimens.gap_dp8);
 const gapH12 = SizedBox(height: Dimens.gap_dp12);
@@ -35,6 +34,18 @@ const gapH52 = SizedBox(height: Dimens.gap_dp52);
 const gapH56 = SizedBox(height: Dimens.gap_dp56);
 const gapH60 = SizedBox(height: Dimens.gap_dp60);
 const gapH64 = SizedBox(height: Dimens.gap_dp64);
+const altoContainer = 180.0;
+const anchoContainerobs = 250.0;
+const altoBar55 = 55.0;
+const sizeiconobar27 = 27.0;
+const sizeresul17 = 17.0;
+const sizesalin = 18.0;
+const slideiconsize15 = 15.0;
+const sizecomentarios16 = 16.0;
+const anchosmsalertaobs = 180.0;
+const inconvenientessize18 = 18.0;
+const imgenerror300 = 300.0;
+const fontsize13 = 13.0;
 
 const Widget line = Divider();
 

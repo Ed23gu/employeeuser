@@ -70,7 +70,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   Uint8List webI2 = Uint8List(8);
   Uint8List webI3 = Uint8List(8);
   Uint8List webI4 = Uint8List(8);
-  final sizesalin = 18.0;
+
   final SupabaseClient supabase = Supabase.instance.client;
   final AttendanceService subirubi = AttendanceService();
 
@@ -1204,7 +1204,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 "Ingreso:  ",
                                 style: TextStyle(
                                   fontSize: sizesalin,
@@ -1214,7 +1214,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                               Text(
                                 attendanceService.attendanceModel?.checkIn ??
                                     '--/--',
-                                style: TextStyle(fontSize: 17),
+                                style: TextStyle(fontSize: sizeresul17),
                               ),
                             ],
                           ),
@@ -1330,18 +1330,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 "Salida:  ",
                                 style: TextStyle(
                                   fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
-                                  /*color: Colors.black5*/
                                 ),
                               ),
                               Text(
                                 attendanceService.attendanceModel?.checkOut ??
                                     '--/--',
-                                style: TextStyle(fontSize: 17),
+                                style: TextStyle(fontSize: sizeresul17),
                               ),
                             ],
                           ),
@@ -1441,15 +1440,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     ]),
               ),
 
-
-
-              
               gapH4,
               Container(
                 margin: EdgeInsets.only(bottom: margenInferior),
                 child: Builder(builder: (context) {
                   return SlideAction(
-                    sliderButtonIconSize: 15,
+                    sliderButtonIconSize: slideiconsize15,
                     innerColor: Theme.of(context).colorScheme.primary,
                     elevation: elevacion,
                     height: altoSlider,
@@ -1462,7 +1458,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     //alignment: Alignment.topCenter,
                     animationDuration: Duration(milliseconds: 200),
                     textStyle: TextStyle(
-                        fontSize: 16,
+                        fontSize: sizecomentarios16,
                         color: Theme.of(context).brightness == Brightness.light
                             ? Colors.black
                             : Colors.white),
@@ -1484,11 +1480,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             attendanceService.attendanceModel?.pic_in !=
                                 "NULL" &&
                             attendanceService.attendanceModel?.pic_in != null) {
-                          /*      final bool flat = */
                           await attendanceService.markAttendance(context);
-                          /* flat == true
-                              ? key.currentState!.reset()
-                              : key.currentState; */
                         } else if (attendanceService.attendanceModel?.pic_in ==
                             null) {
                           _mostrarAlerta(context, "Suba una foto por favor.");
@@ -1541,18 +1533,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 "Ingreso:  ",
                                 style: TextStyle(
                                   fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
-                                  /*color: Colors.black5*/
                                 ),
                               ),
                               Text(
                                 attendanceService.attendanceModel?.checkIn2 ??
                                     '--/--',
-                                style: TextStyle(fontSize: 17),
+                                style: TextStyle(fontSize: sizeresul17),
                               ),
                             ],
                           ),
@@ -1661,18 +1652,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
+                              const Text(
                                 "Salida:  ",
                                 style: TextStyle(
                                   fontSize: sizesalin,
                                   fontWeight: FontWeight.bold,
-                                  /*color: Colors.black5*/
                                 ),
                               ),
                               Text(
                                 attendanceService.attendanceModel?.checkOut2 ??
                                     '--/--',
-                                style: TextStyle(fontSize: 17),
+                                style: TextStyle(fontSize: sizeresul17),
                               ),
                             ],
                           ),
@@ -1782,7 +1772,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                   return SlideAction(
                     elevation: elevacion,
                     innerColor: Theme.of(context).colorScheme.primary,
-                    sliderButtonIconSize: 15,
+                    sliderButtonIconSize: slideiconsize15,
                     animationDuration: Duration(milliseconds: 200),
                     text: (attendanceService.attendanceModel?.checkIn2 !=
                                 null &&
@@ -1795,7 +1785,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     //alignment: Alignment.topCenter,
                     height: altoSlider,
                     textStyle: TextStyle(
-                        fontSize: 16,
+                        fontSize: sizecomentarios16,
                         color: Theme.of(context).brightness == Brightness.light
                             ? Colors.black
                             : Colors.white),
@@ -1867,7 +1857,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               // foregroundColor: Colors.white,
               label:
                   '¿Has tenido inconvenientes \n al momento de registrarte? \n Dejanoslo saber.',
-              labelStyle: TextStyle(fontSize: 18.0),
+              labelStyle: TextStyle(fontSize: inconvenientessize18),
               onTap: () {
                 Navigator.push(
                     context,
@@ -1901,11 +1891,11 @@ void _mostrarAlerta(BuildContext context, String titulo) {
             title: Text(
               titulo,
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18),
+              style: TextStyle(fontSize: inconvenientessize18),
             ),
             actions: [
               TextButton(
-                  child: Text("OK"),
+                  child: const Text("OK"),
                   onPressed: () {
                     Navigator.pop(context);
                   }),

@@ -78,7 +78,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
       clearText();
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Observación guardada"),
-          width: 180,
+          width: anchosmsalertaobs,
           duration: new Duration(seconds: 1),
           behavior: SnackBarBehavior.floating));
       //  Navigator.pop(context);
@@ -132,7 +132,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
       isLoadingdel = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Observación borrada"),
-        width: 180,
+        width: anchosmsalertaobs,
         duration: new Duration(seconds: 1),
         behavior: SnackBarBehavior.floating,
       ));
@@ -270,7 +270,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                 "Aun no ha subido observaciones adentro1"),
                           );
                         }
-                        // TODO: Muestra las obs mensuales
+
                         return ListView.builder(
                             itemCount: dataList.length,
                             itemBuilder: (context, int index) {

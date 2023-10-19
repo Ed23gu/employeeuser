@@ -15,6 +15,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
   var pad16 = 16.0;
   var pad8 = 8.0;
   var pad4 = 4.0;
+  var anchodeart = 40.0;
 
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   @override
@@ -32,13 +33,13 @@ class _BottomNavBarState extends State<BottomNavBar> {
                   child: Center(
                 child: Image.asset(
                   'assets/icon/icon.png',
-                  width: 40,
+                  width: anchodeart,
                 ),
               )),
             ],
           );
         }),
-        title: Text(
+        title: const Text(
           "ArtconsGroup.",
           style: TextStyle(
             fontSize: 28,
@@ -52,11 +53,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: 1,
-        height: 55.0,
+        height: altoBar55,
         items: <Widget>[
-          Icon(Icons.calendar_today, size: 27),
-          Icon(Icons.list, size: 27),
-          Icon(Icons.person_outline_sharp, size: 27),
+          Icon(Icons.calendar_today, size: sizeiconobar27),
+          Icon(Icons.list, size: sizeiconobar27),
+          Icon(Icons.person_outline_sharp, size: sizeiconobar27),
         ],
         color: Theme.of(context).colorScheme.tertiaryContainer,
         buttonBackgroundColor: Theme.of(context).colorScheme.tertiaryContainer,
