@@ -43,8 +43,7 @@ class AuthService extends ChangeNotifier {
       if (email == "" || password == "") {
         throw ("Llene todos los campos");
       }
-      final AuthResponse response = await _supabase.auth
-          .signInWithPassword(email: email, password: password);
+      await _supabase.auth.signInWithPassword(email: email, password: password);
       setIsLoading = false;
     } catch (e) {
       setIsLoading = false;

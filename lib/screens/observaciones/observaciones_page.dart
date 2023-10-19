@@ -240,23 +240,28 @@ class _ComentariosPageState extends State<ComentariosPage> {
                     }
 
                     if (snapshot.hasData) {
+                      if (snapshot.data.length == 0) {
+                        return const Center(
+                          child: Text("No se han agregado observaciones"),
+                        );
+                      }
+
                       final dataList = _filterpormes(snapshot.data, todayDate);
                       if (dataList.isNotEmpty) {
                         if (dataList.length == 0) {
                           return const Center(
-                            child: Text("Aun no ha subido observaciones adentro"),
+                            child:
+                                Text("Aun no ha subido observaciones adentro1"),
                           );
                         }
-
+                        // TODO: Muestra las obs mensuales
                         return ListView.builder(
                             itemCount: dataList.length,
                             itemBuilder: (context, int index) {
                               var data = dataList[index];
 
-                              // {} map
                               return ListTile(
                                   title: Container(
-                                      // color: Colors.purple,
                                       padding: const EdgeInsets.all(10),
                                       margin: const EdgeInsets.symmetric(
                                           vertical: 9),
@@ -299,15 +304,20 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                   ));
                             });
                       }
-                      if (snapshot.data.length == 0) {
+                      //  final dataList2 = _filterpormes(snapshot.data, todayDate);
+                      else if (dataList.length == 0) {
                         return const Center(
-                          child: Text("Aun no ha subido observaciones otro"),
+                          child: Text(
+                              "No se han agregado observaciones en este mes"),
                         );
                       }
+                      return const Center(
+                        child: LinearProgressIndicator(),
+                      );
                     }
 
                     return const Center(
-                      child: Text("Aun no ha subido observaciones  cotdfs"),
+                      child: CircularProgressIndicator(),
                     );
                   })),
           Form(
