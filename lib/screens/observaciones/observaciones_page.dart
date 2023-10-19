@@ -41,7 +41,10 @@ class _ComentariosPageState extends State<ComentariosPage> {
   final _formKey = GlobalKey<FormState>();
   final ObsService obsfiltro = ObsService();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
-  // String pickedMonth = DateFormat("dd MMMM yyyy").format(DateTime.now());
+  var margenSuperior = 5.0;
+  var margenInferior = 5.0;
+  var margenPanelfotos2 = 0.0;
+  var anchofecha = 400.0;
 
   @override
   void dispose() {
@@ -199,32 +202,60 @@ class _ComentariosPageState extends State<ComentariosPage> {
         ],
       ),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          ElevatedButton(
-              onPressed: () async {
-                final selectedDate =
-                    await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                        backgroundColor: AdaptiveTheme.of(context).mode ==
-                                AdaptiveThemeMode.light
-                            ? Colors.white
-                            : Colors.black,
-                        selectionColor: AdaptiveTheme.of(context).mode ==
-                                AdaptiveThemeMode.light
-                            ? Colors.blue
-                            : Colors.white,
-                        context: context,
-                        disableFuture: true);
-                String pickedMonth =
-                    DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
-                setState(() {
-                  todayDate = pickedMonth;
-                });
-              },
-              child: const Text(
-                "Seleccionar mes",
-                style: const TextStyle(fontSize: 16),
-              )),
-          Text(todayDate),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: Theme.of(context).brightness == Brightness.light
+                      ? Colors.white
+                      : Color.fromARGB(255, 43, 41, 41),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Color.fromARGB(110, 18, 148, 255),
+                        blurRadius: 5,
+                        offset: Offset(1, 1)),
+                  ],
+                  borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      style: TextButton.styleFrom(
+                          elevation: 6,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10))),
+                      onPressed: () async {
+                        final selectedDate = await SimpleMonthYearPicker
+                            .showMonthYearPickerDialog(
+                                backgroundColor:
+                                    AdaptiveTheme.of(context).mode ==
+                                            AdaptiveThemeMode.light
+                                        ? Colors.white
+                                        : Colors.black,
+                                selectionColor:
+                                    AdaptiveTheme.of(context).mode ==
+                                            AdaptiveThemeMode.light
+                                        ? Colors.blue
+                                        : Colors.white,
+                                context: context,
+                                disableFuture: true);
+                        String pickedMonth = DateFormat("MMMM yyyy", "ES_es")
+                            .format(selectedDate);
+                        setState(() {
+                          todayDate = pickedMonth;
+                        });
+                      },
+                      child: const Text(
+                        "Seleccionar mes",
+                      )),
+                  gapW12,
+                  Text(todayDate),
+                  gapW12,
+                ],
+              ),
+            ),
+          ]),
           Expanded(
               child: StreamBuilder(
                   stream: _readStream,
@@ -262,9 +293,9 @@ class _ComentariosPageState extends State<ComentariosPage> {
 
                               return ListTile(
                                   title: Container(
-                                      padding: const EdgeInsets.all(10),
+                                      padding: const EdgeInsets.all(5),
                                       margin: const EdgeInsets.symmetric(
-                                          vertical: 9),
+                                          vertical: 5),
                                       decoration: BoxDecoration(
                                         color: Colors.lightBlue,
                                         borderRadius: BorderRadius.circular(11),

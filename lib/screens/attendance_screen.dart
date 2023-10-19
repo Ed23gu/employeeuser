@@ -1129,7 +1129,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       );
                     });
               }), //
-
               Divider(),
               StreamBuilder(
                   stream: Stream.periodic(const Duration(seconds: 1)),
@@ -1441,6 +1440,10 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       )),
                     ]),
               ),
+
+
+
+              
               gapH4,
               Container(
                 margin: EdgeInsets.only(bottom: margenInferior),

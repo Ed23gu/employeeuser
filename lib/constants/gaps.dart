@@ -18,7 +18,7 @@ const gapW56 = SizedBox(width: Dimens.gap_dp56);
 const gapW60 = SizedBox(width: Dimens.gap_dp60);
 const gapW64 = SizedBox(width: Dimens.gap_dp64);
 const altoContainer = 180.0;
-
+const altoContainerobs = 34.0;
 const gapH4 = SizedBox(height: Dimens.gap_dp4);
 const gapH8 = SizedBox(height: Dimens.gap_dp8);
 const gapH12 = SizedBox(height: Dimens.gap_dp12);
@@ -36,31 +36,15 @@ const gapH56 = SizedBox(height: Dimens.gap_dp56);
 const gapH60 = SizedBox(height: Dimens.gap_dp60);
 const gapH64 = SizedBox(height: Dimens.gap_dp64);
 
- const Widget line = Divider();
+const Widget line = Divider();
 
-  const Widget vLine = SizedBox(
-    width: 0.6,
-    height: 24.0,
-    child: VerticalDivider(),
-  );
+const Widget vLine = SizedBox(
+  width: 0.6,
+  height: 24.0,
+  child: VerticalDivider(),
+);
 
- const Widget linea = SizedBox(
-    height: 0.6,
-    child:Divider(),
-  );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const Widget linea = SizedBox(
+  height: 0.6,
+  child: Divider(),
+);
