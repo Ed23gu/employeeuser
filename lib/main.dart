@@ -1,4 +1,4 @@
-import 'package:adaptive_theme/adaptive_theme.dart';
+/* import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
@@ -59,7 +59,7 @@ class ArtAsis extends StatelessWidget {
                 GlobalWidgetsLocalizations.delegate,
               ],
               supportedLocales: const [
-                Locale("es")
+                 const Locale('es', 'ES'),
               ],
               debugShowCheckedModeBanner: false,
               title: 'Asistencia',
@@ -68,6 +68,46 @@ class ArtAsis extends StatelessWidget {
               home: const SplashScreen()),
         );
       },
+    );
+  }
+}
+ */
+
+import 'package:flutter/material.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Localization Demo'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Hello World',
+            ),
+            Text(
+              'Hola Mundo',
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

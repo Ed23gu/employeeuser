@@ -128,7 +128,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
 
     try {
       await supabase.from('todos').delete().match({'id': editId2});
-      //Navigator.pop(context);z
+      //Navigator.pop(context);
       isLoadingdel = false;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Observación borrada"),
@@ -320,9 +320,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                     ),
                                   ));
                             });
-                      }
-                      //  final dataList2 = _filterpormes(snapshot.data, todayDate);
-                      else if (dataList.length == 0) {
+                      } else if (dataList.length == 0) {
                         return const Center(
                           child: const Text(
                               "No se han agregado observaciones en este mes"),
@@ -332,7 +330,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
                         child: CircularProgressIndicator(),
                       );
                     }
-
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
@@ -388,9 +385,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 3,
-                    ),
+                    gapH4
                   ],
                 ),
               )),

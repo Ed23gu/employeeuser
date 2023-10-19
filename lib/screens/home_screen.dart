@@ -42,7 +42,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         title: const Text(
           "ArtconsGroup.",
           style: TextStyle(
-            fontSize: 28,
+            fontSize: fontsize28,
           ),
         ),
       ),

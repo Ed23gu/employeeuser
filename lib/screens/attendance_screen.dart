@@ -1138,7 +1138,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       child: Text(
                         DateFormat("HH:mm:ss").format(DateTime.now()),
                         style: TextStyle(
-                            fontSize: 27,
+                            fontSize: sizeiconobar27,
                             fontWeight: FontWeight.bold,
                             color: Theme.of(context).colorScheme.primary),
                       ),

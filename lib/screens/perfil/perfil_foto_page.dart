@@ -95,7 +95,6 @@ class _AccountPageState extends State<AccountPage> {
     if (!mounted) {
       return;
     }
-
     setState(() {
       _avatarUrl = imageUrl;
     });
@@ -164,10 +163,17 @@ class _AccountPageState extends State<AccountPage> {
                         Text("Email: ${dbService.userModel?.email}"),
                         gapH16,
                         TextFormField(
-                          focusNode: focusNode,
+                          /* focusNode: focusNode,
                           onTapOutside: ((event) {
                             focusNode.unfocus();
-                          }),
+                          }), */
+                          onTapOutside: (event) async {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
                           // autofocus: false,
                           controller: nameController,
                           decoration: const InputDecoration(
@@ -185,10 +191,17 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                         gapH16,
                         TextFormField(
-                          focusNode: focusNode2,
+                          /*  focusNode: focusNode2,
                           onTapOutside: ((event) {
                             focusNode2.unfocus();
-                          }),
+                          }), */
+                          onTapOutside: (event) async {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                          },
                           // autofocus: false,
                           controller: _websiteController,
                           decoration: const InputDecoration(

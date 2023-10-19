@@ -36,20 +36,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
         Container(
           padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
           alignment: Alignment.centerLeft,
-          child: Text(
+          child: const Text(
             "Registro de Asitencias",
-            style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            style: const TextStyle(
+                fontSize: fontsize22, fontWeight: FontWeight.bold),
           ),
         ),
         Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Container(
-            padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
-            child: Text(
-              attendanceService.attendanceHistoryMonth,
-              style: const TextStyle(fontSize: 16),
-            ),
-          ),
-          gapW36,
+          gapW16,
           ElevatedButton(
               onPressed: () async {
                 final selectedDate =
@@ -73,6 +67,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 "Seleccionar mes",
                 style: const TextStyle(fontSize: 16),
               )),
+          Container(
+            padding: EdgeInsets.fromLTRB(padd16, padd4, padd16, padd4),
+            child: Text(
+              attendanceService.attendanceHistoryMonth,
+              style: const TextStyle(fontSize: sizecomentarios16),
+            ),
+          ),
         ]),
         Expanded(
             child: FutureBuilder(
@@ -126,7 +127,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                         DateFormat("EE \n dd", "es_ES")
                                             .format(attendanceData.createdAt),
                                         style: TextStyle(
-                                            fontSize: 18,
+                                            fontSize: sizesalin,
                                             color: AdaptiveTheme.of(context)
                                                         .mode ==
                                                     AdaptiveThemeMode.light
@@ -344,7 +345,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       return const Center(
                         child: Text(
                           "Datos no disponibles",
-                          style: TextStyle(fontSize: 25),
+                          style: TextStyle(fontSize: fontsize22),
                         ),
                       );
                     }
