@@ -5,25 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// Filters
-
-// 1. Equal to : supabase.from('users').select().eq('name','The Rock');
-// 2. Not Equal to : supabase.from('users').select().neq('name','Bill Gates');
-// 3. Greater than : supabase.from('users').select().gt('age',18);
-// 4. Greater than or Equal : supabase.from('users').select().gte('followers',10000);
-// 5. Less than : lt() and Less than Equal : lte()
-// 6. Column matches a pattern (case sensitive) : supabase.from('users').select().like('name','%The%');
-// 7. Column matches a case insensitive pattern : supabase.from('users').select().ilike('name','%the%');
-// 8. Column is in the array : supabase.from('users').select().in_('status',['ONLINE','OFFLINE']);
-
-// Modifiers
-
-// 1. Order : supabase.from('users').select().order('id',ascending:false);
-// 2. Limit the query : suapbase.from('users').select().limit(10);
-
-// RealTime database
-// Syntax : supabase.from('users').stream(primaryKey:['id']).listen((List data){ ..... });
-// Using Streambuilder - stream : supabase.from('users').stream(primaryKey: ['id']);
 
 class ComentariosPage extends StatefulWidget {
   const ComentariosPage({Key? key}) : super(key: key);
@@ -182,7 +163,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Historial de Observaciones"),
+        title: const Text("Observaciones"),
         actions: [
           IconButton(
               onPressed: () {
@@ -206,6 +187,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
         children: [
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
+              width: anchoContainerobs,
+              margin: const EdgeInsets.all(7),
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.light
                       ? Colors.white
@@ -213,16 +196,18 @@ class _ComentariosPageState extends State<ComentariosPage> {
                   boxShadow: [
                     BoxShadow(
                         color: Color.fromARGB(110, 18, 148, 255),
+                        spreadRadius: 0.5,
                         blurRadius: 5,
-                        offset: Offset(1, 1)),
+                        offset: Offset(0, 1)),
                   ],
                   borderRadius: BorderRadius.all(Radius.circular(10))),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  gapW4,
                   ElevatedButton(
                       style: TextButton.styleFrom(
-                          elevation: 6,
+                          elevation: 3,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10))),
                       onPressed: () async {
@@ -273,7 +258,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                     if (snapshot.hasData) {
                       if (snapshot.data.length == 0) {
                         return const Center(
-                          child: Text("No se han agregado observaciones"),
+                          child: const Text("No se han agregado observaciones"),
                         );
                       }
 
@@ -281,8 +266,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       if (dataList.isNotEmpty) {
                         if (dataList.length == 0) {
                           return const Center(
-                            child:
-                                Text("Aun no ha subido observaciones adentro1"),
+                            child: const Text(
+                                "Aun no ha subido observaciones adentro1"),
                           );
                         }
                         // TODO: Muestra las obs mensuales
@@ -293,12 +278,13 @@ class _ComentariosPageState extends State<ComentariosPage> {
 
                               return ListTile(
                                   title: Container(
-                                      padding: const EdgeInsets.all(5),
+                                      padding: const EdgeInsets.all(6),
                                       margin: const EdgeInsets.symmetric(
-                                          vertical: 5),
+                                        vertical: 6,
+                                      ),
                                       decoration: BoxDecoration(
                                         color: Colors.lightBlue,
-                                        borderRadius: BorderRadius.circular(11),
+                                        borderRadius: BorderRadius.circular(10),
                                         boxShadow: [
                                           BoxShadow(
                                               color:
@@ -338,12 +324,12 @@ class _ComentariosPageState extends State<ComentariosPage> {
                       //  final dataList2 = _filterpormes(snapshot.data, todayDate);
                       else if (dataList.length == 0) {
                         return const Center(
-                          child: Text(
+                          child: const Text(
                               "No se han agregado observaciones en este mes"),
                         );
                       }
                       return const Center(
-                        child: LinearProgressIndicator(),
+                        child: CircularProgressIndicator(),
                       );
                     }
 
@@ -357,7 +343,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
                 padding: const EdgeInsets.fromLTRB(15.0, 25.0, 15.0, 25),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  //crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextFormField(
                       textCapitalization: TextCapitalization.sentences,

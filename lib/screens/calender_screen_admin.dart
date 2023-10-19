@@ -41,7 +41,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
   @override
   void initState() {
     super.initState();
-
     controller.addListener(() {
       if (controller.position.maxScrollExtent == controller.offset) {
         fetch();
@@ -55,7 +54,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     controller.dispose();
     super.dispose();
   }
