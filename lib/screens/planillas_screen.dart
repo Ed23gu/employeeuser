@@ -5,8 +5,8 @@ import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
     as helper;
 import 'package:employee_attendance/models/user_model.dart';
-import 'package:employee_attendance/services/attendance_service.dart';
-import 'package:employee_attendance/services/db_service.dart';
+import 'package:employee_attendance/services/attendance_service_admin.dart';
+import 'package:employee_attendance/services/db_service_admin.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:open_document/my_files/init.dart';
@@ -32,7 +32,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   String selectedName = '';
   int? selectedpas;
   String selectedProyecto = '';
-  late var fecha = '';
+  late var fecha = 'October 2022';
   int selectedOption = 246; // Opción seleccionada inicialmente
 
   late EmployeeDataSource _employeeDataSource =
@@ -47,6 +47,14 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
       setState(() {
         _employees = employeeList;
         _employeeDataSource = EmployeeDataSource(employeeData: _employees);
+        _employeeDataSource.addFilter(
+          'Dia2',
+          FilterCondition(
+            value: fecha,
+            filterOperator: FilterOperator.and,
+            type: FilterType.equals,
+          ),
+        );
       });
     });
   }
@@ -237,15 +245,16 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         throw Exception('Error al obtener los datos de empleados');
       }
     } catch (error) {
-     // print('Error al obtener los datos de empleados: $error');
+      // print('Error al obtener los datos de empleados: $error');
       return [];
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final attendanceService = route.Provider.of<AttendanceService>(context);
-    final dbService = route.Provider.of<DbService>(context);
+    final attendanceService =
+        route.Provider.of<AttendanceServiceadmin>(context);
+    final dbService = route.Provider.of<DbServiceadmin>(context);
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
 
     return Scaffold(
