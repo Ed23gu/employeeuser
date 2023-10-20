@@ -35,7 +35,7 @@ const gapH56 = SizedBox(height: Dimens.gap_dp56);
 const gapH60 = SizedBox(height: Dimens.gap_dp60);
 const gapH64 = SizedBox(height: Dimens.gap_dp64);
 const altoContainer = 180.0;
-const anchoContainerobs = 250.0;
+const anchoContainerobs = 300.0;
 const altoBar55 = 55.0;
 const sizeiconobar27 = 27.0;
 const sizeresul17 = 17.0;
@@ -48,7 +48,6 @@ const imgenerror300 = 300.0;
 const fontsize13 = 13.0;
 const fontsize22 = 22.0;
 const fontsize28 = 28.0;
-
 
 const Widget line = Divider();
 

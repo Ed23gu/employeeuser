@@ -342,6 +342,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     TextFormField(
+                      autocorrect: true,
                       textCapitalization: TextCapitalization.sentences,
                       maxLines: null,
                       controller: titleController,
