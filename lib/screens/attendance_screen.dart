@@ -30,15 +30,19 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final GlobalKey<SlideActionState> key = GlobalKey<SlideActionState>();
   final GlobalKey<SlideActionState> key2 = GlobalKey<SlideActionState>();
   String todayDate = DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now());
+  final SupabaseClient supabase = Supabase.instance.client;
+  final AttendanceService subirubi = AttendanceService();
   bool _estacargandofoto = false;
   String getUrl = "INICIAL";
   int segundos = 1;
   bool flagborrar = false;
+
   bool buttonDisabled = false;
   bool buttonDisabled2 = true;
   bool buttonDisabled3 = true;
   bool buttonDisabled4 = true;
   bool buttonDisabled5 = true;
+
   bool isUploading = false;
   bool isUploading2 = false;
   bool isUploading3 = false;
@@ -60,19 +64,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   int qt = 85;
   int per = 15;
   final picker = ImagePicker();
-  File? pickedImage;
   dynamic _images;
   Uint8List webImage = Uint8List(8);
-  Uint8List webImage2 = Uint8List(8);
-  Uint8List webImage3 = Uint8List(8);
-  Uint8List webImage4 = Uint8List(8);
-  Uint8List webI = Uint8List(8);
-  Uint8List webI2 = Uint8List(8);
-  Uint8List webI3 = Uint8List(8);
-  Uint8List webI4 = Uint8List(8);
-
-  final SupabaseClient supabase = Supabase.instance.client;
-  final AttendanceService subirubi = AttendanceService();
 
   Future borrar(String tipoimagen, String imageName) async {
     if (imageName != "NULL") {
@@ -102,45 +95,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Future<File> customCompressed({
-    @required File? imagePathToCompress,
-    quality = 100,
-    percentage = 15,
-  }) async {
-    var path = await FlutterNativeImage.compressImage(
-      imagePathToCompress!.absolute.path,
-      quality: qt,
-      percentage: per,
-    );
-    return path;
-  }
-
-  Future<File> customCompressed2({
-    @required File? imagePathToCompress,
-    quality = 100,
-    percentage = 15,
-  }) async {
-    var path = await FlutterNativeImage.compressImage(
-      imagePathToCompress!.absolute.path,
-      quality: qt,
-      percentage: per,
-    );
-    return path;
-  }
-
-  Future<File> customCompressed3({
-    @required File? imagePathToCompress,
-    quality = 100,
-    percentage = 15,
-  }) async {
-    var path = await FlutterNativeImage.compressImage(
-      imagePathToCompress!.absolute.path,
-      quality: qt,
-      percentage: per,
-    );
-    return path;
-  }
-
-  Future<File> customCompressed4({
     @required File? imagePathToCompress,
     quality = 100,
     percentage = 15,
@@ -392,7 +346,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             flagborrar = true;
           });
         }
-
         if (flagborrar == false) {
           _images = File(pickedFile.path);
           File? imagescom =
