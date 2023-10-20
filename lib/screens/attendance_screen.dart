@@ -42,7 +42,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   bool buttonDisabled3 = true;
   bool buttonDisabled4 = true;
   bool buttonDisabled5 = true;
-
   bool isUploading = false;
   bool isUploading2 = false;
   bool isUploading3 = false;
@@ -803,7 +802,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             flagborrar = true;
           });
         }
-
         if (flagborrar == false) {
           _images = File(pickedFile.path);
           File? imagescom =
@@ -1020,6 +1018,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
       }
     }
+    ////
   }
 
   @override
