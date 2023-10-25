@@ -1,6 +1,7 @@
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/department_model.dart';
+import 'package:employee_attendance/models/obs_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/services/location_service.dart';
 import 'package:employee_attendance/utils/utils.dart';
@@ -25,7 +26,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
   int? employeeDepartment;
   int? employeeDepartment2;
 
-  String todayDate = DateFormat("dd MMMM yyyy" ,"es_ES").format(DateTime.now());
+  String todayDate = DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now());
 
   bool _isLoading = false;
 
@@ -46,7 +47,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
   }
 
   String _attendanceHistoryMonth =
-      DateFormat("MMMM yyyy","es_ES").format(DateTime.now());
+      DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
 
   String get attendanceHistoryMonth => _attendanceHistoryMonth;
 
@@ -105,7 +106,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
 
     Map? getLocation =
         await LocationService().initializeAndGetLocation(context);
-   // print("Location Data :");
+    // print("Location Data :");
     //print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn == null) {
@@ -164,7 +165,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
     Map? getLocation =
         await LocationService().initializeAndGetLocation(context);
     //print("Location Data2 :");
-   // print(getLocation);
+    // print(getLocation);
     if (getLocation != null) {
       if (attendanceModel?.checkIn2 == null) {
         await _supabase
@@ -208,5 +209,18 @@ class AttendanceServiceadmin extends ChangeNotifier {
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
         .toList();
+  }
+
+  Future<List<ObsModel>> getObsHistory(String fecha) async {
+    final List obsdata = await _supabase
+        .from(Constants.obstable)
+        .select()
+        .eq('user_id', _supabase.auth.currentUser!.id)
+        //.textSearch('date', '23 October 2023', config: 'english')
+        .textSearch('date', "'$fecha'", config: 'english')
+        .order('created_at', ascending: false);
+
+    //getTodayAttendance();
+    return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }
 }

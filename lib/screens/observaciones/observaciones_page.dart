@@ -72,6 +72,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
         'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
         'horain': DateFormat('HH:mm').format(DateTime.now()),
       });
+      await supabase.from('todos').insert({});
+
       setState(() {
         isLoading = false;
       });
@@ -298,7 +300,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                         data['title'],
                                         style: const TextStyle(
                                             color: Colors.white),
-                                      )),
+                                      )
+                                      ),
                                   subtitle: Text(
                                       data['created_at']
                                           .split('.')[0]
