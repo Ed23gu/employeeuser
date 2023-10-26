@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class DbServiceadmin extends ChangeNotifier {
   final SupabaseClient _supabase = Supabase.instance.client;
   UserModel? userModel;
+  UserModel? userModeldep;
   DepartmentModel? depModel2;
   DepartmentModel? depModel;
   DepartmentModel? departmentModel;
@@ -81,6 +82,15 @@ class DbServiceadmin extends ChangeNotifier {
   }
 
   Future<DepartmentModel?> getTodaydep() async {
+    final userData = await _supabase
+        .from(Constants.employeeTable)
+        .select()
+        .eq('id', _supabase.auth.currentUser!.id)
+        .single();
+    userModeldep = UserModel.fromJson(userData);
+    employeeDepartment == null
+        ? employeeDepartment = userModeldep?.department
+        : null;
     final List result = await _supabase
         .from(Constants.departmentTable)
         .select()

@@ -1,5 +1,6 @@
 import 'dart:core';
 
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
@@ -32,6 +33,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   String selectedName = '';
   int? selectedpas;
   String selectedProyecto = '';
+  String? globalEmpleado = '';
   late var fecha = 'October 2022';
   int selectedOption = 246; // Opción seleccionada inicialmente
 
@@ -39,34 +41,17 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
       EmployeeDataSource(employeeData: []);
   List<Employee> _employees = <Employee>[];
 
-  late ObsDataSource _obsDataSource = ObsDataSource(obsData: []);
-  List<Observaciones> _obs = <Observaciones>[];
-
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   @override
   void initState() {
     super.initState();
+
     getEmployeeDataFromSupabase().then((employeeList) {
       setState(() {
         _employees = employeeList;
         _employeeDataSource = EmployeeDataSource(employeeData: _employees);
         _employeeDataSource.addFilter(
-          'Dia2',
-          FilterCondition(
-            value: fecha,
-            filterOperator: FilterOperator.and,
-            type: FilterType.equals,
-          ),
-        );
-      });
-    });
-
-    getObsDataFromSupabase().then((obsList) {
-      setState(() {
-        _obs = obsList;
-        _obsDataSource = ObsDataSource(obsData: _obs);
-        _obsDataSource.addFilter(
           'Dia2',
           FilterCondition(
             value: fecha,
@@ -165,25 +150,38 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
 
 //Add the footer at the bottom of the document
     document.template.bottom = footer;
+    // Calcular el ancho de las columnas
 
     PdfGrid pdfGrid = _key.currentState!.exportToPdfGrid(
       cellExport: (details) {
         if (details.cellType == DataGridExportCellType.columnHeader) {
-          details.pdfCell.style.backgroundBrush = PdfBrushes.gray;
+          details.pdfCell.style.backgroundBrush = PdfBrushes.skyBlue;
           details.pdfCell.style.font =
-              PdfStandardFont(PdfFontFamily.timesRoman, 12);
+              PdfStandardFont(PdfFontFamily.timesRoman, 11);
         }
         if (details.cellType == DataGridExportCellType.row) {
           details.pdfCell.style.font =
-              PdfStandardFont(PdfFontFamily.timesRoman, 11);
+              PdfStandardFont(PdfFontFamily.timesRoman, 10);
         }
       },
       excludeColumns: const <String>['id', 'Dia2', 'TotalHoras'],
       exportTableSummaries: true,
       exportStackedHeaders: false,
-      fitAllColumnsInOnePage: false,
+      fitAllColumnsInOnePage: true,
       autoColumnWidth: true,
     );
+    pdfGrid.columns[0].width = 25;
+    pdfGrid.columns[1].width = 55;
+    pdfGrid.columns[2].width = 60;
+    pdfGrid.columns[3].width = 45;
+    pdfGrid.columns[4].width = 45;
+    pdfGrid.columns[5].width = 45;
+    pdfGrid.columns[6].width = 60;
+    pdfGrid.columns[7].width = 45;
+    pdfGrid.columns[8].width = 45;
+    pdfGrid.columns[9].width = 45;
+    pdfGrid.columns[10].width = 45;
+    // pdfGrid.columns[11].width = 150;
     pdfGrid.draw(
       page: pdfpage,
       bounds: Rect.fromLTWH(0, 0, 0, 0),
@@ -272,28 +270,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     }
   }
 
-  Future<List<Observaciones>> getObsDataFromSupabase() async {
-    try {
-      final response = await _supabase
-          .from(Constants.obstable)
-          .select()
-          .order('created_at', ascending: false);
-      if (response != null) {
-        final data = response as List<dynamic>;
-        final obsList = data
-            .map((e) => Observaciones(e['user_id'].toString(),
-                e['title'].toString(), e['created_at'].toString()))
-            .toList();
-        return obsList;
-      } else {
-        throw Exception('Error al obtener los datos de empleados');
-      }
-    } catch (error) {
-      // print('Error al obtener los datos de empleados: $error');
-      return [];
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final attendanceService =
@@ -351,17 +327,9 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             });
                           });
                           dbService.empleadolista = selectedValue.toString();
+
                           _employeeDataSource.clearFilters();
                           _employeeDataSource.addFilter(
-                              'id',
-                              FilterCondition(
-                                  type: FilterType.equals,
-                                  value: dbService.empleadolista));
-
-//TODO:FILTRO PARA COMENTARIOS
-
-                          _obsDataSource.clearFilters();
-                          _obsDataSource.addFilter(
                               'id',
                               FilterCondition(
                                   type: FilterType.equals,
@@ -376,11 +344,12 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                               .firstWhere(
                                   (element) => element.id == selectedValue)
                               .department;
-                          selectedProyecto = dbService.allDepartments
-                              .firstWhere(
-                                  (element) => element.id == selectedpas)
-                              .title;
-                          // filterData(); // Volver a filtrar los datos cuando se selecciona una opción nueva
+                          setState(() {
+                            selectedProyecto = dbService.allDepartments
+                                .firstWhere(
+                                    (element) => element.id == selectedpas)
+                                .title;
+                          });
                         });
                       },
                     ),
@@ -399,7 +368,16 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                 onPressed: () async {
                   final selectedDate =
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                          context: context, disableFuture: true);
+                          backgroundColor: AdaptiveTheme.of(context).mode ==
+                                  AdaptiveThemeMode.light
+                              ? Colors.white
+                              : Colors.black,
+                          selectionColor: AdaptiveTheme.of(context).mode ==
+                                  AdaptiveThemeMode.light
+                              ? Colors.blue
+                              : Colors.white,
+                          context: context,
+                          disableFuture: true);
                   String pickedMonth =
                       DateFormat('MMMM yyyy', "es_ES").format(selectedDate);
                   setState(() {
@@ -438,6 +416,20 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                     child: MaterialButton(
                         color: Colors.blue,
                         onPressed: () async {
+                          /*  selectedName = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .name
+                              .toString();
+                          selectedpas = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .department;
+
+                          selectedProyecto = dbService.allDepartments
+                              .firstWhere(
+                                  (element) => element.id == selectedpas)
+                              .title; */
                           await _exportDataGridToExcel(
                               attendanceService.attendanceHistoryMonth,
                               selectedName,
@@ -456,11 +448,22 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                     child: MaterialButton(
                         color: Colors.blue,
                         onPressed: () async {
+                          /* selectedName = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .name
+                              .toString();
+                          selectedpas = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .department;
+
+                          selectedProyecto = dbService.allDepartments
+                              .firstWhere(
+                                  (element) => element.id == selectedpas)
+                              .title; */
                           await _exportDataGridToPdf(
-                              fecha,
-                              // attendanceService.attendanceHistoryMonth,
-                              selectedName,
-                              selectedProyecto);
+                              fecha, selectedName, selectedProyecto);
                         },
                         child: const Center(
                             child: Text(
@@ -479,7 +482,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
           child: SfDataGrid(
             key: _key,
             source: _employeeDataSource,
-            rowHeight: 45,
+            rowHeight: 50,
             headerRowHeight: 30,
             tableSummaryRows: [
               GridTableSummaryRow(
@@ -660,12 +663,14 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         overflow: TextOverflow.ellipsis,
                       ))),
               GridColumn(
-                  columnName: 'OB',
+                  columnName: 'Observacion',
                   // visible: false,
+                  width: 500,
                   allowFiltering: false,
                   allowSorting: false,
                   label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+
+                      // padding: EdgeInsets.symmetric(horizontal: 5.0),
                       alignment: Alignment.centerLeft,
                       child: Text(
                         'Observación',
@@ -690,7 +695,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                       'SubTH2',
                       'TotalHoras',
                       'Total',
-                      'OB'
+                      'Observacion'
                     ],
                     child: Container(
                         // color: Colors.cyan[200],
@@ -705,50 +710,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         ///observaciones
       ],
     ));
-  }
-}
-
-class ObsDataSource extends DataGridSource {
-  /// Creates the employee data source class with required details.
-
-  ObsDataSource({required List<Observaciones> obsData}) {
-    _obsData = obsData
-        .map<DataGridRow>((e) => DataGridRow(cells: [
-              DataGridCell<String>(columnName: 'id', value: e.id),
-              DataGridCell<String>(columnName: 'title', value: e.titulo),
-              DataGridCell<String>(columnName: 'fecha', value: e.fecha),
-            ]))
-        .toList();
-  }
-
-  List<DataGridRow> _obsData = [];
-
-  @override
-  List<DataGridRow> get rows => _obsData;
-
-  @override
-  Widget? buildTableSummaryCellWidget(
-    GridTableSummaryRow summaryRow,
-    GridSummaryColumn? summaryColumn,
-    RowColumnIndex rowColumnIndex,
-    String summaryValue,
-  ) {
-    return Container(
-      padding: EdgeInsets.all(15.0),
-      child: Text(summaryValue),
-    );
-  }
-
-  @override
-  DataGridRowAdapter buildRow(DataGridRow row) {
-    return DataGridRowAdapter(
-        cells: row.getCells().map<Widget>((e) {
-      return Container(
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.all(8.0),
-        child: Text(e.value.toString()),
-      );
-    }).toList());
   }
 }
 
@@ -843,7 +804,7 @@ class EmployeeDataSource extends DataGridSource {
                   columnName: 'TotalHoras',
                   value: int.parse(obtenerSumaDeTiempo2(
                       e.HoraOut, e.HoraIn, e.HoraOut2, e.HoraIn2))),
-              DataGridCell<String>(columnName: 'OB', value: e.lugar_1),
+              DataGridCell<String>(columnName: 'Observacion', value: e.lugar_1),
             ]))
         .toList();
   }
@@ -997,13 +958,4 @@ class Employee {
   final String HoraIn2;
   final String HoraOut2;
   final String lugar_1;
-}
-
-class Observaciones {
-  /// Creates the employee class with required details.
-  Observaciones(this.id, this.fecha, this.titulo);
-
-  final String id;
-  final String fecha;
-  final String titulo;
 }

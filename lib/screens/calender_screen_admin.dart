@@ -1,3 +1,4 @@
+import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
@@ -81,21 +82,23 @@ class _CalenderScreenState extends State<CalenderScreen> {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fechaDeAsis);
     try {
-      final response =
-          await supabase.from('attendance').upsert({'obs': cadenaUnida}).match({
-        'id': 1704,
-        'date': fechaAsistenciaO,
-        'employee_id': supabase.auth.currentUser!.id
-      }).select();
+      await supabase
+          .from('attendance')
+          .update({
+            'obs': cadenaUnida,
+          })
+          .eq("employee_id", supabase.auth.currentUser!.id)
+          .eq('date', fechaAsistenciaO)
+          .select();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("Algo ha salido, intentelo nuevamente"),
-          backgroundColor: Colors.red,
+          content: Text("ok"),
+          backgroundColor: Colors.green,
         ));
       }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Algo ha salido, intentelo nuevamente"),
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
         backgroundColor: Colors.red,
       ));
     }
@@ -165,7 +168,16 @@ class _CalenderScreenState extends State<CalenderScreen> {
                 onPressed: () async {
                   final selectedDate =
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                          context: context, disableFuture: true);
+                          backgroundColor: AdaptiveTheme.of(context).mode ==
+                                  AdaptiveThemeMode.light
+                              ? Colors.white
+                              : Colors.black,
+                          selectionColor: AdaptiveTheme.of(context).mode ==
+                                  AdaptiveThemeMode.light
+                              ? Colors.blue
+                              : Colors.white,
+                          context: context,
+                          disableFuture: true);
                   String pickedMonth =
                       DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
                   attendanceService.attendanceHistoryMonth = pickedMonth;
@@ -1091,82 +1103,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                   ),
                                 ),
 
-                                /*  Container(
-                                  height: 60,
-                                  child: Container(
-                                      child: FutureBuilder(
-                                          future: attendanceService
-                                              .getObsHistory('25 October 2023'),
-                                          builder: (BuildContext context,
-                                              AsyncSnapshot snapshot) {
-                                            if (snapshot.hasData) {
-                                              if (snapshot.data.length > 0) {
-                                                final dataList = _filterpordia(
-                                                    snapshot.data,
-                                                    '25 October 2023');
-
-                                                if (dataList.isNotEmpty) {
-                                                  if (dataList.length == 0) {
-                                                    return const Center(
-                                                      child: const Text(
-                                                          "Aun no ha subido observaciones adentro1"),
-                                                    );
-                                                  }
-
-                                                  return ListView.builder(
-                                                      itemCount:
-                                                          dataList.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        var attendanceData2 =
-                                                            dataList[index];
-
-                                                        return ListTile(
-                                                            title: Container(
-                                                                padding:
-                                                                    const EdgeInsets
-                                                                        .all(6),
-                                                                margin:
-                                                                    const EdgeInsets
-                                                                        .symmetric(
-                                                                  vertical: 6,
-                                                                ),
-                                                                child: Text(
-                                                                  attendanceData2[
-                                                                      'title'],
-                                                                  style: const TextStyle(
-                                                                      color: Colors
-                                                                          .white),
-                                                                )));
-                                                      });
-                                                } else if (dataList.length ==
-                                                    0) {
-                                                  return const Center(
-                                                    child: const Text(
-                                                        "No se han agregado observaciones en este mes"),
-                                                  );
-                                                }
-                                                return const Center(
-                                                  child:
-                                                      CircularProgressIndicator(),
-                                                );
-                                              } else {
-                                                return const Center(
-                                                  child: Text(
-                                                    "Datos no disponibles",
-                                                    style:
-                                                        TextStyle(fontSize: 25),
-                                                  ),
-                                                );
-                                              }
-                                            }
-                                            return const LinearProgressIndicator(
-                                              backgroundColor: Colors.white,
-                                              color: Colors.grey,
-                                            );
-                                          })),
-                                )
-                            */
+                               
                               ],
                             );
                           });

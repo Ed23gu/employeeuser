@@ -57,7 +57,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                             ? Colors.blue
                             : Colors.white,
                         context: context,
-                        disableFuture: true);
+                        disableFuture: true
+                        );
 
                 String pickedMonth =
                     DateFormat("MMMM yyyy", "ES_es").format(selectedDate);
