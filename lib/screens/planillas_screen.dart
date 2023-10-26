@@ -43,7 +43,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   List<Observaciones> _obs = <Observaciones>[];
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
-  final GlobalKey<SfDataGridState> _key2 = GlobalKey<SfDataGridState>();
 
   @override
   void initState() {
@@ -260,7 +259,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                   e['check_out2'].toString() != "null"
                       ? e['check_out2']
                       : "null",
-                  e['employee_id'].toString(),
+                  e['obs'].toString(),
                 ))
             .toList();
         return employeeList;
@@ -336,6 +335,21 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                       }).toList(),
                       onChanged: (selectedValue) {
                         setState(() {
+                          getEmployeeDataFromSupabase().then((employeeList) {
+                            setState(() {
+                              _employees = employeeList;
+                              _employeeDataSource =
+                                  EmployeeDataSource(employeeData: _employees);
+                              _employeeDataSource.addFilter(
+                                'Dia2',
+                                FilterCondition(
+                                  value: fecha,
+                                  filterOperator: FilterOperator.and,
+                                  type: FilterType.equals,
+                                ),
+                              );
+                            });
+                          });
                           dbService.empleadolista = selectedValue.toString();
                           _employeeDataSource.clearFilters();
                           _employeeDataSource.addFilter(
@@ -647,14 +661,14 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                       ))),
               GridColumn(
                   columnName: 'OB',
-                  visible: false,
+                  // visible: false,
                   allowFiltering: false,
                   allowSorting: false,
                   label: Container(
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'OBS',
+                        'Observación',
                         overflow: TextOverflow.ellipsis,
                       ))),
             ],
@@ -828,14 +842,8 @@ class EmployeeDataSource extends DataGridSource {
               DataGridCell<int>(
                   columnName: 'TotalHoras',
                   value: int.parse(obtenerSumaDeTiempo2(
-                      e.HoraOut, e.HoraIn, e.HoraOut2, e.HoraIn2))
-                  /*DataGridCell<String>(
-          columnName: 'TotalHoras',
-          value: obtenerSumaDeTiempo2(e.HoraOut, e.HoraIn,e.HoraOut2, e.HoraIn2)*/
-                  /* (DateFormat.Hm()
-                          .format(DateFormat("hh:mm").parse(e.HoraOut2))).difference(DateFormat.Hm()
-                      .format(DateFormat("hh:mm").parse(e.HoraIn2))))*/
-                  )
+                      e.HoraOut, e.HoraIn, e.HoraOut2, e.HoraIn2))),
+              DataGridCell<String>(columnName: 'OB', value: e.lugar_1),
             ]))
         .toList();
   }
@@ -844,45 +852,6 @@ class EmployeeDataSource extends DataGridSource {
 
   @override
   List<DataGridRow> get rows => _employeeData;
-
-/*  @override
-  String calculateSummaryValue(GridTableSummaryRow summaryRow,
-      GridSummaryColumn? summaryColumn, RowColumnIndex rowColumnIndex) {
-    List<int> getCellValues(GridSummaryColumn summaryColumn) {
-      final List<int> values = <int>[];
-      for (final DataGridRow row in rows) {
-        final DataGridCell? cell = row.getCells().firstWhereOrNull(
-                (DataGridCell element) =>
-            element.columnName == summaryColumn.columnName);
-        if (cell != null && cell.value != null) {
-          values.add(cell.value);
-        }
-      }
-      return values;
-    }
-
-    String? title = summaryRow.title;
-    if (title != null) {
-      if (summaryRow.showSummaryInRow && summaryRow.columns.isNotEmpty) {
-        for (final GridSummaryColumn summaryColumn in summaryRow.columns) {
-          if (title!.contains(summaryColumn.name)) {
-            double deviation = 0;
-            final List<int> values = getCellValues(summaryColumn);
-            if (values.isNotEmpty) {
-              int sum = values.reduce((value, element) =>
-              value + pow(element - values.average, 2).toInt());
-              deviation = sqrt((sum) / (values.length - 1));
-            }
-            title = title.replaceAll(
-                '{${summaryColumn.name}}', deviation.toString());
-          }
-        }
-      }
-    }
-
-    return title ?? '';
-  }*/
-
   @override
   Widget? buildTableSummaryCellWidget(
     GridTableSummaryRow summaryRow,
@@ -1027,7 +996,7 @@ class Employee {
   final String Proyecto2;
   final String HoraIn2;
   final String HoraOut2;
-  final String HoraOut2;
+  final String lugar_1;
 }
 
 class Observaciones {

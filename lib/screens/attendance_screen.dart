@@ -125,7 +125,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               await customCompressed(imagePathToCompress: _images);
           _images = File(imagescom.path);
           setState(() => isUploading = true);
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -172,7 +172,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -238,8 +238,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           });
         }
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -283,8 +284,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
       } else {
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -353,7 +355,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading2 = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -368,8 +370,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             await supabase
                 .from('attendance')
                 .update({
-                  // 'employee_id': supabase.auth.currentUser!.id,
-                  // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
                   'pic_out': getUrl,
                 })
                 .eq("employee_id", supabase.auth.currentUser!.id)
@@ -403,7 +403,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading2 = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -466,8 +466,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           });
         }
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -483,8 +484,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await supabase
               .from('attendance')
               .update({
-                //'employee_id': supabase.auth.currentUser!.id,
-                // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
                 'pic_out': getUrl,
               })
               .eq("employee_id", supabase.auth.currentUser!.id)
@@ -515,8 +514,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
       } else {
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -582,7 +582,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading3 = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -597,8 +597,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             await supabase
                 .from('attendance')
                 .update({
-                  // 'employee_id': supabase.auth.currentUser!.id,
-                  // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
                   'pic_in2': getUrl,
                 })
                 .eq("employee_id", supabase.auth.currentUser!.id)
@@ -632,7 +630,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading3 = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -695,8 +693,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           });
         }
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -712,8 +711,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await supabase
               .from('attendance')
               .update({
-                //'employee_id': supabase.auth.currentUser!.id,
-                // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
                 'pic_in2': getUrl,
               })
               .eq("employee_id", supabase.auth.currentUser!.id)
@@ -743,8 +740,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
       } else {
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -810,7 +808,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading4 = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -825,8 +823,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             await supabase
                 .from('attendance')
                 .update({
-                  // 'employee_id': supabase.auth.currentUser!.id,
-                  // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
                   'pic_out2': getUrl,
                 })
                 .eq("employee_id", supabase.auth.currentUser!.id)
@@ -860,7 +856,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           setState(() {
             isUploading4 = true;
           });
-          String fecharuta = DateFormat("ddMMMMyyyy", "es_ES")
+          String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
               .format(DateTime.now())
               .toString();
           DateTime now = DateTime.now();
@@ -923,8 +919,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           });
         }
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
@@ -940,8 +937,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           await supabase
               .from('attendance')
               .update({
-                //'employee_id': supabase.auth.currentUser!.id,
-                // 'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
                 'pic_out2': getUrl,
               })
               .eq("employee_id", supabase.auth.currentUser!.id)
@@ -972,8 +967,9 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         }
       } else {
         var pickedFile = webImage;
-        String fecharuta =
-            DateFormat("ddMMMMyyyy", "es_ES").format(DateTime.now()).toString();
+        String fecharuta = DateFormat("dd MMMM yyyy", "es_ES")
+            .format(DateTime.now())
+            .toString();
         DateTime now = DateTime.now();
         String fileName =
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';

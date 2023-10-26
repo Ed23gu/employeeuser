@@ -300,8 +300,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                                         data['title'],
                                         style: const TextStyle(
                                             color: Colors.white),
-                                      )
-                                      ),
+                                      )),
                                   subtitle: Text(
                                       data['created_at']
                                           .split('.')[0]

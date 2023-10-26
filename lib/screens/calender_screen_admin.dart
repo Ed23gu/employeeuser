@@ -76,6 +76,31 @@ class _CalenderScreenState extends State<CalenderScreen> {
     return filteredList;
   }
 
+  Future insertarObs(
+      String cadenaUnida, DateTime fechaDeAsis, String id) async {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fechaDeAsis);
+    try {
+      final response =
+          await supabase.from('attendance').upsert({'obs': cadenaUnida}).match({
+        'id': 1705,
+        'date': fechaAsistenciaO,
+        'employee_id': supabase.auth.currentUser!.id
+      }).select();
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Algo ha salido, intentelo nuevamente"),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Algo ha salido, intentelo nuevamente"),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   @override
   void dispose() {
     controller.dispose();
@@ -923,7 +948,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           margin: const EdgeInsets.symmetric(
                                             vertical: 6,
                                           ),
-                                          width: 500,
+                                          width: 450,
                                           child: Column(
                                             children: [
                                               Text(
@@ -969,6 +994,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                   snapshot.data,
                                                                   attendanceData
                                                                       .createdAt);
+                                                          print(dataList);
                                                           if (dataList
                                                               .isNotEmpty) {
                                                             if (dataList
@@ -979,7 +1005,30 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     "Aun no ha subido observaciones adentro1"),
                                                               );
                                                             }
-
+                                                            String
+                                                                titlesJoined =
+                                                                "";
+                                                            for (int i = 0;
+                                                                i <
+                                                                    dataList
+                                                                        .length;
+                                                                i++) {
+                                                              titlesJoined +=
+                                                                  dataList[i]
+                                                                      ['title'];
+                                                              if (i !=
+                                                                  dataList.length -
+                                                                      1) {
+                                                                titlesJoined +=
+                                                                    ", ";
+                                                              }
+                                                            }
+                                                            insertarObs(
+                                                                titlesJoined,
+                                                                attendanceData
+                                                                    .createdAt,
+                                                                attendanceData
+                                                                    .id);
                                                             return ListView
                                                                 .builder(
                                                                     itemCount:
