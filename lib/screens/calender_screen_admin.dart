@@ -83,7 +83,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
     try {
       final response =
           await supabase.from('attendance').upsert({'obs': cadenaUnida}).match({
-        'id': 1705,
+        'id': 1704,
         'date': fechaAsistenciaO,
         'employee_id': supabase.auth.currentUser!.id
       }).select();
