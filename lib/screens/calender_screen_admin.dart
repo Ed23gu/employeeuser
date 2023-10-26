@@ -29,11 +29,6 @@ Future<void> _openmap(String lat, String lon) async {
   await canLaunchUrl(googleUrl)
       ? await launchUrl(googleUrl)
       : throw 'No se puede abrir $googleUrl';
-  /* Uri googleUrl = Uri.parse('geo:${lat},${lon}?q=${lat},${lon}');
- // Uri.parse('https://www.google.com.ec/maps/search/?api=1&query=$lat,$lon');
- await canLaunchUrl(googleUrl)
-   ? await launchUrl(googleUrl)
-   : throw 'No se puede abrir $googleUrl';*/
 }
 
 class _CalenderScreenState extends State<CalenderScreen> {
@@ -1102,8 +1097,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                     ],
                                   ),
                                 ),
-
-                               
                               ],
                             );
                           });

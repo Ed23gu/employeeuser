@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:ffi';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
@@ -31,9 +32,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   final SupabaseClient _supabase = Supabase.instance.client;
   late final bool allowFiltering;
   String selectedName = '';
-  int? selectedpas;
+  Int? selectedpas;
   String selectedProyecto = '';
-  String? globalEmpleado = '';
   late var fecha = 'October 2022';
   int selectedOption = 246; // Opción seleccionada inicialmente
 
@@ -276,6 +276,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         route.Provider.of<AttendanceServiceadmin>(context);
     final dbService = route.Provider.of<DbServiceadmin>(context);
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
+    dbService.allDepartments.isEmpty ? dbService.getAllDepartments() : null;
 
     return Scaffold(
         body: Column(
@@ -327,7 +328,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             });
                           });
                           dbService.empleadolista = selectedValue.toString();
-
                           _employeeDataSource.clearFilters();
                           _employeeDataSource.addFilter(
                               'id',
@@ -335,7 +335,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                   type: FilterType.equals,
                                   value: dbService.empleadolista));
 
-                          selectedName = dbService.allempleados
+                         selectedName = dbService.allempleados
                               .firstWhere(
                                   (element) => element.id == selectedValue)
                               .name
@@ -344,13 +344,12 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                               .firstWhere(
                                   (element) => element.id == selectedValue)
                               .department;
-                          setState(() {
+                        
                             selectedProyecto = dbService.allDepartments
                                 .firstWhere(
                                     (element) => element.id == selectedpas)
                                 .title;
-                          });
-                        });
+                       
                       },
                     ),
                   ),
@@ -359,6 +358,14 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
             ),
             Text(
               fecha == '' ? "--/--" : fecha,
+              style: const TextStyle(fontSize: 15),
+            ),
+            Text(
+              selectedProyecto == '' ? "--/--" : selectedProyecto,
+              style: const TextStyle(fontSize: 15),
+            ),
+            Text(
+              selectedName == '' ? "--/--" : selectedName,
               style: const TextStyle(fontSize: 15),
             ),
             Container(

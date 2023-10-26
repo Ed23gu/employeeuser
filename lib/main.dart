@@ -50,7 +50,8 @@ class ArtAsis extends StatelessWidget {
             ChangeNotifierProvider(create: (context) => DbServiceadmin()),
             ChangeNotifierProvider(
                 create: (context) => AttendanceServiceadmin()),
-            ChangeNotifierProvider(create: (context) => ObsService())
+            ChangeNotifierProvider(create: (context) => ObsService(),
+            )
           ],
           child: MaterialApp(
               localizationsDelegates: const [
