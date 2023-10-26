@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/ubi_model.dart';
@@ -8,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart' as prove;
 import 'package:readmore/readmore.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../models/user_model.dart';
@@ -35,13 +37,22 @@ Future<void> _openmap(String lat, String lon) async {
 
 class _CalenderScreenState extends State<CalenderScreen> {
   final AttendanceServiceadmin obtenerObs = AttendanceServiceadmin();
+  final SupabaseClient supabase = Supabase.instance.client;
+  late Stream<List<Map<String, dynamic>>> _readStream;
   final controller = ScrollController();
+  String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   var sizeicono = 22.0;
   var sizeletra = 12.0;
 
   @override
   void initState() {
     super.initState();
+    _readStream = supabase
+        .from('todos')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', supabase.auth.currentUser!.id)
+        .order('id', ascending: false);
+    todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
     controller.addListener(() {
       if (controller.position.maxScrollExtent == controller.offset) {
         fetch();
@@ -53,12 +64,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
     setState(() {});
   }
 
-  List<dynamic> _filterpormes(List<dynamic> dataList, String fecha) {
+  List<dynamic> _filterpormes(List<dynamic> dataList, DateTime fecha) {
     final filteredList = dataList.where((element) {
       final createdAt = DateTime.parse(element['created_at']);
-      final format = DateFormat('MMMM yyyy', "ES_es");
-      final monthYear = format.format(createdAt);
-      return monthYear == fecha;
+      final format = DateFormat('dd MMMM yyyy', "ES_es");
+      final fechaObs = format.format(createdAt);
+      final fechaAsistencia = format.format(fecha);
+      return fechaObs == fechaAsistencia;
     }).toList();
 
     return filteredList;
@@ -364,7 +376,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               style: TextStyle(
                                                                   fontSize:
                                                                       sizeletra),
-                                                              trimLines: 2,
+                                                              trimLines: 3,
                                                               // colorClickableText: Colors.pink,
                                                               trimMode:
                                                                   TrimMode.Line,
@@ -511,7 +523,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               style: TextStyle(
                                                                   fontSize:
                                                                       sizeletra),
-                                                              trimLines: 2,
+                                                              trimLines: 3,
                                                               // colorClickableText: Colors.pink,
                                                               trimMode:
                                                                   TrimMode.Line,
@@ -699,7 +711,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               style: TextStyle(
                                                                   fontSize:
                                                                       sizeletra),
-                                                              trimLines: 2,
+                                                              trimLines: 3,
                                                               // colorClickableText: Colors.pink,
                                                               trimMode:
                                                                   TrimMode.Line,
@@ -843,7 +855,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               style: TextStyle(
                                                                   fontSize:
                                                                       sizeletra),
-                                                              trimLines: 2,
+                                                              trimLines: 3,
                                                               // colorClickableText: Colors.pink,
                                                               trimMode:
                                                                   TrimMode.Line,
@@ -907,23 +919,142 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           ])),
                                         ]),
                                       ),
+                                      Container(
+                                          margin: const EdgeInsets.symmetric(
+                                            vertical: 6,
+                                          ),
+                                          width: 500,
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                ' Observaciones',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                  child: StreamBuilder(
+                                                      stream: _readStream,
+                                                      builder:
+                                                          (BuildContext context,
+                                                              AsyncSnapshot
+                                                                  snapshot) {
+                                                        if (snapshot.hasError) {
+                                                          return Center(
+                                                            child: Text(
+                                                                'Error:' +
+                                                                    snapshot
+                                                                        .error
+                                                                        .toString() +
+                                                                    '\nRecargue la pagina, por favor.',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center),
+                                                          );
+                                                        }
+
+                                                        if (snapshot.hasData) {
+                                                          if (snapshot.data
+                                                                  .length ==
+                                                              0) {
+                                                            return const Center(
+                                                              child: const Text(
+                                                                  "No se han agregado observaciones"),
+                                                            );
+                                                          }
+
+                                                          final dataList =
+                                                              _filterpormes(
+                                                                  snapshot.data,
+                                                                  attendanceData
+                                                                      .createdAt);
+                                                          if (dataList
+                                                              .isNotEmpty) {
+                                                            if (dataList
+                                                                    .length ==
+                                                                0) {
+                                                              return const Center(
+                                                                child: const Text(
+                                                                    "Aun no ha subido observaciones adentro1"),
+                                                              );
+                                                            }
+
+                                                            return ListView
+                                                                .builder(
+                                                                    itemCount:
+                                                                        dataList
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            int index) {
+                                                                      var data =
+                                                                          dataList[
+                                                                              index];
+                                                                      return ListTile(
+                                                                        title: Container(
+                                                                            padding: const EdgeInsets.all(6),
+                                                                            margin: const EdgeInsets.symmetric(
+                                                                              vertical: 6,
+                                                                            ),
+                                                                            decoration: BoxDecoration(
+                                                                              color: Colors.lightBlue.withOpacity(0.2),
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                              boxShadow: [
+                                                                                BoxShadow(color: Colors.cyan.withOpacity(0.2), spreadRadius: 2, blurRadius: 4, offset: const Offset(2, 4)),
+                                                                              ],
+                                                                            ),
+                                                                            child: Flexible(
+                                                                              fit: FlexFit.loose,
+                                                                              child: Row(
+                                                                                children: [
+                                                                                  Text(data['horain'], style: TextStyle(fontSize: fontsize15)),
+                                                                                  gapW12,
+                                                                                  Expanded(
+                                                                                    child: Text(data['title'], overflow: TextOverflow.visible, style: TextStyle(fontSize: fontsize15)),
+                                                                                  )
+                                                                                ],
+                                                                              ),
+                                                                            )),
+                                                                      );
+                                                                    });
+                                                          } else if (dataList
+                                                                  .length ==
+                                                              0) {
+                                                            return const Center(
+                                                              child: const Text(
+                                                                  "No se han agregado observaciones en este día"),
+                                                            );
+                                                          }
+                                                          return const Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          );
+                                                        }
+                                                        return const Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
+                                                      })),
+                                            ],
+                                          )),
                                     ],
                                   ),
                                 ),
-                                Container(
+
+                                /*  Container(
                                   height: 60,
                                   child: Container(
                                       child: FutureBuilder(
                                           future: attendanceService
-                                              .getObsHistory('October 2023'),
+                                              .getObsHistory('25 October 2023'),
                                           builder: (BuildContext context,
                                               AsyncSnapshot snapshot) {
                                             if (snapshot.hasData) {
                                               if (snapshot.data.length > 0) {
-                                                final dataList = _filterpormes(
+                                                final dataList = _filterpordia(
                                                     snapshot.data,
-                                                    attendanceData.createdAt
-                                                        .toString());
+                                                    '25 October 2023');
 
                                                 if (dataList.isNotEmpty) {
                                                   if (dataList.length == 0) {
@@ -986,6 +1117,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                             );
                                           })),
                                 )
+                            */
                               ],
                             );
                           });

@@ -38,7 +38,12 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   late EmployeeDataSource _employeeDataSource =
       EmployeeDataSource(employeeData: []);
   List<Employee> _employees = <Employee>[];
+
+  late ObsDataSource _obsDataSource = ObsDataSource(obsData: []);
+  List<Observaciones> _obs = <Observaciones>[];
+
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
+  final GlobalKey<SfDataGridState> _key2 = GlobalKey<SfDataGridState>();
 
   @override
   void initState() {
@@ -48,6 +53,21 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         _employees = employeeList;
         _employeeDataSource = EmployeeDataSource(employeeData: _employees);
         _employeeDataSource.addFilter(
+          'Dia2',
+          FilterCondition(
+            value: fecha,
+            filterOperator: FilterOperator.and,
+            type: FilterType.equals,
+          ),
+        );
+      });
+    });
+
+    getObsDataFromSupabase().then((obsList) {
+      setState(() {
+        _obs = obsList;
+        _obsDataSource = ObsDataSource(obsData: _obs);
+        _obsDataSource.addFilter(
           'Dia2',
           FilterCondition(
             value: fecha,
@@ -227,20 +247,45 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         final data = response as List<dynamic>;
         final employeeList = data
             .map((e) => Employee(
-                e['employee_id'].toString(),
-                e['date'].toString(),
-                e['created_at'].toString() != "null" ? e['created_at'] : "null",
-                e['obraid'].toString(),
-                e['check_in'].toString() != "null" ? e['check_in'] : "null",
-                // e['check_in'].toString() != "null" ? e['check_in'] : "00:00",
-                e['check_out'].toString() != "null" ? e['check_out'] : "null",
-                e['obraid2'].toString(),
-                e['check_in2'].toString() != "null" ? e['check_in2'] : "null",
-                e['check_out2'].toString() != "null"
-                    ? e['check_out2']
-                    : "null"))
+                  e['employee_id'].toString(),
+                  e['date'].toString(),
+                  e['created_at'].toString() != "null"
+                      ? e['created_at']
+                      : "null",
+                  e['obraid'].toString(),
+                  e['check_in'].toString() != "null" ? e['check_in'] : "null",
+                  e['check_out'].toString() != "null" ? e['check_out'] : "null",
+                  e['obraid2'].toString(),
+                  e['check_in2'].toString() != "null" ? e['check_in2'] : "null",
+                  e['check_out2'].toString() != "null"
+                      ? e['check_out2']
+                      : "null",
+                  e['employee_id'].toString(),
+                ))
             .toList();
         return employeeList;
+      } else {
+        throw Exception('Error al obtener los datos de empleados');
+      }
+    } catch (error) {
+      // print('Error al obtener los datos de empleados: $error');
+      return [];
+    }
+  }
+
+  Future<List<Observaciones>> getObsDataFromSupabase() async {
+    try {
+      final response = await _supabase
+          .from(Constants.obstable)
+          .select()
+          .order('created_at', ascending: false);
+      if (response != null) {
+        final data = response as List<dynamic>;
+        final obsList = data
+            .map((e) => Observaciones(e['user_id'].toString(),
+                e['title'].toString(), e['created_at'].toString()))
+            .toList();
+        return obsList;
       } else {
         throw Exception('Error al obtener los datos de empleados');
       }
@@ -298,6 +343,16 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                               FilterCondition(
                                   type: FilterType.equals,
                                   value: dbService.empleadolista));
+
+//TODO:FILTRO PARA COMENTARIOS
+
+                          _obsDataSource.clearFilters();
+                          _obsDataSource.addFilter(
+                              'id',
+                              FilterCondition(
+                                  type: FilterType.equals,
+                                  value: dbService.empleadolista));
+
                           selectedName = dbService.allempleados
                               .firstWhere(
                                   (element) => element.id == selectedValue)
@@ -332,7 +387,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                       await SimpleMonthYearPicker.showMonthYearPickerDialog(
                           context: context, disableFuture: true);
                   String pickedMonth =
-                      DateFormat('MMMM yyyy').format(selectedDate);
+                      DateFormat('MMMM yyyy', "es_ES").format(selectedDate);
                   setState(() {
                     fecha = pickedMonth;
                     //attendanceService.attendanceHistoryMonth= fecha;
@@ -590,6 +645,18 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         'Total de Horas',
                         overflow: TextOverflow.ellipsis,
                       ))),
+              GridColumn(
+                  columnName: 'OB',
+                  visible: false,
+                  allowFiltering: false,
+                  allowSorting: false,
+                  label: Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'OBS',
+                        overflow: TextOverflow.ellipsis,
+                      ))),
             ],
             stackedHeaderRows: <StackedHeaderRow>[
               StackedHeaderRow(cells: [
@@ -608,7 +675,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                       'HoraOut2',
                       'SubTH2',
                       'TotalHoras',
-                      'Total'
+                      'Total',
+                      'OB'
                     ],
                     child: Container(
                         // color: Colors.cyan[200],
@@ -618,9 +686,55 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
             ],
             selectionMode: SelectionMode.multiple,
           ),
-        ))
+        )),
+
+        ///observaciones
       ],
     ));
+  }
+}
+
+class ObsDataSource extends DataGridSource {
+  /// Creates the employee data source class with required details.
+
+  ObsDataSource({required List<Observaciones> obsData}) {
+    _obsData = obsData
+        .map<DataGridRow>((e) => DataGridRow(cells: [
+              DataGridCell<String>(columnName: 'id', value: e.id),
+              DataGridCell<String>(columnName: 'title', value: e.titulo),
+              DataGridCell<String>(columnName: 'fecha', value: e.fecha),
+            ]))
+        .toList();
+  }
+
+  List<DataGridRow> _obsData = [];
+
+  @override
+  List<DataGridRow> get rows => _obsData;
+
+  @override
+  Widget? buildTableSummaryCellWidget(
+    GridTableSummaryRow summaryRow,
+    GridSummaryColumn? summaryColumn,
+    RowColumnIndex rowColumnIndex,
+    String summaryValue,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(15.0),
+      child: Text(summaryValue),
+    );
+  }
+
+  @override
+  DataGridRowAdapter buildRow(DataGridRow row) {
+    return DataGridRowAdapter(
+        cells: row.getCells().map<Widget>((e) {
+      return Container(
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.all(8.0),
+        child: Text(e.value.toString()),
+      );
+    }).toList());
   }
 }
 
@@ -902,7 +1016,7 @@ class Tiempo2 {
 class Employee {
   /// Creates the employee class with required details.
   Employee(this.id, this.Dia2, this.Fecha, this.Proyecto, this.HoraIn,
-      this.HoraOut, this.Proyecto2, this.HoraIn2, this.HoraOut2);
+      this.HoraOut, this.Proyecto2, this.HoraIn2, this.HoraOut2, this.lugar_1);
 
   final String id;
   final String Dia2;
@@ -913,4 +1027,14 @@ class Employee {
   final String Proyecto2;
   final String HoraIn2;
   final String HoraOut2;
+  final String HoraOut2;
+}
+
+class Observaciones {
+  /// Creates the employee class with required details.
+  Observaciones(this.id, this.fecha, this.titulo);
+
+  final String id;
+  final String fecha;
+  final String titulo;
 }
