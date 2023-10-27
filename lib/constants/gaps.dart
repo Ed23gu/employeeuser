@@ -46,9 +46,21 @@ const anchosmsalertaobs = 180.0;
 const inconvenientessize18 = 18.0;
 const imgenerror300 = 300.0;
 const fontsize13 = 13.0;
+const fontsize12 = 12.0;
 const fontsize15 = 15.0;
+const fontsize18 = 18.0;
 const fontsize22 = 22.0;
+const fontsize25 = 25.0;
 const fontsize28 = 28.0;
+const heightImage115 = 115.0;
+const heightImage90 = 90.0;
+const heightSize10= 10.0;
+const heightSize80= 80.0;
+const widthSize50= 50.0;
+const widthsize300= 300.0;
+const heightContainer= 250.0;
+
+const widthObs = 450.0;
 
 const Widget line = Divider();
 

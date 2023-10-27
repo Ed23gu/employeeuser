@@ -1,5 +1,6 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
@@ -73,25 +74,60 @@ class _CalenderScreenState extends State<CalenderScreen> {
     return filteredList;
   }
 
+  Future comprobarObs(
+      String cadenaUnida, DateTime fechaDeAsis, String id) async {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fechaDeAsis);
+    try {
+      final List result = await supabase
+          .from(Constants.attendancetable)
+          .select()
+          .eq("employee_id", "$id")
+          .eq('date', fechaAsistenciaO);
+      if (result.isNotEmpty) {
+        updateObs(cadenaUnida, fechaDeAsis, id);
+      }
+      insertarObs(cadenaUnida, fechaDeAsis, id);
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   Future insertarObs(
       String cadenaUnida, DateTime fechaDeAsis, String id) async {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fechaDeAsis);
     try {
+      await supabase.from(Constants.attendancetable).insert({
+        'date': fechaAsistenciaO,
+        'obs': cadenaUnida,
+        "employee_id": "$id"
+      }).select();
+      if (mounted) {}
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
+  Future updateObs(String cadenaUnida, DateTime fechaDeAsis, String id) async {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fechaDeAsis);
+    try {
       await supabase
-          .from('attendance')
+          .from(Constants.attendancetable)
           .update({
             'obs': cadenaUnida,
           })
           .eq("employee_id", "$id")
           .eq('date', fechaAsistenciaO)
           .select();
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text("ok"),
-          backgroundColor: Colors.green,
-        ));
-      }
+      if (mounted) {}
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text(error.toString()),
@@ -132,8 +168,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     //  padding: EdgeInsets.all(5),
                     margin: const EdgeInsets.only(
                         left: 5, top: 5, bottom: 10, right: 10),
-                    height: 50,
-                    width: 300,
+                    height: widthSize50,
+                    width: widthsize300,
                     child: DropdownButtonFormField(
                       decoration:
                           const InputDecoration(border: OutlineInputBorder()),
@@ -163,7 +199,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   ),
             Text(
               attendanceService.attendanceHistoryMonth,
-              style: const TextStyle(fontSize: 25),
+              style: const TextStyle(fontSize: fontsize25),
             ),
             OutlinedButton(
                 onPressed: () async {
@@ -202,7 +238,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                 Container(
                                   margin: EdgeInsets.only(
                                       top: 12, left: 20, right: 20, bottom: 10),
-                                  height: 250,
+                                  height: heightContainer,
                                   decoration: BoxDecoration(
                                       color: Theme.of(context).brightness ==
                                               Brightness.light
@@ -225,7 +261,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                     children: [
                                       Container(
                                           child: Container(
-                                        width: 50,
+                                        width: widthSize50,
                                         decoration: const BoxDecoration(
                                           color: Colors.blue,
                                           borderRadius: BorderRadius.all(
@@ -237,7 +273,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                 .format(
                                                     attendanceData.createdAt),
                                             style: const TextStyle(
-                                                fontSize: 18,
+                                                fontSize: fontsize18,
                                                 color: Colors.white,
                                                 fontWeight: FontWeight.bold),
                                           ),
@@ -259,7 +295,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       decorationThickness: 2.2,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      fontSize: 15,
+                                                      fontSize: fontsize15,
                                                       color: Theme.of(context)
                                                                   .brightness ==
                                                               Brightness.light
@@ -269,13 +305,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                     ),
                                                   ),
                                                   const SizedBox(
-                                                    width: 10,
+                                                    width: heightSize10,
                                                   ),
                                                   Text(
                                                     attendanceData.usuario ??
                                                         '--/--',
                                                     style: TextStyle(
-                                                      fontSize: 15,
+                                                      fontSize: fontsize15,
                                                       color: Theme.of(context)
                                                                   .brightness ==
                                                               Brightness.light
@@ -311,7 +347,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               ?.toString() ??
                                                           '--/--',
                                                       style: TextStyle(
-                                                        fontSize: 12,
+                                                        fontSize: fontsize12,
                                                         color: Theme.of(context)
                                                                     .brightness ==
                                                                 Brightness.light
@@ -323,7 +359,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                   ],
                                                 ),
                                                 const SizedBox(
-                                                  height: 10,
+                                                  height: heightSize10,
                                                   child: Divider(),
                                                 ),
                                                 Expanded(
@@ -348,7 +384,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize15,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -365,7 +402,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     ?.toString() ??
                                                                 '--/--',
                                                             style: TextStyle(
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize15,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -379,8 +417,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                         ],
                                                       ),
                                                       const SizedBox(
-                                                        height: 10,
-                                                        width: 80,
+                                                        height: heightSize10,
+                                                        width: heightSize80,
                                                         child: Divider(),
                                                       ),
                                                       Row(
@@ -448,8 +486,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     "NULL"
                                                                 ? const CircularProgressIndicator()
                                                                 : Container(
-                                                                    height: 115,
-                                                                    width: 90,
+                                                                    height:
+                                                                        heightImage115,
+                                                                    width:
+                                                                        heightImage90,
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       shape: BoxShape
@@ -594,8 +634,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     "NULL"
                                                                 ? const CircularProgressIndicator()
                                                                 : Container(
-                                                                    height: 115,
-                                                                    width: 90,
+                                                                    height:
+                                                                        heightImage115,
+                                                                    width:
+                                                                        heightImage90,
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       shape: BoxShape
@@ -782,8 +824,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     "NULL"
                                                                 ? const CircularProgressIndicator()
                                                                 : Container(
-                                                                    height: 115,
-                                                                    width: 90,
+                                                                    height:
+                                                                        heightImage115,
+                                                                    width:
+                                                                        heightImage90,
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       shape: BoxShape
@@ -926,8 +970,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     "NULL"
                                                                 ? const CircularProgressIndicator()
                                                                 : Container(
-                                                                    height: 115,
-                                                                    width: 90,
+                                                                    height:
+                                                                        heightImage115,
+                                                                    width:
+                                                                        heightImage90,
                                                                     decoration:
                                                                         BoxDecoration(
                                                                       shape: BoxShape
@@ -961,14 +1007,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                           margin: const EdgeInsets.symmetric(
                                             vertical: 6,
                                           ),
-                                          width: 450,
+                                          width: widthObs,
                                           child: Column(
                                             children: [
                                               Text(
                                                 ' Observaciones',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.bold,
-                                                  fontSize: 15,
+                                                  fontSize: fontsize15,
                                                 ),
                                               ),
                                               Expanded(
@@ -1007,7 +1053,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                   snapshot.data,
                                                                   attendanceData
                                                                       .createdAt);
-                                                          print(dataList);
+
                                                           if (dataList
                                                               .isNotEmpty) {
                                                             if (dataList
@@ -1036,7 +1082,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     ", ";
                                                               }
                                                             }
-                                                            insertarObs(
+                                                            comprobarObs(
                                                                 titlesJoined,
                                                                 attendanceData
                                                                     .createdAt,
@@ -1110,7 +1156,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       return const Center(
                         child: Text(
                           "Datos no disponibles",
-                          style: TextStyle(fontSize: 25),
+                          style: TextStyle(fontSize: fontsize25),
                         ),
                       );
                     }

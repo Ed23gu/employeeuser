@@ -205,7 +205,6 @@ class AttendanceServiceadmin extends ChangeNotifier {
         .eq('employee_id', "$attendanceusuario")
         .textSearch('date', "'$attendanceHistoryMonth'")
         .order('created_at', ascending: false);
-    print("'$attendanceusuario'");
     return data
         .map((attendance) => AttendanceModel.fromJson(attendance))
         .toList();
