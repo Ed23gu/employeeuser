@@ -42,7 +42,7 @@ class DbServiceadmin extends ChangeNotifier {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
-        .eq('id', _supabase.auth.currentUser!.id)
+        .eq('id', "$empleadolista")
         .single();
     userModel = UserModel.fromJson(userData);
     // Since this function can be called multiple times, then it will reset the dartment value
@@ -75,7 +75,7 @@ class DbServiceadmin extends ChangeNotifier {
     await _supabase.from(Constants.employeeTable).update({
       'name': name,
       'department': employeeDepartment,
-    }).eq('id', _supabase.auth.currentUser!.id);
+    }).eq('id', "$empleadolista");
     Utils.showSnackBar("Perfil actualizado correctamente", context,
         color: Colors.green);
     notifyListeners();
@@ -85,7 +85,7 @@ class DbServiceadmin extends ChangeNotifier {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
-        .eq('id', _supabase.auth.currentUser!.id)
+        .eq('id', "$empleadolista")
         .single();
     userModeldep = UserModel.fromJson(userData);
     employeeDepartment == null

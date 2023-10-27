@@ -39,6 +39,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   var sizeicono = 22.0;
   var sizeletra = 12.0;
+  String idSelected = 'abb73b57-f573-44b7-81cb-bf952365688b';
 
   @override
   void initState() {
@@ -46,7 +47,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
     _readStream = supabase
         .from('todos')
         .stream(primaryKey: ['id'])
-        .eq('user_id', supabase.auth.currentUser!.id)
+        .eq('user_id', "$idSelected")
         .order('id', ascending: false);
     todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
     controller.addListener(() {
@@ -82,7 +83,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
           .update({
             'obs': cadenaUnida,
           })
-          .eq("employee_id", supabase.auth.currentUser!.id)
+          .eq("employee_id", "$id")
           .eq('date', fechaAsistenciaO)
           .select();
       if (mounted) {
@@ -109,7 +110,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
   Widget build(BuildContext context) {
     final attendanceService =
         prove.Provider.of<AttendanceServiceadmin>(context);
-
     final dbService = prove.Provider.of<DbServiceadmin>(context);
     dbService.allempleados.isEmpty ? dbService.getAllempleados() : null;
     return Column(
@@ -151,6 +151,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
                         setState(() {
                           attendanceService.attendanceusuario =
                               selectedValue.toString();
+                          idSelected = selectedValue.toString();
+                          _readStream = supabase
+                              .from('todos')
+                              .stream(primaryKey: ['id'])
+                              .eq('user_id', "$idSelected")
+                              .order('id', ascending: false);
                         });
                       },
                     ),

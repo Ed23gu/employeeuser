@@ -60,7 +60,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
     final List result = await _supabase
         .from(Constants.attendancetable)
         .select()
-        .eq("employee_id", _supabase.auth.currentUser!.id)
+        .eq("employee_id", "$attendanceusuario")
         .eq('date', todayDate);
     if (result.isNotEmpty) {
       attendanceModel = AttendanceModel.fromJson(result.first);
@@ -73,7 +73,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
-        .eq('id', _supabase.auth.currentUser!.id)
+        .eq('id', "$attendanceusuario")
         .single();
     userModel = UserModel.fromJson(userData);
     // Since this function can be called multiple times, then it will reset the dartment value
@@ -88,7 +88,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
     final userData = await _supabase
         .from(Constants.employeeTable)
         .select()
-        .eq('id', _supabase.auth.currentUser!.id)
+        .eq('id', _attendanceusuario)
         .single();
     userModel = UserModel.fromJson(userData);
     // Since this function can be called multiple times, then it will reset the dartment value
@@ -215,7 +215,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
     final List obsdata = await _supabase
         .from(Constants.obstable)
         .select()
-        .eq('user_id', _supabase.auth.currentUser!.id)
+        .eq('user_id', "$attendanceusuario")
         //.textSearch('date', '23 October 2023', config: 'english')
         .textSearch('date', "'$fecha'", config: 'english')
         .order('created_at', ascending: false);

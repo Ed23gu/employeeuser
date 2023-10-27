@@ -1,5 +1,4 @@
 import 'dart:core';
-import 'dart:ffi';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
@@ -32,7 +31,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   final SupabaseClient _supabase = Supabase.instance.client;
   late final bool allowFiltering;
   String selectedName = '';
-  Int? selectedpas;
+  int? selectedpas;
   String selectedProyecto = '';
   late var fecha = 'October 2022';
   int selectedOption = 246; // Opción seleccionada inicialmente
@@ -279,7 +278,9 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     dbService.allDepartments.isEmpty ? dbService.getAllDepartments() : null;
 
     return Scaffold(
+      
         body: Column(
+          
       children: [
         Container(
           alignment: Alignment.center,
@@ -335,7 +336,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                   type: FilterType.equals,
                                   value: dbService.empleadolista));
 
-                         selectedName = dbService.allempleados
+                          selectedName = dbService.allempleados
                               .firstWhere(
                                   (element) => element.id == selectedValue)
                               .name
@@ -344,12 +345,11 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                               .firstWhere(
                                   (element) => element.id == selectedValue)
                               .department;
-                        
-                            selectedProyecto = dbService.allDepartments
-                                .firstWhere(
-                                    (element) => element.id == selectedpas)
-                                .title;
-                       
+                          selectedProyecto = dbService.allDepartments
+                              .firstWhere(
+                                  (element) => element.id == selectedpas)
+                              .title;
+                        });
                       },
                     ),
                   ),
@@ -358,14 +358,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
             ),
             Text(
               fecha == '' ? "--/--" : fecha,
-              style: const TextStyle(fontSize: 15),
-            ),
-            Text(
-              selectedProyecto == '' ? "--/--" : selectedProyecto,
-              style: const TextStyle(fontSize: 15),
-            ),
-            Text(
-              selectedName == '' ? "--/--" : selectedName,
               style: const TextStyle(fontSize: 15),
             ),
             Container(
