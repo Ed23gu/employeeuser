@@ -1082,7 +1082,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     ", ";
                                                               }
                                                             }
-                                                            comprobarObs(
+                                                            updateObs(
                                                                 titlesJoined,
                                                                 attendanceData
                                                                     .createdAt,
