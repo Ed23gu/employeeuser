@@ -115,6 +115,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
     }
   }
 
+/*   tengo dos tablas en supabase la tabla uno, observacionesdiarias,  tiene id_empleado, fecha, y detalle y la tabla dos ,tablaasistencias, tiene id_empleado, fecha y observaciones, crear una funcion o funciones que vayan comparando los id_empleado y fecha entre ambas tablas y si no existe una fecha y id_empleado especifica en comun con tablados agregue una fila en tablados con el contenido de detalle con esa fecha y id_empleado , codigo en en flutter */
+
   Future updateObs(String cadenaUnida, DateTime fechaDeAsis, String id) async {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fechaDeAsis);
@@ -1088,6 +1090,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     .createdAt,
                                                                 attendanceData
                                                                     .id);
+
                                                             return ListView
                                                                 .builder(
                                                                     itemCount:
