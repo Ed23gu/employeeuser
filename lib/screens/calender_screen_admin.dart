@@ -116,6 +116,29 @@ class _CalenderScreenState extends State<CalenderScreen> {
   }
 
 /*   tengo dos tablas en supabase la tabla uno, observacionesdiarias,  tiene id_empleado, fecha, y detalle y la tabla dos ,tablaasistencias, tiene id_empleado, fecha y observaciones, crear una funcion o funciones que vayan comparando los id_empleado y fecha entre ambas tablas y si no existe una fecha y id_empleado especifica en comun con tablados agregue una fila en tablados con el contenido de detalle con esa fecha y id_empleado , codigo en en flutter */
+  Future<void> compareAndUpdateTables(DateTime fechaDeAsis, String id) async {
+    final List<Map<String, dynamic>> tableOneData =
+        await Supabase.instance.client.from(Constants.obstable).select();
+    final List<Map<String, dynamic>> tableTwoData =
+        await Supabase.instance.client.from(Constants.attendancetable).select();
+
+    for (Map<String, dynamic> tableOneRecord in tableOneData) {
+      int idEmpleado = tableOneRecord['id_empleado'];
+      String fecha = tableOneRecord['fecha'];
+      String detalle = tableOneRecord['detalle'];
+
+      // Comprobar si hay un registro en la tabla dos con el mismo id_empleado y fecha
+      bool exists = tableTwoData.any((record) =>
+          record['id_empleado'] == idEmpleado && record['fecha'] == fecha);
+
+      if (!exists) {
+        // Agregar una fila en la tabla dos con el contenido de detalle de la tabla uno
+        await Supabase.instance.client.from('tablaasistencias').insert([
+          {'id_empleado': idEmpleado, 'fecha': fecha, 'observaciones': detalle}
+        ]);
+      }
+    }
+  }
 
   Future updateObs(String cadenaUnida, DateTime fechaDeAsis, String id) async {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
