@@ -80,20 +80,25 @@ class _CalenderScreenState extends State<CalenderScreen> {
     return filteredList;
   }
 
-  Future getListasObsyAsis(String id, DateTime fechaDeAsis) async {
+  Future getListadeObsyAsis(String id, DateTime fechaDeAsis) async {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fechaDeAsis);
-    List<Map<String, dynamic>> observacionesdiarias = await supabase
-        .from(Constants.obstable)
-        .select()
-        .eq("employee_id", "$id")
-        .eq('date', fechaAsistenciaO);
+    try {
+      final List<Map<String, String>> getObsDiarias = await Supabase
+          .instance.client
+          .from(Constants.obstable)
+          .select()
+          .eq("user_id", "$id")
+          .eq('date', fechaAsistenciaO);
 
-    List<Map<String, dynamic>> tablaasistencias = await supabase
-        .from(Constants.attendancetable)
-        .select()
-        .eq("employee_id", "$id")
-        .eq('date', fechaAsistenciaO);
+      final List<Map<String, String>> getAsisDiarias = await supabase
+          .from(Constants.attendancetable)
+          .select()
+          .eq("employee_id", "$id")
+          .eq('date', fechaAsistenciaO);
+    } catch (e) {
+      print(e);
+    }
   }
 
   Future<void> agregarFilasFaltantes() async {
@@ -164,6 +169,188 @@ void printTablaAsistencias(List<Map<String, dynamic>> tabla) {
  }
 }
 
+/* import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:employee_attendance/screens/splash_screen.dart';
+import 'package:employee_attendance/services/attendance_service.dart';
+import 'package:employee_attendance/services/auth_service.dart';
+import 'package:employee_attendance/services/db_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+///////////////////////////ADMIN OPCION//////
+//////version 2 administrado////////////////////////////////
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // load env
+  /* await dotenv.load(fileName: ".env");
+  String supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
+  String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
+*/
+  // Initialize Supabase
+  String supabaseUrl = 'https://ikuxicurbjxyvfdaqevm.supabase.co';
+  String supabaseKey =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdXhpY3VyYmp4eXZmZGFxZXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1NzA3MjIsImV4cCI6MjAwMTE0NjcyMn0.M6gVfdPDTup6h-ritEoLXL37tLg_XSuVhnzqlRIcJ2w';
+  await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return AdaptiveTheme(
+      dark: ThemeData.dark(),
+      light: ThemeData.light(),
+      initial: AdaptiveThemeMode.light,
+      builder: (theme, darkTheme) {
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(create: (context) => AuthService()),
+            ChangeNotifierProvider(create: (context) => DbService()),
+            ChangeNotifierProvider(create: (context) => AttendanceService()),
+          ],
+          child: MaterialApp(
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('es', 'ES')
+              ],
+              debugShowCheckedModeBanner: false,
+              title: 'Asistencia',
+              theme: theme,
+              darkTheme: darkTheme,
+              home: const SplashScreen()),
+        );
+      },
+    );
+  }
+}
+ */
+
+import 'package:flutter/material.dart';
+
+List<Map<String, dynamic>> getObsDiarias = [
+  {
+    'employee_id': '001',
+    'fecha': '01/01/2022',
+    'detalle': 'observacioines de un dia sin registro'
+  },
+  {
+    'employee_id': '001',
+    'fecha': '02/01/2022',
+    'detalle': 'observacioines añadida a asistencia'
+  }
+];
+List<Map<String, dynamic>> getAsisDiarias = [
+  {'employee_id': '001', 'fecha': '02/01/2022', 'detalle': ' '},
+];
+List<Map<String, dynamic>> obsProvisional = [];
+
+void printTablaobs(List<Map<String, dynamic>> tabla) {
+  for (int i = 0; i < tabla.length; i++) {
+    print('ID empleado: ${tabla[i]['employee_id']}');
+    print('Fecha: ${tabla[i]['fecha']}');
+    print('Detalle: ${tabla[i]['detalle']}');
+    print('');
+  }
+}
+
+void _agregarObservacion(
+    String employee_id, String fecha, String observaciones) {
+  Map<String, dynamic> nuevaObservacion = {
+    'employee_id': employee_id,
+    'fecha': fecha,
+    'detalle': observaciones,
+  };
+
+  obsProvisional.add(nuevaObservacion);
+}
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Mi primera aplicacion en Flutter',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MyHomePage(title: 'Flutter'),
+    );
+  }
+}
+
+void passFromObsToAttendancce(
+    List<Map<String, dynamic>> tabla1, List<Map<String, dynamic>> tabla2) {
+  for (var entry1 in tabla1) {
+    var found = false;
+
+    for (var entry2 in tabla2) {
+      if (entry1['employee_id'] == entry2['employee_id'] &&
+          entry1['fecha'] == entry2['fecha']) {
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      tabla2.add({
+        'employee_id': entry1['employee_id'],
+        'fecha': entry1['fecha'],
+        'detalle': entry1['detalle'],
+      });
+    }
+  }
+}
+
+class MyHomePage extends StatelessWidget {
+  MyHomePage({Key? key, required this.title}) : super(key: key);
+  final String title;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text(this.title),
+        ),
+        body: Center(
+            child: Column(
+          children: [
+            IconButton(
+                onPressed: () async {
+                  print('--------------observaciones');
+                  printTablaobs(getObsDiarias);
+                  _agregarObservacion(
+                      '001', '03/01/2022', 'observacion agregada provisional');
+                  print('--------------observaciones añadidas ya unidas');
+                  printTablaobs(getObsDiarias);
+                  print('--------------observaciones provicionales');
+                  printTablaobs(obsProvisional);
+                },
+                icon: Icon(Icons.add_a_photo)),
+            Text(getAsisDiarias.toString()),
+            IconButton(
+                onPressed: () async {
+                  print('-------------Lista con observaciones si no hay');
+                  passFromObsToAttendancce(getObsDiarias, getAsisDiarias);
+                  printTablaobs(getAsisDiarias);
+                },
+                icon: Icon(Icons.inventory_2)),
+          ],
+        )));
+  }
+}
 
 
 void main() {
@@ -1132,6 +1319,15 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                   fontSize: fontsize15,
                                                 ),
                                               ),
+                                              IconButton(
+                                                  onPressed: () async {
+                                                    getListadeObsyAsis(
+                                                        attendanceData.id,
+                                                        attendanceData
+                                                            .createdAt);
+                                                  },
+                                                  icon:
+                                                      Icon(Icons.add_a_photo)),
                                               Expanded(
                                                   child: StreamBuilder(
                                                       stream: _readStream,
