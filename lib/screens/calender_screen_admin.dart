@@ -36,6 +36,12 @@ class _CalenderScreenState extends State<CalenderScreen> {
   final AttendanceServiceadmin obtenerObs = AttendanceServiceadmin();
   final SupabaseClient supabase = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> _readStream;
+  final observacionesdiarias = [];
+  final tablaasistencias = [];
+
+  final tablaProvicional = [];
+  String titlesJoined = '';
+
   final controller = ScrollController();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   var sizeicono = 22.0;
@@ -72,6 +78,34 @@ class _CalenderScreenState extends State<CalenderScreen> {
     }).toList();
 
     return filteredList;
+  }
+
+  Future getListasObsyAsis(String id, DateTime fechaDeAsis) async {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fechaDeAsis);
+    List<Map<String, dynamic>> observacionesdiarias = await supabase
+        .from(Constants.obstable)
+        .select()
+        .eq("employee_id", "$id")
+        .eq('date', fechaAsistenciaO);
+
+    List<Map<String, dynamic>> tablaasistencias = await supabase
+        .from(Constants.attendancetable)
+        .select()
+        .eq("employee_id", "$id")
+        .eq('date', fechaAsistenciaO);
+  }
+
+  Future<void> agregarFilasFaltantes() async {
+    for (final observacion in observacionesdiarias) {
+      final existe = tablaasistencias.any((asistencia) =>
+          asistencia['employee_id'] == observacion['employee_id'] &&
+          asistencia['fecha'] == observacion['fecha']);
+
+      if (!existe) {
+        tablaasistencias.add(observacion);
+      }
+    }
   }
 
   Future comprobarObs(
@@ -115,7 +149,63 @@ class _CalenderScreenState extends State<CalenderScreen> {
     }
   }
 
-/*   tengo dos tablas en supabase la tabla uno, observacionesdiarias,  tiene id_empleado, fecha, y detalle y la tabla dos ,tablaasistencias, tiene id_empleado, fecha y observaciones, crear una funcion o funciones que vayan comparando los id_empleado y fecha entre ambas tablas y si no existe una fecha y id_empleado especifica en comun con tablados agregue una fila en tablados con el contenido de detalle con esa fecha y id_empleado , codigo en en flutter */
+/*  
+
+List<Map<String, dynamic>> observacionesdiarias = [
+ { 'employee_id': '001', 'fecha': '02/01/2022', 'observaciones': 'Ejemplo de observación 1' },
+
+];
+void printTablaAsistencias(List<Map<String, dynamic>> tabla) {
+ for (int i = 0; i < tabla.length; i++) {
+    print('ID empleado: ${tabla[i]['employee_id']}');
+    print('Fecha: ${tabla[i]['fecha']}');
+    print('Observaciones: ${tabla[i]['observaciones']}');
+    print('');
+ }
+}
+
+
+
+void main() {
+  
+ printTablaAsistencias(observacionesdiarias);
+   print('//////////////////////////////////////////////////');
+ // Updating the list
+  _agregarObservacion('hi',  '02/01/2022','observacion agregada');
+
+ printTablaAsistencias(observacionesdiarias);
+}
+
+
+void _agregarObservacion(String employee_id, String fecha, String observaciones) {
+ Map<String, dynamic> nuevaObservacion = {
+    'employee_id': employee_id,
+    'fecha': fecha,
+    'observaciones': observaciones,
+ };
+
+
+    observacionesdiarias.add(nuevaObservacion);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ tengo dos tablas en supabase la tabla uno, observacionesdiarias,  tiene id_empleado, fecha, y detalle y la tabla dos ,tablaasistencias, tiene id_empleado, fecha y observaciones, crear una funcion o funciones que vayan comparando los id_empleado y fecha entre ambas tablas y si no existe una fecha y id_empleado especifica en comun con tablados agregue una fila en tablados con el contenido de detalle con esa fecha y id_empleado , codigo en en flutter */
   Future<void> compareAndUpdateTables(DateTime fechaDeAsis, String id) async {
     final List<Map<String, dynamic>> tableOneData =
         await Supabase.instance.client.from(Constants.obstable).select();
@@ -1089,9 +1179,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                     "Aun no ha subido observaciones adentro1"),
                                                               );
                                                             }
-                                                            String
-                                                                titlesJoined =
-                                                                "";
+
+                                                            titlesJoined = "";
                                                             for (int i = 0;
                                                                 i <
                                                                     dataList
