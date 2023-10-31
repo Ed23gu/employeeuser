@@ -40,13 +40,14 @@ class _CalenderScreenState extends State<CalenderScreen> {
   final tablaasistencias = [];
 
   final tablaProvicional = [];
-  String titlesJoined = '';
-
+  List obsProvisional = [];
   final controller = ScrollController();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
-  var sizeicono = 22.0;
+  var sizeicono = 20.0;
   var sizeletra = 12.0;
   String idSelected = 'abb73b57-f573-44b7-81cb-bf952365688b';
+  UserModel? userModel;
+  int? employeeDepartment;
 
   @override
   void initState() {
@@ -68,8 +69,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
     setState(() {});
   }
 
-  List<dynamic> _filterpormes(List<dynamic> dataList, DateTime fecha) {
-    final filteredList = dataList.where((element) {
+  List<dynamic> _filterpormes(List<dynamic> datalist, DateTime fecha) {
+    final filteredList = datalist.where((element) {
       final createdAt = DateTime.parse(element['created_at']);
       final format = DateFormat('dd MMMM yyyy', "ES_es");
       final fechaObs = format.format(createdAt);
@@ -84,21 +85,32 @@ class _CalenderScreenState extends State<CalenderScreen> {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fechaDeAsis);
     try {
-      final List<Map<String, String>> getObsDiarias = await Supabase
-          .instance.client
-          .from(Constants.obstable)
-          .select()
-          .eq("user_id", "$id")
-          .eq('date', fechaAsistenciaO);
-
-      final List<Map<String, String>> getAsisDiarias = await supabase
+      List getAsisDiarias = await supabase
           .from(Constants.attendancetable)
           .select()
           .eq("employee_id", "$id")
-          .eq('date', fechaAsistenciaO);
+          .eq("date", fechaAsistenciaO);
+
+      final List getObsDiarias = await supabase
+          .from(Constants.obstable)
+          .select()
+          .eq("user_id", "$id")
+          .eq("date", fechaAsistenciaO);
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<List<AttendanceModel>> getAttendanceHistory() async {
+    final List data = await supabase
+        .from(Constants.attendancetable)
+        .select()
+        .eq('employee_id', supabase.auth.currentUser!.id)
+        //.textSearch('date', "'$attendanceHistoryMonth'")
+        .order('created_at', ascending: false);
+    return data
+        .map((attendance) => AttendanceModel.fromJson(attendance))
+        .toList();
   }
 
   Future<void> agregarFilasFaltantes() async {
@@ -111,6 +123,20 @@ class _CalenderScreenState extends State<CalenderScreen> {
         tablaasistencias.add(observacion);
       }
     }
+  }
+
+  void _agregarObservacion(
+      String employee_id, DateTime fecha, String observaciones) {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fecha);
+    Map<String, String> nuevaObservacion = {
+      'employee_id': "$employee_id",
+      'fecha': fechaAsistenciaO,
+      'detalle': observaciones,
+    };
+    obsProvisional.add(nuevaObservacion);
+    print(obsProvisional);
+    print('pasada');
   }
 
   Future comprobarObs(
@@ -393,7 +419,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
 
 
  tengo dos tablas en supabase la tabla uno, observacionesdiarias,  tiene id_empleado, fecha, y detalle y la tabla dos ,tablaasistencias, tiene id_empleado, fecha y observaciones, crear una funcion o funciones que vayan comparando los id_empleado y fecha entre ambas tablas y si no existe una fecha y id_empleado especifica en comun con tablados agregue una fila en tablados con el contenido de detalle con esa fecha y id_empleado , codigo en en flutter */
-  Future<void> compareAndUpdateTables(DateTime fechaDeAsis, String id) async {
+/*   Future<void> compareAndUpdateTables(DateTime fechaDeAsis, String id) async {
     final List<Map<String, dynamic>> tableOneData =
         await Supabase.instance.client.from(Constants.obstable).select();
     final List<Map<String, dynamic>> tableTwoData =
@@ -416,7 +442,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
       }
     }
   }
-
+ */
   Future updateObs(String cadenaUnida, DateTime fechaDeAsis, String id) async {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fechaDeAsis);
@@ -669,8 +695,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                   Expanded(
                                                       child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                        MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .center,
@@ -678,6 +703,9 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                       Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
+                                                                .center,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
                                                                 .center,
                                                         children: [
                                                           Text(
@@ -687,7 +715,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                   FontWeight
                                                                       .bold,
                                                               fontSize:
-                                                                  fontsize15,
+                                                                  fontsize13,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -705,7 +733,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                 '--/--',
                                                             style: TextStyle(
                                                               fontSize:
-                                                                  fontsize15,
+                                                                  fontsize12,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -723,48 +751,23 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                         width: heightSize80,
                                                         child: Divider(),
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          IconButton(
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                size: sizeicono,
-                                                              ),
-                                                              onPressed: () {
-                                                                var lat = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkInLocation!)
-                                                                    .latitude;
-                                                                var lon = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkInLocation!)
-                                                                    .longitude;
-
-                                                                _openmap(
-                                                                    lat.toString(),
-                                                                    lon.toString());
-                                                              }),
-                                                          Expanded(
-                                                            child: ReadMoreText(
-                                                              attendanceData
-                                                                      .lugar_1
-                                                                      ?.toString() ??
-                                                                  '--/--',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      sizeletra),
-                                                              trimLines: 3,
-                                                              // colorClickableText: Colors.pink,
-                                                              trimMode:
-                                                                  TrimMode.Line,
-                                                              trimCollapsedText:
-                                                                  '...Leer mas',
-                                                              trimExpandedText:
-                                                                  ' Menos',
-                                                            ),
-                                                          ),
-                                                        ],
+                                                      Expanded(
+                                                        child: ReadMoreText(
+                                                          attendanceData.lugar_1
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  sizeletra),
+                                                          trimLines: 5,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              '...Leer mas',
+                                                          trimExpandedText:
+                                                              ' Menos',
+                                                        ),
                                                       ),
                                                     ],
                                                   )),
@@ -772,12 +775,30 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                   Expanded(
                                                       child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                        MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .center,
                                                     children: [
+                                                      IconButton(
+                                                          icon: Icon(
+                                                            Icons.location_on,
+                                                            size: sizeicono,
+                                                          ),
+                                                          onPressed: () {
+                                                            var lat = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkInLocation!)
+                                                                .latitude;
+                                                            var lon = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkInLocation!)
+                                                                .longitude;
+
+                                                            _openmap(
+                                                                lat.toString(),
+                                                                lon.toString());
+                                                          }),
                                                       Container(
                                                         child: attendanceData
                                                                     .pic_in ==
@@ -837,7 +858,8 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize13,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -854,7 +876,8 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                     ?.toString() ??
                                                                 '--/--',
                                                             style: TextStyle(
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize12,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -872,60 +895,53 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                         width: 80,
                                                         child: Divider(),
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          IconButton(
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                size: sizeicono,
-                                                              ),
-                                                              onPressed: () {
-                                                                var lat = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkOutLocation!)
-                                                                    .latitude;
-                                                                var lon = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkOutLocation!)
-                                                                    .longitude;
-
-                                                                _openmap(
-                                                                    lat.toString(),
-                                                                    lon.toString());
-                                                              }),
-                                                          Expanded(
-                                                            child: ReadMoreText(
-                                                              attendanceData
-                                                                      .lugar_2
-                                                                      ?.toString() ??
-                                                                  '--/--',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      sizeletra),
-                                                              trimLines: 3,
-                                                              // colorClickableText: Colors.pink,
-                                                              trimMode:
-                                                                  TrimMode.Line,
-                                                              trimCollapsedText:
-                                                                  '...Leer mas',
-                                                              trimExpandedText:
-                                                                  ' Menos',
-                                                            ),
-                                                          ),
-                                                        ],
+                                                      Expanded(
+                                                        child: ReadMoreText(
+                                                          attendanceData.lugar_2
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  sizeletra),
+                                                          trimLines: 5,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              '...Leer mas',
+                                                          trimExpandedText:
+                                                              ' Menos',
+                                                        ),
                                                       ),
                                                     ],
                                                   )),
                                                   Expanded(
                                                       child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                        MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .center,
                                                     children: [
+                                                      IconButton(
+                                                          icon: Icon(
+                                                            Icons.location_on,
+                                                            size: sizeicono,
+                                                          ),
+                                                          onPressed: () {
+                                                            var lat = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkOutLocation!)
+                                                                .latitude;
+                                                            var lon = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkOutLocation!)
+                                                                .longitude;
+
+                                                            _openmap(
+                                                                lat.toString(),
+                                                                lon.toString());
+                                                          }),
                                                       Container(
                                                         child: attendanceData
                                                                     .pic_out ==
@@ -990,7 +1006,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                               ?.toString() ??
                                                           '--/--',
                                                       style: TextStyle(
-                                                        fontSize: 12,
+                                                        fontSize: fontsize12,
                                                         color: Theme.of(context)
                                                                     .brightness ==
                                                                 Brightness.light
@@ -1027,7 +1043,8 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize13,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -1044,7 +1061,8 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                     ?.toString() ??
                                                                 '--/--',
                                                             style: TextStyle(
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize12,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -1062,60 +1080,53 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                         width: 80,
                                                         child: Divider(),
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          IconButton(
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                size: sizeicono,
-                                                              ),
-                                                              onPressed: () {
-                                                                var lat = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkInLocation2!)
-                                                                    .latitude;
-                                                                var lon = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkInLocation2!)
-                                                                    .longitude;
-
-                                                                _openmap(
-                                                                    lat.toString(),
-                                                                    lon.toString());
-                                                              }),
-                                                          Expanded(
-                                                            child: ReadMoreText(
-                                                              attendanceData
-                                                                      .lugar_3
-                                                                      ?.toString() ??
-                                                                  '--/--',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      sizeletra),
-                                                              trimLines: 3,
-                                                              // colorClickableText: Colors.pink,
-                                                              trimMode:
-                                                                  TrimMode.Line,
-                                                              trimCollapsedText:
-                                                                  '...Leer mas',
-                                                              trimExpandedText:
-                                                                  ' Menos',
-                                                            ),
-                                                          ),
-                                                        ],
+                                                      Expanded(
+                                                        child: ReadMoreText(
+                                                          attendanceData.lugar_3
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  sizeletra),
+                                                          trimLines: 5,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              '...Leer mas',
+                                                          trimExpandedText:
+                                                              ' Menos',
+                                                        ),
                                                       ),
                                                     ],
                                                   )),
                                                   Expanded(
                                                       child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                        MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .center,
                                                     children: [
+                                                      IconButton(
+                                                          icon: Icon(
+                                                            Icons.location_on,
+                                                            size: sizeicono,
+                                                          ),
+                                                          onPressed: () {
+                                                            var lat = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkInLocation2!)
+                                                                .latitude;
+                                                            var lon = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkInLocation2!)
+                                                                .longitude;
+
+                                                            _openmap(
+                                                                lat.toString(),
+                                                                lon.toString());
+                                                          }),
                                                       Container(
                                                         child: attendanceData
                                                                     .pic_in2 ==
@@ -1173,7 +1184,8 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                               fontWeight:
                                                                   FontWeight
                                                                       .bold,
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize13,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -1190,7 +1202,8 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                     ?.toString() ??
                                                                 '--/--',
                                                             style: TextStyle(
-                                                              fontSize: 15,
+                                                              fontSize:
+                                                                  fontsize12,
                                                               color: Theme.of(context)
                                                                           .brightness ==
                                                                       Brightness
@@ -1208,60 +1221,53 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                         width: 80,
                                                         child: Divider(),
                                                       ),
-                                                      Row(
-                                                        children: [
-                                                          IconButton(
-                                                              icon: Icon(
-                                                                Icons
-                                                                    .location_on,
-                                                                size: sizeicono,
-                                                              ),
-                                                              onPressed: () {
-                                                                var lat = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkOutLocation2!)
-                                                                    .latitude;
-                                                                var lon = UbiModel.fromJson(
-                                                                        attendanceData
-                                                                            .checkOutLocation2!)
-                                                                    .longitude;
-
-                                                                _openmap(
-                                                                    lat.toString(),
-                                                                    lon.toString());
-                                                              }),
-                                                          Expanded(
-                                                            child: ReadMoreText(
-                                                              attendanceData
-                                                                      .lugar_4
-                                                                      ?.toString() ??
-                                                                  '--/--',
-                                                              style: TextStyle(
-                                                                  fontSize:
-                                                                      sizeletra),
-                                                              trimLines: 3,
-                                                              // colorClickableText: Colors.pink,
-                                                              trimMode:
-                                                                  TrimMode.Line,
-                                                              trimCollapsedText:
-                                                                  '...Leer mas',
-                                                              trimExpandedText:
-                                                                  ' Menos',
-                                                            ),
-                                                          ),
-                                                        ],
+                                                      Expanded(
+                                                        child: ReadMoreText(
+                                                          attendanceData.lugar_4
+                                                                  ?.toString() ??
+                                                              '--/--',
+                                                          style: TextStyle(
+                                                              fontSize:
+                                                                  sizeletra),
+                                                          trimLines: 5,
+                                                          // colorClickableText: Colors.pink,
+                                                          trimMode:
+                                                              TrimMode.Line,
+                                                          trimCollapsedText:
+                                                              '...Leer mas',
+                                                          trimExpandedText:
+                                                              ' Menos',
+                                                        ),
                                                       ),
                                                     ],
                                                   )),
                                                   Expanded(
                                                       child: Column(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                        MainAxisAlignment.start,
                                                     crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .center,
                                                     children: [
+                                                      IconButton(
+                                                          icon: Icon(
+                                                            Icons.location_on,
+                                                            size: sizeicono,
+                                                          ),
+                                                          onPressed: () {
+                                                            var lat = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkOutLocation2!)
+                                                                .latitude;
+                                                            var lon = UbiModel.fromJson(
+                                                                    attendanceData
+                                                                        .checkOutLocation2!)
+                                                                .longitude;
+
+                                                            _openmap(
+                                                                lat.toString(),
+                                                                lon.toString());
+                                                          }),
                                                       Container(
                                                         child: attendanceData
                                                                     .pic_out2 ==
@@ -1305,158 +1311,6 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                           ])),
                                         ]),
                                       ),
-                                      Container(
-                                          margin: const EdgeInsets.symmetric(
-                                            vertical: 6,
-                                          ),
-                                          width: widthObs,
-                                          child: Column(
-                                            children: [
-                                              Text(
-                                                ' Observaciones',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: fontsize15,
-                                                ),
-                                              ),
-                                              IconButton(
-                                                  onPressed: () async {
-                                                    getListadeObsyAsis(
-                                                        attendanceData.id,
-                                                        attendanceData
-                                                            .createdAt);
-                                                  },
-                                                  icon:
-                                                      Icon(Icons.add_a_photo)),
-                                              Expanded(
-                                                  child: StreamBuilder(
-                                                      stream: _readStream,
-                                                      builder:
-                                                          (BuildContext context,
-                                                              AsyncSnapshot
-                                                                  snapshot) {
-                                                        if (snapshot.hasError) {
-                                                          return Center(
-                                                            child: Text(
-                                                                'Error:' +
-                                                                    snapshot
-                                                                        .error
-                                                                        .toString() +
-                                                                    '\nRecargue la pagina, por favor.',
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .center),
-                                                          );
-                                                        }
-
-                                                        if (snapshot.hasData) {
-                                                          if (snapshot.data
-                                                                  .length ==
-                                                              0) {
-                                                            return const Center(
-                                                              child: const Text(
-                                                                  "No se han agregado observaciones"),
-                                                            );
-                                                          }
-
-                                                          final dataList =
-                                                              _filterpormes(
-                                                                  snapshot.data,
-                                                                  attendanceData
-                                                                      .createdAt);
-
-                                                          if (dataList
-                                                              .isNotEmpty) {
-                                                            if (dataList
-                                                                    .length ==
-                                                                0) {
-                                                              return const Center(
-                                                                child: const Text(
-                                                                    "Aun no ha subido observaciones adentro1"),
-                                                              );
-                                                            }
-
-                                                            titlesJoined = "";
-                                                            for (int i = 0;
-                                                                i <
-                                                                    dataList
-                                                                        .length;
-                                                                i++) {
-                                                              titlesJoined +=
-                                                                  dataList[i]
-                                                                      ['title'];
-                                                              if (i !=
-                                                                  dataList.length -
-                                                                      1) {
-                                                                titlesJoined +=
-                                                                    ", ";
-                                                              }
-                                                            }
-                                                            updateObs(
-                                                                titlesJoined,
-                                                                attendanceData
-                                                                    .createdAt,
-                                                                attendanceData
-                                                                    .id);
-
-                                                            return ListView
-                                                                .builder(
-                                                                    itemCount:
-                                                                        dataList
-                                                                            .length,
-                                                                    itemBuilder:
-                                                                        (context,
-                                                                            int index) {
-                                                                      var data =
-                                                                          dataList[
-                                                                              index];
-                                                                      return ListTile(
-                                                                        title: Container(
-                                                                            padding: const EdgeInsets.all(6),
-                                                                            margin: const EdgeInsets.symmetric(
-                                                                              vertical: 6,
-                                                                            ),
-                                                                            decoration: BoxDecoration(
-                                                                              color: Colors.lightBlue.withOpacity(0.2),
-                                                                              borderRadius: BorderRadius.circular(10),
-                                                                              boxShadow: [
-                                                                                BoxShadow(color: Colors.cyan.withOpacity(0.2), spreadRadius: 2, blurRadius: 4, offset: const Offset(2, 4)),
-                                                                              ],
-                                                                            ),
-                                                                            child: Flexible(
-                                                                              fit: FlexFit.loose,
-                                                                              child: Row(
-                                                                                children: [
-                                                                                  Text(data['horain'], style: TextStyle(fontSize: fontsize15)),
-                                                                                  gapW12,
-                                                                                  Expanded(
-                                                                                    child: Text(data['title'], overflow: TextOverflow.visible, style: TextStyle(fontSize: fontsize15)),
-                                                                                  )
-                                                                                ],
-                                                                              ),
-                                                                            )),
-                                                                      );
-                                                                    });
-                                                          } else if (dataList
-                                                                  .length ==
-                                                              0) {
-                                                            return const Center(
-                                                              child: const Text(
-                                                                  "No se han agregado observaciones en este día"),
-                                                            );
-                                                          }
-                                                          return const Center(
-                                                            child:
-                                                                CircularProgressIndicator(),
-                                                          );
-                                                        }
-                                                        return const Center(
-                                                          child:
-                                                              CircularProgressIndicator(),
-                                                        );
-                                                      })),
-                                            ],
-                                          )),
                                     ],
                                   ),
                                 ),

@@ -37,7 +37,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
     notifyListeners();
   }
 
-  String _attendanceusuario = ' ';
+  String _attendanceusuario = 'abb73b57-f573-44b7-81cb-bf952365688b';
 
   String get attendanceusuario => _attendanceusuario;
 
