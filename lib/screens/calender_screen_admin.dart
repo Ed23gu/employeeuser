@@ -36,11 +36,11 @@ class _CalenderScreenState extends State<CalenderScreen> {
   final AttendanceServiceadmin obtenerObs = AttendanceServiceadmin();
   final SupabaseClient supabase = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> _readStream;
+
   final observacionesdiarias = [];
   final tablaasistencias = [];
-
-  final tablaProvicional = [];
-  List obsProvisional = [];
+  List<Map<String, String>> obsProvisional = [];
+  //final List obsProvisional = [];
   final controller = ScrollController();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   var sizeicono = 20.0;
@@ -51,6 +51,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
   @override
   void initState() {
+    obsProvisional;
     super.initState();
     _readStream = supabase
         .from('todos')
@@ -137,6 +138,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
     obsProvisional.add(nuevaObservacion);
     print(obsProvisional);
     print('pasada');
+    obsProvisional.clear();
   }
 
   Future comprobarObs(
@@ -507,12 +509,13 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                           value: item.id,
                           child: Text(
                             item.name.toString(),
-                            style: const TextStyle(fontSize: 14),
+                            style: const TextStyle(fontSize: 13),
                           ),
                         );
                       }).toList(),
                       onChanged: (selectedValue) {
                         setState(() {
+                          obsProvisional.clear();
                           attendanceService.attendanceusuario =
                               selectedValue.toString();
                           idSelected = selectedValue.toString();
@@ -1311,6 +1314,152 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                           ])),
                                         ]),
                                       ),
+                                      Container(
+                                          margin: const EdgeInsets.symmetric(
+                                            vertical: 6,
+                                          ),
+                                          width: widthObs,
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                ' Observaciones',
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: fontsize15,
+                                                ),
+                                              ),
+                                              Expanded(
+                                                  child: StreamBuilder(
+                                                      stream: _readStream,
+                                                      builder:
+                                                          (BuildContext context,
+                                                              AsyncSnapshot
+                                                                  snapshot) {
+                                                        if (snapshot.hasError) {
+                                                          return Center(
+                                                            child: Text(
+                                                                'Error:' +
+                                                                    snapshot
+                                                                        .error
+                                                                        .toString() +
+                                                                    '\nRecargue la pagina, por favor.',
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .center),
+                                                          );
+                                                        }
+
+                                                        if (snapshot.hasData) {
+                                                          if (snapshot.data
+                                                                  .length ==
+                                                              0) {
+                                                            return const Center(
+                                                              child: const Text(
+                                                                  "No se han agregado observaciones"),
+                                                            );
+                                                          }
+
+                                                          final dataList =
+                                                              _filterpormes(
+                                                                  snapshot.data,
+                                                                  attendanceData
+                                                                      .createdAt);
+
+                                                          if (dataList
+                                                              .isNotEmpty) {
+                                                            if (dataList
+                                                                    .length ==
+                                                                0) {
+                                                              return const Center(
+                                                                child: const Text(
+                                                                    "Aun no ha subido observaciones adentro1"),
+                                                              );
+                                                            }
+
+                                                            var titlesJoined =
+                                                                "";
+                                                            for (int i = 0;
+                                                                i <
+                                                                    dataList
+                                                                        .length;
+                                                                i++) {
+                                                              titlesJoined +=
+                                                                  dataList[i]
+                                                                      ['title'];
+                                                              if (i !=
+                                                                  dataList.length -
+                                                                      1) {
+                                                                titlesJoined +=
+                                                                    ", ";
+                                                              }
+                                                            }
+
+                                                            _agregarObservacion(
+                                                                attendanceData
+                                                                    .id,
+                                                                attendanceData
+                                                                    .createdAt,
+                                                                titlesJoined);
+                                                            updateObs(
+                                                                titlesJoined,
+                                                                attendanceData
+                                                                    .createdAt,
+                                                                attendanceData
+                                                                    .id);
+
+                                                            return ListView
+                                                                .builder(
+                                                                    itemCount:
+                                                                        dataList
+                                                                            .length,
+                                                                    itemBuilder:
+                                                                        (context,
+                                                                            int index) {
+                                                                      var data =
+                                                                          dataList[
+                                                                              index];
+                                                                      return ListTile(
+                                                                        title: Container(
+                                                                            padding: const EdgeInsets.all(2),
+                                                                            margin: const EdgeInsets.symmetric(
+                                                                              vertical: 2,
+                                                                            ),
+                                                                            decoration: BoxDecoration(
+                                                                              color: Colors.lightBlue.withOpacity(0.2),
+                                                                              borderRadius: BorderRadius.circular(10),
+                                                                            ),
+                                                                            child: Text(
+                                                                              data['title'] ?? '',
+                                                                              overflow: TextOverflow.visible,
+                                                                              style: TextStyle(fontSize: fontsize15),
+                                                                            )),
+                                                                        subtitle: Text(
+                                                                            data['horain'] ??
+                                                                                '',
+                                                                            style:
+                                                                                TextStyle(fontSize: fontsize12)),
+                                                                      );
+                                                                    });
+                                                          } else if (dataList
+                                                                  .length ==
+                                                              0) {
+                                                            return const Center(
+                                                              child: const Text(
+                                                                  "No se han agregado observaciones en este día"),
+                                                            );
+                                                          }
+                                                          return const Center(
+                                                            child:
+                                                                CircularProgressIndicator(),
+                                                          );
+                                                        }
+                                                        return const Center(
+                                                          child:
+                                                              CircularProgressIndicator(),
+                                                        );
+                                                      })),
+                                            ],
+                                          )),
                                     ],
                                   ),
                                 ),
