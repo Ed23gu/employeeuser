@@ -39,7 +39,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
   final observacionesdiarias = [];
   final tablaasistencias = [];
-  List<Map<String, String>> obsProvisional = [];
+  List obsProvisional = [];
   //final List obsProvisional = [];
   final controller = ScrollController();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
@@ -48,6 +48,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
   String idSelected = 'abb73b57-f573-44b7-81cb-bf952365688b';
   UserModel? userModel;
   int? employeeDepartment;
+  List getObsDiarias = [];
 
   @override
   void initState() {
@@ -91,8 +92,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
           .select()
           .eq("employee_id", "$id")
           .eq("date", fechaAsistenciaO);
-
-      final List getObsDiarias = await supabase
+      getObsDiarias = await supabase
           .from(Constants.obstable)
           .select()
           .eq("user_id", "$id")
@@ -126,8 +126,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
     }
   }
 
-  void _agregarObservacion(
-      String employee_id, DateTime fecha, String observaciones) {
+  Future<void> _agregarObservacion(
+      String employee_id, DateTime fecha, String observaciones) async {
     final format = DateFormat('dd MMMM yyyy', "ES_es");
     final fechaAsistenciaO = format.format(fecha);
     Map<String, String> nuevaObservacion = {
@@ -137,7 +137,17 @@ class _CalenderScreenState extends State<CalenderScreen> {
     };
     obsProvisional.add(nuevaObservacion);
     print(obsProvisional);
+    getObsDiarias = await supabase
+        .from(Constants.obstable)
+        .select()
+        .eq("user_id", "$employee_id")
+        .eq("date", fechaAsistenciaO);
     print('pasada');
+    print(
+      'pasada' + '$getObsDiarias',
+    );
+    passFromObsToAttendancce(
+        obsProvisional, getObsDiarias, employee_id, fecha, observaciones);
     obsProvisional.clear();
   }
 
@@ -180,6 +190,34 @@ class _CalenderScreenState extends State<CalenderScreen> {
         backgroundColor: Colors.red,
       ));
     }
+  }
+
+// obsProvisional, getObsDiarias, employee_id, fecha, observaciones
+  void passFromObsToAttendancce(List tabla1, List tabla2, String employee_id,
+      DateTime fecha, String observaciones) {
+    print("tabla1" + "$tabla1");
+
+    for (var entry1 in tabla1) {
+      var found = false;
+
+      for (var entry2 in tabla2) {
+        if (entry1['employee_id'] == entry2['user_id'] &&
+            entry1['fecha'] == entry2['date']) {
+          found = true;
+          break;
+        }
+      }
+
+      if (found) {
+        tabla2.add({
+          'user_id': entry1['employee_id'],
+          'date': entry1['fecha'],
+          'detalle': entry1['detalle'],
+        });
+        print("entry2" + "$tabla2");
+      }
+    }
+    print("tabla2" + "$tabla2");
   }
 
 /*  
@@ -1400,6 +1438,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                 attendanceData
                                                                     .createdAt,
                                                                 titlesJoined);
+
                                                             updateObs(
                                                                 titlesJoined,
                                                                 attendanceData
@@ -1437,7 +1476,7 @@ void _agregarObservacion(String employee_id, String fecha, String observaciones)
                                                                             data['horain'] ??
                                                                                 '',
                                                                             style:
-                                                                                TextStyle(fontSize: fontsize12)),
+                                                                                TextStyle(fontSize: fontsize10)),
                                                                       );
                                                                     });
                                                           } else if (dataList

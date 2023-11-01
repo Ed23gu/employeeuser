@@ -69,7 +69,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
       await supabase.from('todos').insert({
         'title': titleController.text,
         'user_id': userId,
-        'date': DateFormat("dd MMMM yyyy").format(DateTime.now()),
+        'date': DateFormat("dd MMMM yyyy", "ES_es").format(DateTime.now()),
         'horain': DateFormat('HH:mm').format(DateTime.now()),
       });
       await supabase.from('todos').insert({});
