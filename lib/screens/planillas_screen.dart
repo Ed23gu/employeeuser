@@ -2,13 +2,16 @@ import 'dart:core';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
+import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
     as helper;
 import 'package:employee_attendance/models/user_model.dart';
+import 'package:employee_attendance/screens/observaciones/observaciones_page.dart';
 import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/db_service_admin.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:open_document/my_files/init.dart';
 import 'package:provider/provider.dart' as route;
@@ -278,437 +281,485 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     dbService.allDepartments.isEmpty ? dbService.getAllDepartments() : null;
 
     return Scaffold(
-      
         body: Column(
-          
-      children: [
-        Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
-          child: const Text(
-            "Resumen de Asistencias",
-            style: TextStyle(fontSize: 17),
-          ),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            dbService.allempleados.isEmpty
-                ? SizedBox(width: 60, child: const LinearProgressIndicator())
-                : Container(
-                    height: 50,
-                    width: 240,
-                    child: DropdownButtonFormField(
-                      decoration:
-                          const InputDecoration(border: OutlineInputBorder()),
-                      value: dbService.empleadolista,
-                      items: dbService.allempleados.map((UserModel item) {
-                        return DropdownMenuItem(
-                          value: item.id,
-                          child: Text(
-                            item.name.toString(),
-                            style: const TextStyle(fontSize: 14),
-                          ),
-                        );
-                      }).toList(),
-                      onChanged: (selectedValue) {
-                        setState(() {
-                          getEmployeeDataFromSupabase().then((employeeList) {
-                            setState(() {
-                              _employees = employeeList;
-                              _employeeDataSource =
-                                  EmployeeDataSource(employeeData: _employees);
-                              _employeeDataSource.addFilter(
-                                'Dia2',
-                                FilterCondition(
-                                  value: fecha,
-                                  filterOperator: FilterOperator.and,
-                                  type: FilterType.equals,
-                                ),
-                              );
-                            });
-                          });
-                          dbService.empleadolista = selectedValue.toString();
-                          _employeeDataSource.clearFilters();
-                          _employeeDataSource.addFilter(
-                              'id',
-                              FilterCondition(
-                                  type: FilterType.equals,
-                                  value: dbService.empleadolista));
-
-                          selectedName = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == selectedValue)
-                              .name
-                              .toString();
-                          selectedpas = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == selectedValue)
-                              .department;
-                          selectedProyecto = dbService.allDepartments
-                              .firstWhere(
-                                  (element) => element.id == selectedpas)
-                              .title;
-                        });
-                      },
-                    ),
-                  ),
             Container(
-              width: 40,
-            ),
-            Text(
-              fecha == '' ? "--/--" : fecha,
-              style: const TextStyle(fontSize: 15),
-            ),
-            Container(
-              width: 40,
-            ),
-            OutlinedButton(
-                onPressed: () async {
-                  final selectedDate =
-                      await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                          backgroundColor: AdaptiveTheme.of(context).mode ==
-                                  AdaptiveThemeMode.light
-                              ? Colors.white
-                              : Colors.black,
-                          selectionColor: AdaptiveTheme.of(context).mode ==
-                                  AdaptiveThemeMode.light
-                              ? Colors.blue
-                              : Colors.white,
-                          context: context,
-                          disableFuture: true);
-                  String pickedMonth =
-                      DateFormat('MMMM yyyy', "es_ES").format(selectedDate);
-                  setState(() {
-                    fecha = pickedMonth;
-                    //attendanceService.attendanceHistoryMonth= fecha;
-                    _employeeDataSource.clearFilters();
-                    _employeeDataSource.addFilter(
-                      'id',
-                      FilterCondition(
-                        value: dbService.empleadolista,
-                        // filterOperator: FilterOperator.and,
-                        type: FilterType.equals,
-                      ),
-                    );
-                    _employeeDataSource.addFilter(
-                      'Dia2',
-                      FilterCondition(
-                        value: fecha,
-                        filterOperator: FilterOperator.and,
-                        type: FilterType.equals,
-                      ),
-                    );
-                  });
-                },
-                child: const Text("Mes", style: const TextStyle(fontSize: 15))),
-            Container(
-              width: 40,
-            ),
-            Container(
-              margin: const EdgeInsets.all(12.0),
-              child: Row(
-                children: <Widget>[
-                  SizedBox(
-                    height: 40.0,
-                    width: 150.0,
-                    child: MaterialButton(
-                        color: Colors.blue,
-                        onPressed: () async {
-                          /*  selectedName = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .name
-                              .toString();
-                          selectedpas = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .department;
-
-                          selectedProyecto = dbService.allDepartments
-                              .firstWhere(
-                                  (element) => element.id == selectedpas)
-                              .title; */
-                          await _exportDataGridToExcel(
-                              attendanceService.attendanceHistoryMonth,
-                              selectedName,
-                              selectedProyecto);
-                        },
-                        child: const Center(
-                            child: Text(
-                          'Export to Excel',
-                          style: TextStyle(color: Colors.white),
-                        ))),
-                  ),
-                  const Padding(padding: EdgeInsets.all(20)),
-                  SizedBox(
-                    height: 40.0,
-                    width: 150.0,
-                    child: MaterialButton(
-                        color: Colors.blue,
-                        onPressed: () async {
-                          /* selectedName = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .name
-                              .toString();
-                          selectedpas = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .department;
-
-                          selectedProyecto = dbService.allDepartments
-                              .firstWhere(
-                                  (element) => element.id == selectedpas)
-                              .title; */
-                          await _exportDataGridToPdf(
-                              fecha, selectedName, selectedProyecto);
-                        },
-                        child: const Center(
-                            child: Text(
-                          'Exportar a PDF',
-                          style: TextStyle(color: Colors.white),
-                        ))),
-                  ),
-                ],
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(left: 20, top: 15, bottom: 5),
+              child: const Text(
+                "Resumen de Asistencias",
+                style: TextStyle(fontSize: 17),
               ),
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                dbService.allempleados.isEmpty
+                    ? SizedBox(
+                        width: 60, child: const LinearProgressIndicator())
+                    : Container(
+                        height: 50,
+                        width: 240,
+                        child: DropdownButtonFormField(
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder()),
+                          value: dbService.empleadolista,
+                          items: dbService.allempleados.map((UserModel item) {
+                            return DropdownMenuItem(
+                              value: item.id,
+                              child: Text(
+                                item.name.toString(),
+                                style: const TextStyle(fontSize: 14),
+                              ),
+                            );
+                          }).toList(),
+                          onChanged: (selectedValue) {
+                            setState(() {
+                              getEmployeeDataFromSupabase()
+                                  .then((employeeList) {
+                                setState(() {
+                                  _employees = employeeList;
+                                  _employeeDataSource = EmployeeDataSource(
+                                      employeeData: _employees);
+                                  _employeeDataSource.addFilter(
+                                    'Dia2',
+                                    FilterCondition(
+                                      value: fecha,
+                                      filterOperator: FilterOperator.and,
+                                      type: FilterType.equals,
+                                    ),
+                                  );
+                                });
+                              });
+                              dbService.empleadolista =
+                                  selectedValue.toString();
+                              _employeeDataSource.clearFilters();
+                              _employeeDataSource.addFilter(
+                                  'id',
+                                  FilterCondition(
+                                      type: FilterType.equals,
+                                      value: dbService.empleadolista));
+
+                              selectedName = dbService.allempleados
+                                  .firstWhere(
+                                      (element) => element.id == selectedValue)
+                                  .name
+                                  .toString();
+                              selectedpas = dbService.allempleados
+                                  .firstWhere(
+                                      (element) => element.id == selectedValue)
+                                  .department;
+                              selectedProyecto = dbService.allDepartments
+                                  .firstWhere(
+                                      (element) => element.id == selectedpas)
+                                  .title;
+                            });
+                          },
+                        ),
+                      ),
+                Container(
+                  width: 40,
+                ),
+                Text(
+                  fecha == '' ? "--/--" : fecha,
+                  style: const TextStyle(fontSize: 15),
+                ),
+                Container(
+                  width: 40,
+                ),
+                OutlinedButton(
+                    onPressed: () async {
+                      final selectedDate =
+                          await SimpleMonthYearPicker.showMonthYearPickerDialog(
+                              backgroundColor: AdaptiveTheme.of(context).mode ==
+                                      AdaptiveThemeMode.light
+                                  ? Colors.white
+                                  : Colors.black,
+                              selectionColor: AdaptiveTheme.of(context).mode ==
+                                      AdaptiveThemeMode.light
+                                  ? Colors.blue
+                                  : Colors.white,
+                              context: context,
+                              disableFuture: true);
+                      String pickedMonth =
+                          DateFormat('MMMM yyyy', "es_ES").format(selectedDate);
+                      setState(() {
+                        fecha = pickedMonth;
+                        //attendanceService.attendanceHistoryMonth= fecha;
+                        _employeeDataSource.clearFilters();
+                        _employeeDataSource.addFilter(
+                          'id',
+                          FilterCondition(
+                            value: dbService.empleadolista,
+                            // filterOperator: FilterOperator.and,
+                            type: FilterType.equals,
+                          ),
+                        );
+                        _employeeDataSource.addFilter(
+                          'Dia2',
+                          FilterCondition(
+                            value: fecha,
+                            filterOperator: FilterOperator.and,
+                            type: FilterType.equals,
+                          ),
+                        );
+                      });
+                    },
+                    child: const Text("Mes",
+                        style: const TextStyle(fontSize: 15))),
+                Container(
+                  width: 40,
+                ),
+                Container(
+                  margin: const EdgeInsets.all(12.0),
+                  child: Row(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 40.0,
+                        width: 150.0,
+                        child: MaterialButton(
+                            color: Colors.blue,
+                            onPressed: () async {
+                              /*  selectedName = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .name
+                              .toString();
+                          selectedpas = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .department;
+
+                          selectedProyecto = dbService.allDepartments
+                              .firstWhere(
+                                  (element) => element.id == selectedpas)
+                              .title; */
+                              await _exportDataGridToExcel(
+                                  attendanceService.attendanceHistoryMonth,
+                                  selectedName,
+                                  selectedProyecto);
+                            },
+                            child: const Center(
+                                child: Text(
+                              'Export to Excel',
+                              style: TextStyle(color: Colors.white),
+                            ))),
+                      ),
+                      const Padding(padding: EdgeInsets.all(20)),
+                      SizedBox(
+                        height: 40.0,
+                        width: 150.0,
+                        child: MaterialButton(
+                            color: Colors.blue,
+                            onPressed: () async {
+                              /* selectedName = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .name
+                              .toString();
+                          selectedpas = dbService.allempleados
+                              .firstWhere(
+                                  (element) => element.id == globalEmpleado)
+                              .department;
+
+                          selectedProyecto = dbService.allDepartments
+                              .firstWhere(
+                                  (element) => element.id == selectedpas)
+                              .title; */
+                              await _exportDataGridToPdf(
+                                  fecha, selectedName, selectedProyecto);
+                            },
+                            child: const Center(
+                                child: Text(
+                              'Exportar a PDF',
+                              style: TextStyle(color: Colors.white),
+                            ))),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+                child: SfDataGridTheme(
+              data: SfDataGridThemeData(),
+              child: SfDataGrid(
+                key: _key,
+                source: _employeeDataSource,
+                rowHeight: 50,
+                headerRowHeight: 30,
+                tableSummaryRows: [
+                  GridTableSummaryRow(
+                      showSummaryInRow: false,
+                      title: 'Dias trabajados: {Count2}',
+                      titleColumnSpan: 6,
+                      columns: [
+                        GridSummaryColumn(
+                            name: 'Count2',
+                            columnName: 'TotalHoras',
+                            summaryType: GridSummaryType.count),
+                      ],
+                      position: GridTableSummaryRowPosition.bottom),
+                ],
+
+                columnWidthCalculationRange:
+                    ColumnWidthCalculationRange.allRows,
+                //allowFiltering: true,
+                allowSorting: true,
+                allowMultiColumnSorting: true,
+                columnWidthMode: ColumnWidthMode.fill,
+                //  gridLinesVisibility: GridLinesVisibility.both,
+                headerGridLinesVisibility: GridLinesVisibility.both,
+                //allowTriStateSorting: true,
+                columns: [
+                  GridColumn(
+                      columnName: 'id',
+                      visible: false,
+                      label: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'ID',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Dia2',
+                      visible: false,
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Dia2',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Dia',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Dia',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Fecha',
+                      allowFiltering: false,
+                      allowSorting: true,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Fecha',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Proyecto',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Proyecto',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'HoraIn',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Ingreso',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'HoraOut',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Salida',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'SubTH1',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'subHoras',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Proyecto2',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Proyecto',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'HoraIn2',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Ingreso',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'HoraOut2',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Salida',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'SubTH2',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'subHoras',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'TotalHoras',
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Total Horas',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Total',
+                      visible: false,
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Total de Horas',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                  GridColumn(
+                      columnName: 'Observacion',
+                      // visible: false,
+                      width: 500,
+                      allowFiltering: false,
+                      allowSorting: false,
+                      label: Container(
+
+                          // padding: EdgeInsets.symmetric(horizontal: 5.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Observación',
+                            overflow: TextOverflow.ellipsis,
+                          ))),
+                ],
+                stackedHeaderRows: <StackedHeaderRow>[
+                  StackedHeaderRow(cells: [
+                    StackedHeaderCell(
+                        columnNames: [
+                          'id',
+                          'Dia2',
+                          'Dia',
+                          'Fecha',
+                          'Proyecto',
+                          'HoraIn',
+                          'HoraOut',
+                          'SubTH1',
+                          'Proyecto2',
+                          'HoraIn2',
+                          'HoraOut2',
+                          'SubTH2',
+                          'TotalHoras',
+                          'Total',
+                          'Observacion'
+                        ],
+                        child: Container(
+                            // color: Colors.cyan[200],
+                            child: const Center(
+                                child: Text('NOMINA DE ASISTENCIA')))),
+                  ])
+                ],
+                selectionMode: SelectionMode.multiple,
+              ),
+            )),
+
+            ///observaciones
           ],
         ),
-        Expanded(
-            child: SfDataGridTheme(
-          data: SfDataGridThemeData(),
-          child: SfDataGrid(
-            key: _key,
-            source: _employeeDataSource,
-            rowHeight: 50,
-            headerRowHeight: 30,
-            tableSummaryRows: [
-              GridTableSummaryRow(
-                  showSummaryInRow: false,
-                  title: 'Dias trabajados: {Count2}',
-                  titleColumnSpan: 6,
-                  columns: [
-                    GridSummaryColumn(
-                        name: 'Count2',
-                        columnName: 'TotalHoras',
-                        summaryType: GridSummaryType.count),
-                  ],
-                  position: GridTableSummaryRowPosition.bottom),
-            ],
+        floatingActionButton: SpeedDial(
+          //Speed dial menus
+          // marginBottom: 10, //margin bottom
+          icon: Icons.message_outlined, //icon on Floating action button
+          activeIcon: Icons.close, //icon when menu is expanded on button
+          //backgroundColor: Colors.deepOrangeAccent, //background color of button
+          // foregroundColor: Colors.white, //font color, icon color in button
+          activeBackgroundColor:
+              Colors.deepPurpleAccent, //background color when menu is expanded
+          activeForegroundColor: Colors.white,
+          //buttonSize: Size(45, 45), //button size
+          visible: true,
+          closeManually: false,
+          curve: Curves.bounceIn,
+          overlayColor: Colors.black,
+          overlayOpacity: 0.5,
+          elevation: 8.0, //shadow elevation of button
+          shape: CircleBorder(), //shape of button
 
-            columnWidthCalculationRange: ColumnWidthCalculationRange.allRows,
-            //allowFiltering: true,
-            allowSorting: true,
-            allowMultiColumnSorting: true,
-            columnWidthMode: ColumnWidthMode.fill,
-            //  gridLinesVisibility: GridLinesVisibility.both,
-            headerGridLinesVisibility: GridLinesVisibility.both,
-            //allowTriStateSorting: true,
-            columns: [
-              GridColumn(
-                  columnName: 'id',
-                  visible: false,
-                  label: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'ID',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Dia2',
-                  visible: false,
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Dia2',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Dia',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Dia',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Fecha',
-                  allowFiltering: false,
-                  allowSorting: true,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Fecha',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Proyecto',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Proyecto',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'HoraIn',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Ingreso',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'HoraOut',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Salida',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'SubTH1',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'subHoras',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Proyecto2',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Proyecto',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'HoraIn2',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Ingreso',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'HoraOut2',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Salida',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'SubTH2',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'subHoras',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'TotalHoras',
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Total Horas',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Total',
-                  visible: false,
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Total de Horas',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-              GridColumn(
-                  columnName: 'Observacion',
-                  // visible: false,
-                  width: 500,
-                  allowFiltering: false,
-                  allowSorting: false,
-                  label: Container(
+          children: [
+            SpeedDialChild(
+              //speed dial child
+              child: Icon(Icons.message),
+              //  backgroundColor: Colors.red,
+              // foregroundColor: Colors.white,
+              label:
+                  '¿Has tenido inconvenientes \n al momento de registrarte? \n Dejanoslo saber.',
+              labelStyle: TextStyle(fontSize: inconvenientessize18),
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ComentariosPage()));
+              },
+              /*  onLongPress: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ComentariosPage()));
+              }, */
+            ),
 
-                      // padding: EdgeInsets.symmetric(horizontal: 5.0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                        'Observación',
-                        overflow: TextOverflow.ellipsis,
-                      ))),
-            ],
-            stackedHeaderRows: <StackedHeaderRow>[
-              StackedHeaderRow(cells: [
-                StackedHeaderCell(
-                    columnNames: [
-                      'id',
-                      'Dia2',
-                      'Dia',
-                      'Fecha',
-                      'Proyecto',
-                      'HoraIn',
-                      'HoraOut',
-                      'SubTH1',
-                      'Proyecto2',
-                      'HoraIn2',
-                      'HoraOut2',
-                      'SubTH2',
-                      'TotalHoras',
-                      'Total',
-                      'Observacion'
-                    ],
-                    child: Container(
-                        // color: Colors.cyan[200],
-                        child:
-                            const Center(child: Text('NOMINA DE ASISTENCIA')))),
-              ])
-            ],
-            selectionMode: SelectionMode.multiple,
-          ),
-        )),
-
-        ///observaciones
-      ],
-    ));
+            //add more menu item childs here
+          ],
+        ));
   }
 }
 

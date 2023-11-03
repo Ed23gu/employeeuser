@@ -1,4 +1,5 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
+import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class _ComentariosPageState extends State<ComentariosPage> {
   final _formKey = GlobalKey<FormState>();
   final ObsService obsfiltro = ObsService();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
+  String todayDate2 =
+      DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now());
   var margenSuperior = 5.0;
   var margenInferior = 5.0;
   var margenPanelfotos2 = 0.0;
@@ -72,8 +75,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
         'date': DateFormat("dd MMMM yyyy", "ES_es").format(DateTime.now()),
         'horain': DateFormat('HH:mm').format(DateTime.now()),
       });
-      await supabase.from('todos').insert({});
-
       setState(() {
         isLoading = false;
       });
@@ -84,10 +85,27 @@ class _ComentariosPageState extends State<ComentariosPage> {
           duration: new Duration(seconds: 1),
           behavior: SnackBarBehavior.floating));
       //  Navigator.pop(context);
-    } catch (e) {
+    } catch (error) {
       setState(() {
         isLoading = false;
       });
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Algo ha salido mal")));
+    }
+  }
+
+  Future insertDataObs() async {
+    String userId = supabase.auth.currentUser!.id;
+    try {
+      await supabase
+          .from(Constants.attendancetable)
+          .update({'obs': 'prueba update'}).match(
+              {'employee_id': userId, 'date': todayDate2});
+      // .eq('date', todayDate2);
+    } catch (error) {
+      print('////////////////////////////////////////////////');
+      print(error);
+      if (error is PostgrestException && error.code == '23505') {}
       ScaffoldMessenger.of(context)
           .showSnackBar(const SnackBar(content: Text("Algo ha salido mal")));
     }
@@ -382,6 +400,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
                               setState(() {
                                 isLoading = true;
                               });
+                              await insertDataObs();
                               await insertData();
                             },
                           ),
