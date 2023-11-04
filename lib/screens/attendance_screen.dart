@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/department_model.dart';
@@ -107,6 +108,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   }
 
   Future choiceImage() async {
+    String userId = supabase.auth.currentUser!.id;
+
     if (!kIsWeb) {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
@@ -137,12 +140,29 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                 _images!);
             String urllisto = uploadedUrl.replaceAll("imageip/", "");
             getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-            await supabase.from('attendance').insert({
-              'employee_id': supabase.auth.currentUser!.id,
-              'date':
-                  DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
-              'pic_in': getUrl,
-            });
+
+            final List result = await supabase
+                .from(Constants.attendancetable)
+                .select()
+                .eq("employee_id", userId)
+                .eq('date', todayDate);
+            if (result.isNotEmpty) {
+              await supabase
+                  .from('attendance')
+                  .update({
+                    'pic_in': getUrl,
+                  })
+                  .eq("employee_id", supabase.auth.currentUser!.id)
+                  .eq('date', todayDate);
+            } else {
+              await supabase.from('attendance').insert({
+                'employee_id': supabase.auth.currentUser!.id,
+                'date':
+                    DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
+                'pic_in': getUrl,
+              });
+            }
+
             setState(() {
               isUploading = false;
             });
@@ -253,11 +273,28 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
           String urllisto = uploadedUrl.replaceAll("imageip/", "");
           final getUrl =
               supabase.storage.from('imageip').getPublicUrl(urllisto);
-          await supabase.from('attendance').insert({
-            'employee_id': supabase.auth.currentUser!.id,
-            'date': DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
-            'pic_in': getUrl,
-          });
+
+          final List result = await supabase
+              .from(Constants.attendancetable)
+              .select()
+              .eq("employee_id", userId)
+              .eq('date', todayDate);
+          if (result.isNotEmpty) {
+            await supabase
+                .from('attendance')
+                .update({
+                  'pic_in': getUrl,
+                })
+                .eq("employee_id", supabase.auth.currentUser!.id)
+                .eq('date', todayDate);
+          } else {
+            await supabase.from('attendance').insert({
+              'employee_id': supabase.auth.currentUser!.id,
+              'date':
+                  DateFormat("dd MMMM yyyy", "es_ES").format(DateTime.now()),
+              'pic_in': getUrl,
+            });
+          }
 
           setState(() {
             isUploading = false;

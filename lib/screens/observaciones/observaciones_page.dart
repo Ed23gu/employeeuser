@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
+import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -29,6 +30,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
   var margenInferior = 5.0;
   var margenPanelfotos2 = 0.0;
   var anchofecha = 400.0;
+  AttendanceModel? attendanceModel;
 
   @override
   void dispose() {
@@ -97,17 +99,22 @@ class _ComentariosPageState extends State<ComentariosPage> {
   Future insertDataObs() async {
     String userId = supabase.auth.currentUser!.id;
     try {
-      await supabase
+      final List result = await supabase
           .from(Constants.attendancetable)
-          .update({'obs': 'prueba update'}).match(
-              {'employee_id': userId, 'date': todayDate2});
+          .select()
+          .eq("employee_id", userId)
+          .eq('date', todayDate2);
+      if (result.isNotEmpty) {
+        attendanceModel = AttendanceModel.fromJson(result.first);
+      } else {
+        await supabase
+            .from(Constants.attendancetable)
+            .insert({"employee_id": userId, 'date': todayDate2});
+      }
       // .eq('date', todayDate2);
     } catch (error) {
-      print('////////////////////////////////////////////////');
+      print("22222222222222222222222222222222222222");
       print(error);
-      if (error is PostgrestException && error.code == '23505') {}
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("Algo ha salido mal")));
     }
   }
 
