@@ -56,7 +56,7 @@ class _AccountPageState extends State<AccountPage> {
       );
     } catch (error) {
       SnackBar(
-        content: const Text('Unexpected error occurred'),
+        content: const Text('Ocurrio un error inesperado.'),
         backgroundColor: Theme.of(context).colorScheme.error,
       );
     } finally {
@@ -78,7 +78,7 @@ class _AccountPageState extends State<AccountPage> {
       });
       if (mounted) {
         const SnackBar(
-          content: Text('Updated your profile image!'),
+          content: Text('Imagen de perfil actualizada.'),
         );
       }
     } on PostgrestException catch (error) {
@@ -88,7 +88,7 @@ class _AccountPageState extends State<AccountPage> {
       );
     } catch (error) {
       SnackBar(
-        content: const Text('Unexpected error occurred'),
+        content: const Text('Ocurrio un error inesperado'),
         backgroundColor: Theme.of(context).colorScheme.error,
       );
     }
@@ -276,7 +276,7 @@ class _AccountPageState extends State<AccountPage> {
                           },
                           // onPressed: _loading ? null : _updateProfile,
                           child: Text(
-                              _loading ? 'Saving...' : 'Actualizar Perfil'),
+                              _loading ? 'Guardando...' : 'Actualizar Perfil'),
                         ),
                         Divider(),
                         ExpansionTile(

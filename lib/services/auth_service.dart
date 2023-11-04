@@ -32,7 +32,9 @@ class AuthService extends ChangeNotifier {
       Navigator.pop(context);
     } catch (e) {
       setIsLoading = false;
-      Utils.showSnackBar(e.toString(), context, color: Colors.red);
+      Utils.showSnackBar(
+          "Asegurese de ingresar los datos correctamente", context,
+          color: Colors.red);
     }
   }
 
@@ -47,7 +49,9 @@ class AuthService extends ChangeNotifier {
       setIsLoading = false;
     } catch (e) {
       setIsLoading = false;
-      Utils.showSnackBar(e.toString(), context, color: Colors.red);
+      Utils.showSnackBar(
+          "Asegurese de ingresar los datos correctamente", context,
+          color: Colors.red);
     }
   }
 

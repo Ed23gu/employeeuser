@@ -3,6 +3,7 @@ import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/obs_service.dart';
+import 'package:employee_attendance/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:simple_month_year_picker/simple_month_year_picker.dart';
@@ -113,8 +114,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
       }
       // .eq('date', todayDate2);
     } catch (error) {
-      print("22222222222222222222222222222222222222");
-      print(error);
+      Utils.showSnackBar("$error", context);
     }
   }
 

@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -79,7 +78,7 @@ class _AvatarState extends State<Avatar> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Unexpected error occurred'),
+            content: const Text('Ocurrio un error inesperado'),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -124,7 +123,7 @@ class _AvatarState extends State<Avatar> {
         children: [
           CircleAvatar(
             backgroundColor: Color.fromARGB(0, 0, 0, 0),
-            backgroundImage: CachedNetworkImageProvider(widget.imageUrl!),
+            backgroundImage: NetworkImage(widget.imageUrl!),
             radius: 80,
           ),
           Positioned(

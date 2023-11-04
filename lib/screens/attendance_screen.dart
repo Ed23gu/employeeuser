@@ -305,7 +305,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             backgroundColor: Colors.green,
           ));
         } catch (e) {
-          // print("ERRROR : $e");
           setState(() {
             isUploading = false;
 
@@ -329,19 +328,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
             DateFormat('yyyy-MM-dd_HH-mm-ss').format(now) + '.jpg';
         try {
           String uploadedUrl = await supabase.storage
-
-
-
-
-
-
-
-
-
-
-
-
-
               .from('imageip')
               .uploadBinary(
                   "${supabase.auth.currentUser!.id}/$fecharuta/$fileName",
