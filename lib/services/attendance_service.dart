@@ -59,15 +59,22 @@ class AttendanceService extends ChangeNotifier {
   }
 
   Future getTodayAttendance() async {
-    final List result = await _supabase
-        .from(Constants.attendancetable)
-        .select()
-        .eq("employee_id", _supabase.auth.currentUser!.id)
-        .eq('date', todayDate);
-    if (result.isNotEmpty) {
-      attendanceModel = AttendanceModel.fromJson(result.first);
+
+    try {
+      final List result = await _supabase
+          .from(Constants.attendancetable)
+          .select()
+          .eq("employee_id", _supabase.auth.currentUser!.id)
+          .eq('date', todayDate);
+      if (result.isNotEmpty) {
+        attendanceModel = AttendanceModel.fromJson(result.first);
+      }
+      notifyListeners();
+    } on PostgrestException {
+      return Future.error("Algo ha salido mal, intentelo nuevamente");
+    } catch (e) {
+      return Future.error("Algo ha salido mal, intentelo nuevamente");
     }
-    notifyListeners();
   }
 
 //////////////////////
@@ -78,8 +85,7 @@ class AttendanceService extends ChangeNotifier {
         .eq('id', _supabase.auth.currentUser!.id)
         .single();
     userModel = UserModel.fromJson(userData);
-    // Since this function can be called multiple times, then it will reset the dartment value
-    // That is why we are using condition to assign only at the first time
+
     employeeDepartment == null
         ? employeeDepartment = userModel?.department
         : null;
@@ -87,24 +93,38 @@ class AttendanceService extends ChangeNotifier {
   }
 
   Future markAttendance(BuildContext context) async {
-    final userData = await _supabase
-        .from(Constants.employeeTable)
-        .select()
-        .eq('id', _supabase.auth.currentUser!.id)
-        .single();
-    userModel = UserModel.fromJson(userData);
-    employeeDepartment == null
-        ? employeeDepartment = userModel?.department
-        : null;
-    employeename == null ? employeename = userModel?.name : null;
+    try {
+      final userData = await _supabase
+          .from(Constants.employeeTable)
+          .select()
+          .eq('id', _supabase.auth.currentUser!.id)
+          .single();
 
-    final List result2 = await _supabase
-        .from(Constants.departmentTable)
-        .select()
-        .eq("id", employeeDepartment);
-    depModel2 = DepartmentModel.fromJson(result2.first);
+      userModel = UserModel.fromJson(userData);
+      employeeDepartment == null
+          ? employeeDepartment = userModel?.department
+          : null;
+      employeename == null ? employeename = userModel?.name : null;
+
+      final List result2 = await _supabase
+          .from(Constants.departmentTable)
+          .select()
+          .eq("id", employeeDepartment);
+      depModel2 = DepartmentModel.fromJson(result2.first);
+    } on PostgrestException {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Algo ha salido mal, intentelo nuevamente"),
+        backgroundColor: Colors.red,
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Algo ha salido mal, intentelo nuevamente"),
+        backgroundColor: Colors.red,
+      ));
+    }
     Position? getLocation = await _determinePosition();
     String ubicacion = await obtenerNombreUbicacion(getLocation);
+
     if (attendanceModel?.checkIn == null) {
       try {
         await _supabase
@@ -144,12 +164,12 @@ class AttendanceService extends ChangeNotifier {
             .eq('date', todayDate);
       } on PostgrestException {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal intentelo nuevamente"),
+          content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
           backgroundColor: Colors.red,
         ));
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal, intentelo nuevamente"),
+          content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
           backgroundColor: Colors.red,
         ));
       }
@@ -164,22 +184,34 @@ class AttendanceService extends ChangeNotifier {
   }
 
   Future markAttendance2(BuildContext context) async {
-    final userData2 = await _supabase
-        .from(Constants.employeeTable)
-        .select()
-        .eq('id', _supabase.auth.currentUser!.id)
-        .single();
-    userModel2 = UserModel.fromJson(userData2);
-    employeeDepartment2 == null
-        ? employeeDepartment2 = userModel2?.department
-        : null;
-    employeename2 == null ? employeename2 = userModel2?.name : null;
+    try {
+      final userData2 = await _supabase
+          .from(Constants.employeeTable)
+          .select()
+          .eq('id', _supabase.auth.currentUser!.id)
+          .single();
+      userModel2 = UserModel.fromJson(userData2);
+      employeeDepartment2 == null
+          ? employeeDepartment2 = userModel2?.department
+          : null;
+      employeename2 == null ? employeename2 = userModel2?.name : null;
 
-    final List result32 = await _supabase
-        .from(Constants.departmentTable)
-        .select()
-        .eq("id", employeeDepartment2);
-    depModel22 = DepartmentModel.fromJson(result32.first);
+      final List result32 = await _supabase
+          .from(Constants.departmentTable)
+          .select()
+          .eq("id", employeeDepartment2);
+      depModel22 = DepartmentModel.fromJson(result32.first);
+    } on PostgrestException {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
+        backgroundColor: Colors.red,
+      ));
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
+        backgroundColor: Colors.red,
+      ));
+    }
 
     Position? getLocation = await _determinePosition();
 
@@ -236,27 +268,21 @@ class AttendanceService extends ChangeNotifier {
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {
-    final List data = await _supabase
-        .from(Constants.attendancetable)
-        .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', "'$attendanceHistoryMonth'")
-        .order('created_at', ascending: false);
-    return data
-        .map((attendance) => AttendanceModel.fromJson(attendance))
-        .toList();
-  }
-
-  Future<List<AttendanceModel>> getAttendanceHistory2(context) async {
-    final List data = await _supabase
-        .from(Constants.attendancetable)
-        .select()
-        .eq('employee_id', _supabase.auth.currentUser!.id)
-        .textSearch('date', "'$attendanceHistoryMonth'")
-        .order('created_at', ascending: false);
-    return data
-        .map((attendance) => AttendanceModel.fromJson(attendance))
-        .toList();
+    try {
+      final List data = await _supabase
+          .from(Constants.attendancetable)
+          .select()
+          .eq('employee_id', _supabase.auth.currentUser!.id)
+          .textSearch('date', "'$attendanceHistoryMonth'")
+          .order('created_at', ascending: false);
+      return data
+          .map((attendance) => AttendanceModel.fromJson(attendance))
+          .toList();
+    } on PostgrestException {
+      return Future.error("Algo ha salido mal, intentelo nuevamente");
+    } catch (e) {
+      return Future.error("Algo ha salido mal, intentelo nuevamente");
+    }
   }
 
   Future<String> obtenerNombreUbicacion(Position position) async {
@@ -283,8 +309,8 @@ class AttendanceService extends ChangeNotifier {
         address = 'No se pudo obtener el nombre de la ubicación.';
       }
     } catch (e) {
-      // print("error:$e");
       address = 'Error de conexión.';
+      return Future.error('Error de conexión.');
     }
     return address;
   }

@@ -145,7 +145,7 @@ class _AccountPageState extends State<AccountPage> {
                         },
                         icon: const Icon(
                           Icons.refresh_outlined,
-                          size: 50,
+                          size: widthSize50,
                         )),
                   ),
                   ExpansionTile(

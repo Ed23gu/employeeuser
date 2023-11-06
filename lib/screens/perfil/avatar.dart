@@ -59,11 +59,17 @@ class _AvatarState extends State<Avatar> {
             filePath,
             bytes,
             fileOptions:
-                FileOptions(upsert: true, contentType: 'imageFile/$fileExt'),
+                FileOptions(upsert: true, contentType: 'image/$fileExt'),
           );
-      final imageUrl = await _supabase.storage
-          .from('avatars')
-          .createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
+
+      String imageUrl =
+          await _supabase.storage.from('avatars').getPublicUrl(filePath);
+      imageUrl = Uri.parse(imageUrl).replace(queryParameters: {
+        't': DateTime.now().millisecondsSinceEpoch.toString()
+      }).toString();
+      //final imageUrl = await _supabase.storage
+      //  .from('avatars')
+      //.createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
       widget.onUpload(imageUrl);
     } on StorageException catch (error) {
       if (mounted) {

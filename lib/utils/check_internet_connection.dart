@@ -36,7 +36,7 @@ class CheckInternetConnection {
       await Future.delayed(const Duration(seconds: 3));
       final result = await InternetAddress.lookup('www.supabase.com');
 
-      var url = Uri.parse('http://www.supabase.com');
+      var url = Uri.parse('https://www.supabase.com');
       final response = await http.get(url);
       /*  if (response.statusCode == 200) {
         print('${response.statusCode} exitoso');
@@ -48,8 +48,8 @@ class CheckInternetConnection {
         print('${response.statusCode} sin respuesta');
       } else {
         print('${response.statusCode} error desconocido');
-      } */
-
+      }
+*/
       if (result.isNotEmpty &&
           response.statusCode == 200 &&
           result[0].rawAddress.isNotEmpty) {

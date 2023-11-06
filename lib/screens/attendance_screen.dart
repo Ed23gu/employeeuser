@@ -109,13 +109,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
   Future choiceImage() async {
     String userId = supabase.auth.currentUser!.id;
-
     if (!kIsWeb) {
       var pickedFile = await picker.pickImage(
           source: ImageSource.camera, imageQuality: imageq);
       setState(() => _estacargandofoto = true);
       if (pickedFile != null) {
-        await subirubi.getTodayAttendance();
+        try {
+          await subirubi.getTodayAttendance();
+        } on PostgrestException {
+          return Future.error("Algo ha salido mal, intentelo nuevamente");
+        } catch (e) {
+          setState(() {
+            isUploading = false;
+            _estacargandofoto = false;
+          });
+          return Future.error("Algo ha salido mal, intentelo nuevamente");
+        }
+
         if (getUrl == "NULL") {
           setState(() {
             flagborrar = true;
@@ -170,14 +180,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
               content: Text("Foto cargada correctamente"),
               backgroundColor: Colors.green,
             ));
+          } on PostgrestException {
+            return Future.error("Algo ha salido mal, intentelo nuevamente");
           } catch (e) {
             //print("ERRROR : $e");
             setState(() {
               isUploading = false;
-              Future.delayed(
-                Duration(seconds: segundos),
-                () => key.currentState?.reset(),
-              );
             });
             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text("Algo ha salido mal, intentelo nuevamente"),
@@ -1215,34 +1223,41 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       onPressed: _estacargandofoto
                                           ? null
                                           : () async {
-                                              if (attendanceService
-                                                      .attendanceModel
-                                                      ?.pic_in !=
-                                                  null) {
-                                                getUrl = attendanceService
-                                                    .attendanceModel!.pic_in
-                                                    .toString();
+                                              try {
+                                                if (attendanceService
+                                                        .attendanceModel
+                                                        ?.pic_in !=
+                                                    null) {
+                                                  getUrl = attendanceService
+                                                      .attendanceModel!.pic_in
+                                                      .toString();
+                                                }
+                                                attendanceService
+                                                            .attendanceModel
+                                                            ?.checkIn ==
+                                                        null
+                                                    ? attendanceService
+                                                                    .attendanceModel
+                                                                    ?.pic_in ==
+                                                                null ||
+                                                            attendanceService
+                                                                    .attendanceModel
+                                                                    ?.pic_in
+                                                                    .toString() ==
+                                                                "NULL"
+                                                        ? await choiceImage()
+                                                        : await attendanceService
+                                                            .markAttendance3(
+                                                                context)
+                                                    : await attendanceService
+                                                        .markAttendance3(
+                                                            context);
+                                                await attendanceService
+                                                    .markAttendance3(context);
+                                              } catch (e) {
+                                                Utils.showSnackBar(
+                                                    "$e", context);
                                               }
-                                              attendanceService.attendanceModel
-                                                          ?.checkIn ==
-                                                      null
-                                                  ? attendanceService
-                                                                  .attendanceModel
-                                                                  ?.pic_in ==
-                                                              null ||
-                                                          attendanceService
-                                                                  .attendanceModel
-                                                                  ?.pic_in
-                                                                  .toString() ==
-                                                              "NULL"
-                                                      ? await choiceImage()
-                                                      : await attendanceService
-                                                          .markAttendance3(
-                                                              context)
-                                                  : await attendanceService
-                                                      .markAttendance3(context);
-                                              await attendanceService
-                                                  .markAttendance3(context);
                                             }),
                                   IconButton(
                                       icon: Icon(Icons.delete),

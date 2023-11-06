@@ -20,6 +20,7 @@ Future<void> main() async {
   /* await dotenv.load(fileName: ".env");
   String supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
   String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
+  
 */
   // Initialize Supabase
   String supabaseUrl = 'https://ikuxicurbjxyvfdaqevm.supabase.co';

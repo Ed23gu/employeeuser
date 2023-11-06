@@ -61,6 +61,7 @@ const widthSize50 = 50.0;
 const widthsize300 = 300.0;
 const heightContainer = 250.0;
 
+
 const widthObs = 450.0;
 
 const Widget line = Divider();
