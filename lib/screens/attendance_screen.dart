@@ -35,21 +35,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final AttendanceService subirubi = AttendanceService();
   bool _estacargandofoto = false;
   String getUrl = "INICIAL";
-  var pad16 = 16.0;
-  var pad8 = 8.0;
-  var pad4 = 4.0;
-  var lineSizeancho = 60.0;
-  var grosorDivider = 1.0;
-  var margenSuperior = 5.0;
-  var margenInferior = 5.0;
-  var margenPanelfotos2 = 0.0;
-  var anchoSizedivider = 80.0;
-  var altoSlider = 55.0;
-  var elevacion = 3.0;
-  var altoImagen = 126.0;
-  int imagenQuality = 100;
-  int calidadFoto = 85;
-  int porcentajeDeCalidad = 15;
+final pad8 = 8.0;
+final   pad16 = 16.0;
+final   pad4 = 4.0;
+final   lineSizeancho = 60.0;
+final  linearSizeAlto=20.0;
+final grosorDivider = 1.0;
+ final margenSuperior = 5.0;
+ final  margenInferior = 5.0;
+ final  margenPanelfotos2 = 0.0;
+ final  anchoSizedivider = 80.0;
+ final  altoSlider = 55.0;
+ final  elevacion = 3.0;
+ final  altoImagen = 126.0;
+final anchoImagen=100.0;
+  final int imagenQuality = 100;
+ final int calidadFoto = 85;
+final  int porcentajeDeCalidad = 15;
   final picker = ImagePicker();
   dynamic _images;
   Uint8List webImage = Uint8List(8);
@@ -224,7 +226,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
         webImage = await pickedFile.readAsBytes();
         _images = File('a');
       }
-
       try {
         String uploadedUrl = kIsWeb
             ? await supabase.storage.from('imageip').uploadBinary(
@@ -285,9 +286,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
 
         String urllisto = uploadedUrl.replaceAll("imageip/", "");
         final getUrl = supabase.storage.from('imageip').getPublicUrl(urllisto);
-
         await updatePicture(getUrl, 'pic_in2');
-
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text("Foto cargada correctamente."),
           backgroundColor: Colors.green,
@@ -382,6 +381,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                       }
                       return SizedBox(
                         width: lineSizeancho,
+                       height:   linearSizeAlto,
                         child: LinearProgressIndicator(),
                       );
                     });
@@ -543,13 +543,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       }),
                                 ],
                               ),
-                              Center(
+                            Container(
+                              alignment: Alignment.center,
+                              height: altoImagen,
+                              width: anchoImagen,
                                 child: Stack(
                                   children: [
                                     if (attendanceService
                                             .attendanceModel?.pic_in ==
                                         null)
-                                      Icon(Icons.photo_camera_back_outlined)
+                                      Icon(Icons.photo)
                                     else
                                       CachedNetworkImage(
                                         imageUrl: attendanceService
@@ -654,13 +657,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       }),
                                 ],
                               ),
-                              Center(
+                              Container(
+                                alignment: Alignment.center,
+                                height: altoImagen,
+                                width: anchoImagen,
                                 child: Stack(
                                   children: [
                                     if (attendanceService
                                             .attendanceModel?.pic_out ==
                                         null)
-                                      Icon(Icons.photo_camera_back_outlined)
+                                      Icon(Icons.photo)
                                     else
                                       CachedNetworkImage(
                                         imageUrl: attendanceService
@@ -848,13 +854,16 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       })
                                 ],
                               ),
-                              Center(
+                              Container(
+                                alignment: Alignment.center,
+                                height: altoImagen,
+                                width: anchoImagen,
                                 child: Stack(
                                   children: [
                                     if (attendanceService
                                             .attendanceModel?.pic_in2 ==
                                         null)
-                                      Icon(Icons.photo_camera_back_outlined)
+                                      Icon(Icons.photo)
                                     else
                                       CachedNetworkImage(
                                         imageUrl: attendanceService
@@ -960,13 +969,17 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       })
                                 ],
                               ),
-                              Center(
+                             Container(
+
+                               alignment: Alignment.center,
+                                height: altoImagen,
+                               width:anchoImagen,
                                 child: Stack(
                                   children: [
                                     if (attendanceService
                                             .attendanceModel?.pic_out2 ==
                                         null)
-                                      Icon(Icons.photo_camera_back_outlined)
+                                      Icon(Icons.photo)
                                     else
                                       CachedNetworkImage(
                                         imageUrl: attendanceService

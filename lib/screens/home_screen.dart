@@ -70,7 +70,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
             if (!currentFocus.hasPrimaryFocus) {
               currentFocus.unfocus();
             }
-            ;
             _page = index;
           });
         },
