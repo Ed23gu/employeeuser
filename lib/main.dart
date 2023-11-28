@@ -1,41 +1,79 @@
+import 'dart:async';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
-import 'package:employee_attendance/screens/splash_screen.dart';
+import 'package:employee_attendance/error_page_asis.dart';
+import 'package:employee_attendance/screens/errores/error_page.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
-import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
-import 'package:employee_attendance/services/db_service_admin.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final internetChecker = CheckInternetConnection();
+final internetConnectionChecker = InternetConnectionChecker.createInstance(
+    checkTimeout: const Duration(seconds: 3),
+    checkInterval: const Duration(seconds: 3));
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // load env
-  /* await dotenv.load(fileName: ".env");
-  String supabaseUrl = dotenv.env['SUPABASE_URL'] ?? '';
-  String supabaseKey = dotenv.env['SUPABASE_KEY'] ?? '';
-  
-*/
-  // Initialize Supabase
+
+  final hasConnection = await internetConnectionChecker.hasConnection;
+
   String supabaseUrl = 'https://ikuxicurbjxyvfdaqevm.supabase.co';
   String supabaseKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdXhpY3VyYmp4eXZmZGFxZXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1NzA3MjIsImV4cCI6MjAwMTE0NjcyMn0.M6gVfdPDTup6h-ritEoLXL37tLg_XSuVhnzqlRIcJ2w';
-
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-
-  runApp(const ArtAsis());
+  runApp(ConnectionNotifier(
+    notifier: ValueNotifier(hasConnection),
+    child: const ArtAsis(),
+  ));
 }
 
-class ArtAsis extends StatelessWidget {
+
+class ConnectionNotifier extends InheritedNotifier<ValueNotifier<bool>> {
+  const ConnectionNotifier({
+    super.key,
+    required super.notifier,
+    required super.child,
+  });
+  static ValueNotifier<bool> of(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<ConnectionNotifier>()!
+        .notifier!;
+  }
+}
+
+class ArtAsis extends StatefulWidget {
   const ArtAsis({super.key});
 
-  // This widget is the root of your application.
+  @override
+  State<ArtAsis> createState() => _ArtAsisState();
+}
+
+class _ArtAsisState extends State<ArtAsis> {
+  late final StreamSubscription<InternetConnectionStatus> listener;
+
+  @override
+  void initState() {
+    super.initState();
+    listener = internetConnectionChecker.onStatusChange.listen((status) {
+      final notifiers = ConnectionNotifier.of(context);
+      notifiers.value =
+      status == InternetConnectionStatus.connected ? true : false;
+    });
+  }
+
+  @override
+  void dispose() {
+    listener.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return AdaptiveTheme(
@@ -45,31 +83,43 @@ class ArtAsis extends StatelessWidget {
       builder: (theme, darkTheme) {
         return MultiProvider(
           providers: [
+            // ChangeNotifierProvider(create: (_) => new ProductsChangeNotifier()),
             ChangeNotifierProvider(create: (context) => AuthService()),
             ChangeNotifierProvider(create: (context) => DbService()),
             ChangeNotifierProvider(create: (context) => AttendanceService()),
-            ChangeNotifierProvider(create: (context) => DbServiceadmin()),
+            ChangeNotifierProvider(create: (context) => DbService()),
+            ChangeNotifierProvider(create: (context) => AttendanceService()),
             ChangeNotifierProvider(
-                create: (context) => AttendanceServiceadmin()),
-            ChangeNotifierProvider(create: (context) => ObsService(),
+              create: (context) => ObsService(),
             )
           ],
           child: MaterialApp(
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-              ],
-              supportedLocales: const [
-                const Locale('es', 'ES'),
-              ],
-              debugShowCheckedModeBanner: false,
-              title: 'Asistencia',
-              theme: theme,
-              darkTheme: darkTheme,
-              home: const SplashScreen()),
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              const Locale('es', 'ES'),
+            ],
+            debugShowCheckedModeBanner: false,
+            title: 'Asistencia',
+            theme: theme,
+            darkTheme: darkTheme,
+            home: CheckerPage(),
+          ),
         );
       },
     );
+  }
+}
+
+class CheckerPage extends StatelessWidget {
+  const CheckerPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final hasConnection = ConnectionNotifier.of(context).value;
+    return hasConnection ? ErrorPageAsis() : ErrorPage();
   }
 }

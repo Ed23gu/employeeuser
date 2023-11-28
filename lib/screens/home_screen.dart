@@ -1,8 +1,8 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:employee_attendance/constants/gaps.dart';
-import 'package:employee_attendance/screens/errores/error_page_asis.dart';
-import 'package:employee_attendance/screens/errores/error_page_calen.dart';
-import 'package:employee_attendance/screens/errores/error_page_perfi.dart';
+import 'package:employee_attendance/screens/attendance_screen.dart';
+import 'package:employee_attendance/screens/calender_screen.dart';
+import 'package:employee_attendance/screens/perfil/perfil_foto_page.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -48,7 +48,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       ),
       body: IndexedStack(
         index: _page,
-        children: const [ErrorPageCalen(), ErrorPageAsis(), ErrorPagePerfil()],
+        children: const [CalenderScreen(), AttendanceScreen(), AccountPage()],
       ),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,

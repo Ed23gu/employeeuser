@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/department_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
+import 'package:employee_attendance/services/app_exceptions.dart';
 import 'package:employee_attendance/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -59,7 +62,6 @@ class AttendanceService extends ChangeNotifier {
   }
 
   Future getTodayAttendance() async {
-
     try {
       final List result = await _supabase
           .from(Constants.attendancetable)
@@ -70,10 +72,12 @@ class AttendanceService extends ChangeNotifier {
         attendanceModel = AttendanceModel.fromJson(result.first);
       }
       notifyListeners();
+    } on SocketException {
+      throw FetchDataException('mensaje enviado');
     } on PostgrestException {
-      return Future.error("Algo ha salido mal, intentelo nuevamente");
+      return Future.error("No se pudo conectar al servidor, ine");
     } catch (e) {
-      return Future.error("Algo ha salido mal, intentelo nuevamente");
+      return Future.error("Error inesperado");
     }
   }
 
@@ -112,13 +116,11 @@ class AttendanceService extends ChangeNotifier {
           .eq("id", employeeDepartment);
       depModel2 = DepartmentModel.fromJson(result2.first);
     } on PostgrestException {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Algo ha salido mal, intentelo nuevamente"),
-        backgroundColor: Colors.red,
-      ));
+      Utils.showSnackBar("utils ", context);
     } catch (e) {
+      Utils.showSnackBar("makr1 ", context);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Algo ha salido mal, intentelo nuevamente"),
+        content: Text("Algo ha salido mal, mark1"),
         backgroundColor: Colors.red,
       ));
     }
@@ -310,7 +312,6 @@ class AttendanceService extends ChangeNotifier {
       }
     } catch (e) {
       address = 'Error de conexión.';
-      return Future.error('Error de conexión.');
     }
     return address;
   }

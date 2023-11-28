@@ -274,12 +274,18 @@ class _ComentariosPageState extends State<ComentariosPage> {
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     if (snapshot.hasError) {
                       return Center(
-                        child: Text(
-                            'Error:' +
-                                snapshot.error.toString() +
-                                '\nRecargue la pagina, por favor.',
-                            textAlign: TextAlign.center),
-                      );
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                            Image.asset(
+                              'assets/img/error.png',
+                              width: imgenerror200,
+                              height: imgenerror200,
+                            ),
+                            gapH8,
+                            Text('Recargue la pagina, por favor.',
+                                textAlign: TextAlign.center),
+                          ]));
                     }
 
                     if (snapshot.hasData) {

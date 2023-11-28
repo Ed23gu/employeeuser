@@ -1,4 +1,4 @@
-import 'package:employee_attendance/examples/value_notifier/value_notifier_example_screen.dart';
+import 'package:employee_attendance/screens/home_screen.dart';
 import 'package:employee_attendance/screens/login_screen.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +13,6 @@ class SplashScreen extends StatelessWidget {
     //authService.signOut();
     return authService.currentUser == null
         ? const LoginScreen()
-        : ValueNotifierExampleScreen();
+        : BottomNavBar();
   }
 }
