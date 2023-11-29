@@ -2,8 +2,9 @@ import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
-import 'package:employee_attendance/error_page_asis.dart';
-import 'package:employee_attendance/screens/errores/error_page.dart';
+import 'package:employee_attendance/examples/value_notifier/value_notifier_example_screen.dart';
+import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
+import 'package:employee_attendance/screens/splash_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
@@ -34,7 +35,6 @@ Future<void> main() async {
   ));
 }
 
-
 class ConnectionNotifier extends InheritedNotifier<ValueNotifier<bool>> {
   const ConnectionNotifier({
     super.key,
@@ -64,7 +64,7 @@ class _ArtAsisState extends State<ArtAsis> {
     listener = internetConnectionChecker.onStatusChange.listen((status) {
       final notifiers = ConnectionNotifier.of(context);
       notifiers.value =
-      status == InternetConnectionStatus.connected ? true : false;
+          status == InternetConnectionStatus.connected ? true : false;
     });
   }
 
@@ -106,7 +106,7 @@ class _ArtAsisState extends State<ArtAsis> {
             title: 'Asistencia',
             theme: theme,
             darkTheme: darkTheme,
-            home: CheckerPage(),
+            home: SplashScreen(),
           ),
         );
       },
@@ -120,6 +120,10 @@ class CheckerPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasConnection = ConnectionNotifier.of(context).value;
-    return hasConnection ? ErrorPageAsis() : ErrorPage();
+    if (hasConnection) {
+      return Expanded(child: SplashScreen());
+    } else {
+      return WarningWidgetValueNotifier(); //ErrorPage();
+    }
   }
 }

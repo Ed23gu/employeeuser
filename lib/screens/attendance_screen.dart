@@ -345,6 +345,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
+/* Container(
+                alignment: Alignment.topRight,
+                child: TextButton.icon(
+                    onPressed: () async {
+                      attendanceService.markAttendance3(context);
+                      key.currentState!.reset();
+                      print('ed');
+                      String supabaseUrl =
+                          'https://glknpzlrktillummmbrr.supabase.co';
+                      String supabaseKey =
+                          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
++
+                          url: supabaseUrl, anonKey: supabaseKey);
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text("Salir")),
+              ), */
   @override
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
