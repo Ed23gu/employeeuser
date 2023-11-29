@@ -112,7 +112,6 @@ class _ComentariosPageState extends State<ComentariosPage> {
             .from(Constants.attendancetable)
             .insert({"employee_id": userId, 'date': todayDate2});
       }
-      // .eq('date', todayDate2);
     } catch (error) {
       Utils.showSnackBar("$error", context);
     }

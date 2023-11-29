@@ -35,23 +35,23 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
   final AttendanceService subirubi = AttendanceService();
   bool _estacargandofoto = false;
   String getUrl = "INICIAL";
-final pad8 = 8.0;
-final   pad16 = 16.0;
-final   pad4 = 4.0;
-final   lineSizeancho = 60.0;
-final  linearSizeAlto=20.0;
-final grosorDivider = 1.0;
- final margenSuperior = 5.0;
- final  margenInferior = 5.0;
- final  margenPanelfotos2 = 0.0;
- final  anchoSizedivider = 80.0;
- final  altoSlider = 55.0;
- final  elevacion = 3.0;
- final  altoImagen = 126.0;
-final anchoImagen=100.0;
+  final pad8 = 8.0;
+  final pad16 = 16.0;
+  final pad4 = 4.0;
+  final lineSizeancho = 60.0;
+  final linearSizeAlto = 20.0;
+  final grosorDivider = 1.0;
+  final margenSuperior = 5.0;
+  final margenInferior = 5.0;
+  final margenPanelfotos2 = 0.0;
+  final anchoSizedivider = 80.0;
+  final altoSlider = 55.0;
+  final elevacion = 3.0;
+  final altoImagen = 126.0;
+  final anchoImagen = 100.0;
   final int imagenQuality = 100;
- final int calidadFoto = 85;
-final  int porcentajeDeCalidad = 15;
+  final int calidadFoto = 85;
+  final int porcentajeDeCalidad = 15;
   final picker = ImagePicker();
   dynamic _images;
   Uint8List webImage = Uint8List(8);
@@ -256,8 +256,6 @@ final  int porcentajeDeCalidad = 15;
     }
   }
 
-////////////////////
-
   Future<void> choiceImage3() async {
     String fileName =
         DateFormat('yyyy-MM-dd_HH-mm-ss').format(DateTime.now()) + '.jpg';
@@ -368,21 +366,22 @@ final  int porcentajeDeCalidad = 15;
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         UserModel user = snapshot.data!;
-                        return Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            user.name != ''
-                                ? 'Hola ${user.name},'
-                                : 'Hola #${user.employeeId},',
-                            style: const TextStyle(
-                                fontSize: 22, fontWeight: FontWeight.bold),
-                          ),
+                        return Row(
+                          children: [
+                            gapH32,
+                            userName(user: user),
+                          ],
                         );
                       }
-                      return SizedBox(
-                        width: lineSizeancho,
-                       height:   linearSizeAlto,
-                        child: LinearProgressIndicator(),
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          gapH32,
+                          SizedBox(
+                            width: lineSizeancho,
+                            child: LinearProgressIndicator(),
+                          )
+                        ],
                       );
                     });
               }),
@@ -393,17 +392,22 @@ final  int porcentajeDeCalidad = 15;
                     builder: (context, snapshot) {
                       if (snapshot.hasData) {
                         DepartmentModel user2 = snapshot.data!;
-                        return Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            user2.title != "" ? user2.title.toString() : " ",
-                            style: const TextStyle(fontSize: 16),
-                          ),
+                        return Row(
+                          children: [
+                            gapH24,
+                            userId(user2),
+                          ],
                         );
                       }
-                      return SizedBox(
-                        width: lineSizeancho,
-                        child: LinearProgressIndicator(),
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          gapH24,
+                          SizedBox(
+                            width: lineSizeancho,
+                            child: LinearProgressIndicator(),
+                          )
+                        ],
                       );
                     });
               }), //
@@ -543,32 +547,8 @@ final  int porcentajeDeCalidad = 15;
                                       }),
                                 ],
                               ),
-                            Container(
-                              alignment: Alignment.center,
-                              height: altoImagen,
-                              width: anchoImagen,
-                                child: Stack(
-                                  children: [
-                                    if (attendanceService
-                                            .attendanceModel?.pic_in ==
-                                        null)
-                                      Icon(Icons.photo)
-                                    else
-                                      CachedNetworkImage(
-                                        imageUrl: attendanceService
-                                            .attendanceModel!.pic_in
-                                            .toString(),
-                                        height: altoImagen,
-                                        progressIndicatorBuilder:
-                                            (context, url, error) => Center(
-                                                child:
-                                                    const CircularProgressIndicator()),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
-                                  ],
-                                ),
-                              ),
+                              mostrarImagenDeBase(
+                                  attendanceService.attendanceModel?.pic_in),
                             ],
                           )
                           //container
@@ -657,32 +637,8 @@ final  int porcentajeDeCalidad = 15;
                                       }),
                                 ],
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                height: altoImagen,
-                                width: anchoImagen,
-                                child: Stack(
-                                  children: [
-                                    if (attendanceService
-                                            .attendanceModel?.pic_out ==
-                                        null)
-                                      Icon(Icons.photo)
-                                    else
-                                      CachedNetworkImage(
-                                        imageUrl: attendanceService
-                                            .attendanceModel!.pic_out
-                                            .toString(),
-                                        height: altoImagen,
-                                        progressIndicatorBuilder:
-                                            (context, url, error) => Center(
-                                                child:
-                                                    const CircularProgressIndicator()),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
-                                  ],
-                                ),
-                              ),
+                              mostrarImagenDeBase(
+                                  attendanceService.attendanceModel?.pic_out),
                             ],
                           ),
                         ],
@@ -854,32 +810,8 @@ final  int porcentajeDeCalidad = 15;
                                       })
                                 ],
                               ),
-                              Container(
-                                alignment: Alignment.center,
-                                height: altoImagen,
-                                width: anchoImagen,
-                                child: Stack(
-                                  children: [
-                                    if (attendanceService
-                                            .attendanceModel?.pic_in2 ==
-                                        null)
-                                      Icon(Icons.photo)
-                                    else
-                                      CachedNetworkImage(
-                                        imageUrl: attendanceService
-                                            .attendanceModel!.pic_in2
-                                            .toString(),
-                                        height: altoImagen,
-                                        progressIndicatorBuilder:
-                                            (context, url, error) => Center(
-                                                child:
-                                                    CircularProgressIndicator()),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
-                                  ],
-                                ),
-                              ),
+                              mostrarImagenDeBase(
+                                  attendanceService.attendanceModel?.pic_in2)
                             ],
                           )
                         ],
@@ -969,33 +901,8 @@ final  int porcentajeDeCalidad = 15;
                                       })
                                 ],
                               ),
-                             Container(
-
-                               alignment: Alignment.center,
-                                height: altoImagen,
-                               width:anchoImagen,
-                                child: Stack(
-                                  children: [
-                                    if (attendanceService
-                                            .attendanceModel?.pic_out2 ==
-                                        null)
-                                      Icon(Icons.photo)
-                                    else
-                                      CachedNetworkImage(
-                                        imageUrl: attendanceService
-                                            .attendanceModel!.pic_out2
-                                            .toString(),
-                                        height: altoImagen,
-                                        progressIndicatorBuilder:
-                                            (context, url, error) => Center(
-                                                child:
-                                                    const CircularProgressIndicator()),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(Icons.error),
-                                      ),
-                                  ],
-                                ),
-                              ),
+                              mostrarImagenDeBase(
+                                  attendanceService.attendanceModel?.pic_out2),
                             ],
                           )
                         ],
@@ -1106,6 +1013,58 @@ final  int porcentajeDeCalidad = 15;
             ),
           ],
         ));
+  }
+
+  Container mostrarImagenDeBase(pictureInOrOut) {
+    return Container(
+      alignment: Alignment.center,
+      height: altoImagen,
+      width: anchoImagen,
+      child: Stack(
+        children: [
+          if (pictureInOrOut == null)
+            Icon(Icons.photo)
+          else
+            CachedNetworkImage(
+              imageUrl: pictureInOrOut.toString(),
+              height: altoImagen,
+              progressIndicatorBuilder: (context, url, error) =>
+                  Center(child: const CircularProgressIndicator()),
+              errorWidget: (context, url, error) => Icon(Icons.error),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Container userId(DepartmentModel user2) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        user2.title != "" ? user2.title.toString() : " ",
+        style: const TextStyle(fontSize: 16),
+      ),
+    );
+  }
+}
+
+class userName extends StatelessWidget {
+  const userName({
+    super.key,
+    required this.user,
+  });
+
+  final UserModel user;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      child: Text(
+        user.name != '' ? 'Hola ${user.name},' : 'Hola #${user.employeeId},',
+        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 }
 
