@@ -1,9 +1,9 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
-import 'package:employee_attendance/screens/attendance_screen.dart';
-import 'package:employee_attendance/screens/calender_screen.dart';
-import 'package:employee_attendance/screens/perfil/perfil_foto_page.dart';
+import 'package:employee_attendance/screens/calender_screen_admin.dart';
+import 'package:employee_attendance/screens/perfil/perfil_admin.dart';
+import 'package:employee_attendance/screens/planillas_screen.dart';
 import 'package:flutter/material.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -52,8 +52,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
           IndexedStack(
             index: _page,
             children: const [
-              CalenderScreen(),
-              AttendanceScreen(),
+              CalenderScreenAdmin(),
+              PlanillaScreen(),
               AccountPage()
             ],
           ),

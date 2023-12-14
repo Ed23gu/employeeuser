@@ -3,6 +3,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
+import 'package:employee_attendance/models/obs_model.dart';
 import 'package:employee_attendance/models/ubi_model.dart';
 import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:flutter/material.dart';
@@ -16,11 +17,11 @@ import 'package:url_launcher/url_launcher.dart';
 import '../models/user_model.dart';
 import '../services/db_service_admin.dart';
 
-class CalenderScreen extends StatefulWidget {
-  const CalenderScreen({super.key});
+class CalenderScreenAdmin extends StatefulWidget {
+  const CalenderScreenAdmin({super.key});
 
   @override
-  State<CalenderScreen> createState() => _CalenderScreenState();
+  State<CalenderScreenAdmin> createState() => _CalenderScreenStateAdmin();
 }
 
 Future<void> _openmap(String lat, String lon) async {
@@ -31,15 +32,14 @@ Future<void> _openmap(String lat, String lon) async {
       : throw 'No se puede abrir $googleUrl';
 }
 
-class _CalenderScreenState extends State<CalenderScreen> {
+class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
   final AttendanceServiceadmin obtenerObs = AttendanceServiceadmin();
   final SupabaseClient supabase = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> _readStream;
 
   final observacionesdiarias = [];
   final tablaasistencias = [];
-  List obsProvisional = [];
-  //final List obsProvisional = [];
+
   final controller = ScrollController();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   var sizeicono = 20.0;
@@ -51,7 +51,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
 
   @override
   void initState() {
-    obsProvisional;
     super.initState();
     _readStream = supabase
         .from('todos')
@@ -70,9 +69,50 @@ class _CalenderScreenState extends State<CalenderScreen> {
     setState(() {});
   }
 
+  Future processLogic() async {
+    List<AttendanceModel> attendanceHistory =
+        await obtenerObs.getAttendanceHistory();
+
+    for (AttendanceModel attendance in attendanceHistory) {
+      List<ObsModel> obsHistory =
+          await obtenerObs.getObsHistory(attendance.createdAt.toString());
+
+      for (ObsModel obs in obsHistory) {
+        /*   var  dataList =
+                    _filterpormes2 ( obs , attendance.createdAt); */
+      }
+    }
+
+/* 
+
+                    var titlesJoined = "";
+                    for (int i = 0; i < dataList.length; i++) {
+                      titlesJoined += dataList[i]['title'];
+                      if (i != dataList.length - 1) {
+                        titlesJoined += ", ";
+                      }
+                    }
+
+                    updateObs(titlesJoined, attendanceData.createdAt,
+                        attendanceData.id);
+                    print("lista"); */
+  }
+
   List<dynamic> _filterpormes(List<dynamic> datalist, DateTime fecha) {
     final filteredList = datalist.where((element) {
       final createdAt = DateTime.parse(element['created_at']);
+      final format = DateFormat('dd MMMM yyyy', "ES_es");
+      final fechaObs = format.format(createdAt);
+      final fechaAsistencia = format.format(fecha);
+      return fechaObs == fechaAsistencia;
+    }).toList();
+
+    return filteredList;
+  }
+
+  List<dynamic> _filterpormes2(List<ObsModel> datalist, DateTime fecha) {
+    final filteredList = datalist.where((element) {
+      final createdAt = DateTime.parse(element.create_at.toString());
       final format = DateFormat('dd MMMM yyyy', "ES_es");
       final fechaObs = format.format(createdAt);
       final fechaAsistencia = format.format(fecha);
@@ -91,7 +131,28 @@ class _CalenderScreenState extends State<CalenderScreen> {
           .update({
             'obs': cadenaUnida,
           })
-          .eq("employee_id", "$id")
+          .eq("employee_id", id)
+          .eq('date', fechaAsistenciaO)
+          .select();
+      if (mounted) {}
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
+  Future updateObsNull(DateTime fechaDeAsis, String id) async {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fechaDeAsis);
+    try {
+      await supabase
+          .from(Constants.attendancetable)
+          .update({
+            'obs': null,
+          })
+          .eq("employee_id", id)
           .eq('date', fechaAsistenciaO)
           .select();
       if (mounted) {}
@@ -131,7 +192,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
             dbService.allempleados.isEmpty
                 ? SizedBox(width: 60, child: const LinearProgressIndicator())
                 : Container(
-                    //  padding: EdgeInsets.all(5),
                     margin: const EdgeInsets.only(
                         left: 5, top: 5, bottom: 10, right: 10),
                     height: widthSize50,
@@ -151,7 +211,6 @@ class _CalenderScreenState extends State<CalenderScreen> {
                       }).toList(),
                       onChanged: (selectedValue) {
                         setState(() {
-                          obsProvisional.clear();
                           attendanceService.attendanceusuario =
                               selectedValue.toString();
                           idSelected = selectedValue.toString();
@@ -187,6 +246,15 @@ class _CalenderScreenState extends State<CalenderScreen> {
                   attendanceService.attendanceHistoryMonth = pickedMonth;
                 },
                 child: const Text("Seleccionar mes")),
+            ElevatedButton(
+              onPressed: processLogic,
+              child: Text(
+                'Generar',
+                style: TextStyle(
+                  fontSize: 16, // Puedes ajustar el tamaño del texto
+                ),
+              ),
+            )
           ],
         ),
         Expanded(
@@ -410,7 +478,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                       ),
                                                     ],
                                                   )),
-                                                  //////
+
                                                   Expanded(
                                                       child: Column(
                                                     mainAxisAlignment:
@@ -964,6 +1032,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                   fontSize: fontsize15,
                                                 ),
                                               ),
+
+                                              ///////////////
                                               Expanded(
                                                   child: StreamBuilder(
                                                       stream: _readStream,
@@ -1008,7 +1078,7 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                                 0) {
                                                               return const Center(
                                                                 child: const Text(
-                                                                    "Aun no ha subido observaciones adentro1"),
+                                                                    "Aun no ha subido observaciones adentro."),
                                                               );
                                                             }
 
@@ -1073,6 +1143,13 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                           } else if (dataList
                                                                   .length ==
                                                               0) {
+                                                            updateObs(
+                                                                "null",
+                                                                attendanceData
+                                                                    .createdAt,
+                                                                attendanceData
+                                                                    .id);
+
                                                             return const Center(
                                                               child: const Text(
                                                                   "No se han agregado observaciones en este día"),
@@ -1088,6 +1165,8 @@ class _CalenderScreenState extends State<CalenderScreen> {
                                                               CircularProgressIndicator(),
                                                         );
                                                       })),
+
+                                              /////////////
                                             ],
                                           )),
                                     ],
@@ -1110,6 +1189,10 @@ class _CalenderScreenState extends State<CalenderScreen> {
                     color: Colors.grey,
                   );
                 })),
+
+///////////
+
+////
       ],
     );
   }

@@ -15,7 +15,7 @@ class AppException implements Exception {
 }
 
 class FetchDataException extends AppException {
-  FetchDataException([message])
+ FetchDataException([message])
       : super(message, "Error durante la comunicación: ", 400);
 }
 

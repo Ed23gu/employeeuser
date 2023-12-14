@@ -345,23 +345,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-/* Container(
-                alignment: Alignment.topRight,
-                child: TextButton.icon(
-                    onPressed: () async {
-                      attendanceService.markAttendance3(context);
-                      key.currentState!.reset();
-                      print('ed');
-                      String supabaseUrl =
-                          'https://glknpzlrktillummmbrr.supabase.co';
-                      String supabaseKey =
-                          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdsa25wemxya3RpbGx1bW1tYnJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODM1MjE4MzMsImV4cCI6MTk5OTA5NzgzM30.gKrH4NNsIPZeDqys4BbQz0IU187EXU-g0WGXbxqAaKU';
-+
-                          url: supabaseUrl, anonKey: supabaseKey);
-                    },
-                    icon: const Icon(Icons.logout),
-                    label: const Text("Salir")),
-              ), */
   @override
   void initState() {
     route.Provider.of<AttendanceService>(context, listen: false)
@@ -559,7 +542,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                           });
                                         } catch (e) {
                                           Utils.showSnackBar("$e", context,
-                                              color: Colors.red);
+                                              color: Colors.blue);
                                         }
                                       }),
                                 ],
@@ -631,26 +614,27 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       icon: Icon(Icons.delete),
                                       color: Colors.grey,
                                       onPressed: () async {
-                                        setState(() {
-                                          getUrl = attendanceService
-                                              .attendanceModel!.pic_out
-                                              .toString();
-                                        });
-
-                                        if (attendanceService.attendanceModel
-                                                    ?.checkOut ==
-                                                null &&
-                                            attendanceService
-                                                    .attendanceModel?.pic_out !=
-                                                null) {
-                                          await deleteImage('pic_out', getUrl);
+                                        try {
+                                          if (attendanceService.attendanceModel
+                                                      ?.checkOut ==
+                                                  null &&
+                                              attendanceService.attendanceModel
+                                                      ?.pic_out !=
+                                                  null) {
+                                            await deleteImage(
+                                                'pic_out',
+                                                attendanceService
+                                                    .attendanceModel!.pic_out
+                                                    .toString());
+                                          }
                                           setState(() {
                                             attendanceService
                                                 .markAttendance3(context);
                                           });
+                                        } catch (e) {
+                                          Utils.showSnackBar("$e", context,
+                                              color: Colors.red);
                                         }
-                                        attendanceService
-                                            .markAttendance3(context);
                                       }),
                                 ],
                               ),
@@ -803,27 +787,27 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       icon: Icon(Icons.delete),
                                       color: Colors.grey,
                                       onPressed: () async {
-                                        setState(() {
-                                          getUrl = attendanceService
-                                              .attendanceModel!.pic_in2
-                                              .toString();
-                                        });
-
-                                        if (attendanceService.attendanceModel
-                                                    ?.checkIn2 ==
-                                                null &&
-                                            attendanceService
-                                                    .attendanceModel?.pic_in2 !=
-                                                null) {
-                                          await deleteImage('pic_in2', getUrl);
+                                        try {
+                                          if (attendanceService.attendanceModel
+                                                      ?.checkIn2 ==
+                                                  null &&
+                                              attendanceService.attendanceModel
+                                                      ?.pic_in2 !=
+                                                  null) {
+                                            await deleteImage(
+                                                'pic_in2',
+                                                attendanceService
+                                                    .attendanceModel!.pic_in2
+                                                    .toString());
+                                          }
                                           setState(() {
                                             attendanceService
                                                 .markAttendance3(context);
                                           });
+                                        } catch (e) {
+                                          Utils.showSnackBar("$e", context,
+                                              color: Colors.red);
                                         }
-                                        attendanceService
-                                            .markAttendance3(context);
-                                        // disableButton();
                                       })
                                 ],
                               ),
@@ -894,27 +878,27 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                                       icon: Icon(Icons.delete),
                                       color: Colors.grey,
                                       onPressed: () async {
-                                        setState(() {
-                                          getUrl = attendanceService
-                                              .attendanceModel!.pic_out2
-                                              .toString();
-                                        });
-
-                                        if (attendanceService.attendanceModel
-                                                    ?.checkOut2 ==
-                                                null &&
-                                            attendanceService.attendanceModel
-                                                    ?.pic_out2 !=
-                                                null) {
-                                          await deleteImage('pic_out2', getUrl);
+                                        try {
+                                          if (attendanceService.attendanceModel
+                                                      ?.checkOut2 ==
+                                                  null &&
+                                              attendanceService.attendanceModel
+                                                      ?.pic_out2 !=
+                                                  null) {
+                                            await deleteImage(
+                                                'pic_out2',
+                                                attendanceService
+                                                    .attendanceModel!.pic_out2
+                                                    .toString());
+                                          }
                                           setState(() {
                                             attendanceService
                                                 .markAttendance3(context);
                                           });
+                                        } catch (e) {
+                                          Utils.showSnackBar("$e", context,
+                                              color: Colors.red);
                                         }
-                                        attendanceService
-                                            .markAttendance3(context);
-                                        // disableButton();
                                       })
                                 ],
                               ),

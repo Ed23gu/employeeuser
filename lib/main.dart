@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
-import 'package:employee_attendance/examples/value_notifier/value_notifier_example_screen.dart';
-import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
+import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
+import 'package:employee_attendance/services/db_service_admin.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
@@ -17,35 +17,17 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 final internetChecker = CheckInternetConnection();
-final internetConnectionChecker = InternetConnectionChecker.createInstance(
-    checkTimeout: const Duration(seconds: 3),
-    checkInterval: const Duration(seconds: 3));
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  final hasConnection = await internetConnectionChecker.hasConnection;
 
   String supabaseUrl = 'https://ikuxicurbjxyvfdaqevm.supabase.co';
   String supabaseKey =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdXhpY3VyYmp4eXZmZGFxZXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1NzA3MjIsImV4cCI6MjAwMTE0NjcyMn0.M6gVfdPDTup6h-ritEoLXL37tLg_XSuVhnzqlRIcJ2w';
   await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-  runApp(ConnectionNotifier(
-    notifier: ValueNotifier(hasConnection),
-    child: const ArtAsis(),
-  ));
-}
-
-class ConnectionNotifier extends InheritedNotifier<ValueNotifier<bool>> {
-  const ConnectionNotifier({
-    super.key,
-    required super.notifier,
-    required super.child,
-  });
-  static ValueNotifier<bool> of(BuildContext context) {
-    return context
-        .dependOnInheritedWidgetOfExactType<ConnectionNotifier>()!
-        .notifier!;
-  }
+  runApp(
+    const ArtAsis(),
+  );
 }
 
 class ArtAsis extends StatefulWidget {
@@ -61,11 +43,6 @@ class _ArtAsisState extends State<ArtAsis> {
   @override
   void initState() {
     super.initState();
-    listener = internetConnectionChecker.onStatusChange.listen((status) {
-      final notifiers = ConnectionNotifier.of(context);
-      notifiers.value =
-          status == InternetConnectionStatus.connected ? true : false;
-    });
   }
 
   @override
@@ -83,12 +60,12 @@ class _ArtAsisState extends State<ArtAsis> {
       builder: (theme, darkTheme) {
         return MultiProvider(
           providers: [
-            // ChangeNotifierProvider(create: (_) => new ProductsChangeNotifier()),
             ChangeNotifierProvider(create: (context) => AuthService()),
-            ChangeNotifierProvider(create: (context) => DbService()),
+            ChangeNotifierProvider(create: (context) => DbServiceadmin()),
             ChangeNotifierProvider(create: (context) => AttendanceService()),
             ChangeNotifierProvider(create: (context) => DbService()),
-            ChangeNotifierProvider(create: (context) => AttendanceService()),
+            ChangeNotifierProvider(
+                create: (context) => AttendanceServiceadmin()),
             ChangeNotifierProvider(
               create: (context) => ObsService(),
             )
@@ -111,19 +88,5 @@ class _ArtAsisState extends State<ArtAsis> {
         );
       },
     );
-  }
-}
-
-class CheckerPage extends StatelessWidget {
-  const CheckerPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final hasConnection = ConnectionNotifier.of(context).value;
-    if (hasConnection) {
-      return Expanded(child: SplashScreen());
-    } else {
-      return WarningWidgetValueNotifier(); //ErrorPage();
-    }
   }
 }

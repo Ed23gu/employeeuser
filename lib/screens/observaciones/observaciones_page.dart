@@ -1,6 +1,7 @@
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/constants/constants.dart';
 import 'package:employee_attendance/constants/gaps.dart';
+import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:employee_attendance/utils/utils.dart';
@@ -155,7 +156,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
     try {
       await supabase.from('todos').delete().match({'id': editId2});
       //Navigator.pop(context);
-      isLoadingdel = false;
+      isLoadingdel = false;         
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Observación borrada"),
         width: anchosmsalertaobs,
@@ -211,6 +212,7 @@ class _ComentariosPageState extends State<ComentariosPage> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          WarningWidgetValueNotifier(),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             Container(
               width: anchoContainerobs,
@@ -281,6 +283,9 @@ class _ComentariosPageState extends State<ComentariosPage> {
                               width: imgenerror200,
                               height: imgenerror200,
                             ),
+                            gapH8,
+                            Text('Algo ha salido mal.',
+                                textAlign: TextAlign.center),
                             gapH8,
                             Text('Recargue la pagina, por favor.',
                                 textAlign: TextAlign.center),

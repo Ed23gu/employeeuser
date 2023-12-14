@@ -237,9 +237,6 @@ class ObsService extends ChangeNotifier {
         //.textSearch('date', '23 October 2023', config: 'english')
         .textSearch('date', "'$fecha'", config: 'english')
         .order('created_at', ascending: false);
-    // print('eeeeeeee');
-    // print(obsdata);
-    //notifyListeners();
     getTodayAttendance();
     return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }

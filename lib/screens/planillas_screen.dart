@@ -6,6 +6,7 @@ import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
     as helper;
+import 'package:employee_attendance/models/attendance_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/screens/observaciones/observaciones_page.dart';
 import 'package:employee_attendance/services/attendance_service_admin.dart';
@@ -31,23 +32,42 @@ class PlanillaScreen extends StatefulWidget {
 }
 
 class _PlanillaScreenState extends State<PlanillaScreen> {
+  final AttendanceServiceadmin obtenerObs = AttendanceServiceadmin();
   final SupabaseClient _supabase = Supabase.instance.client;
   late final bool allowFiltering;
   String selectedName = '';
   int? selectedpas;
   String selectedProyecto = '';
-  late var fecha = 'October 2022';
+  late var fecha = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   int selectedOption = 246; // Opción seleccionada inicialmente
-
+  late Stream<List<Map<String, dynamic>>> _readStream;
+  String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   late EmployeeDataSource _employeeDataSource =
       EmployeeDataSource(employeeData: []);
   List<Employee> _employees = <Employee>[];
+  String idSelected = 'abb73b57-f573-44b7-81cb-bf952365688b';
+  final controller = ScrollController();
 
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
+
+  Future fetch() async {
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
+    _readStream = _supabase
+        .from('todos')
+        .stream(primaryKey: ['id'])
+        .eq('user_id', "$idSelected")
+        .order('id', ascending: false);
+    todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
+    controller.addListener(() {
+      if (controller.position.maxScrollExtent == controller.offset) {
+        fetch();
+      }
+    });
 
     getEmployeeDataFromSupabase().then((employeeList) {
       setState(() {
@@ -63,6 +83,39 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         );
       });
     });
+  }
+
+  List<dynamic> _filterpormes(List<dynamic> datalist, DateTime fecha) {
+    final filteredList = datalist.where((element) {
+      final createdAt = DateTime.parse(element['created_at']);
+      final format = DateFormat('dd MMMM yyyy', "ES_es");
+      final fechaObs = format.format(createdAt);
+      final fechaAsistencia = format.format(fecha);
+      return fechaObs == fechaAsistencia;
+    }).toList();
+
+    return filteredList;
+  }
+
+  Future updateObs(String cadenaUnida, DateTime fechaDeAsis, String id) async {
+    final format = DateFormat('dd MMMM yyyy', "ES_es");
+    final fechaAsistenciaO = format.format(fechaDeAsis);
+    try {
+      await _supabase
+          .from(Constants.attendancetable)
+          .update({
+            'obs': cadenaUnida,
+          })
+          .eq("employee_id", id)
+          .eq('date', fechaAsistenciaO)
+          .select();
+      if (mounted) {}
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(error.toString()),
+        backgroundColor: Colors.red,
+      ));
+    }
   }
 
   Future<void> _exportDataGridToPdf(
@@ -236,7 +289,62 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   }
 
   //////////////////////////////
-  Future<List<Employee>> getEmployeeDataFromSupabase() async {
+
+// Función para obtener el historial de asistencias
+
+/* Future<void> processLogic(snapshot) async {
+  try {
+
+    if (snapshot.isNotEmpty) {
+      for (int i = 0; i < snapshot.length; i++) {
+        AttendanceModel attendanceData = snapshot[i];
+        // Accede a un Stream aquí, y no a un AsyncSnapshot
+        await for (var streamSnapshot in _readStream) {
+          if (streamSnapshot is AsyncSnapshot) {
+            if (streamSnapshot.hasError) {
+              print('Error: ${streamSnapshot.error.toString()}\nRecargue la página, por favor.');
+            }
+
+            if (streamSnapshot.hasData) {
+              if (streamSnapshot.data.length == 0) {
+                print("No se han agregado observaciones");
+              }
+
+              final dataList = _filterpormes(streamSnapshot.data, attendanceData.createdAt);
+
+              if (dataList.isNotEmpty) {
+                if (dataList.length == 0) {
+                  print("Aun no ha subido observaciones adentro.");
+                }
+
+                var titlesJoined = "";
+                for (int i = 0; i < dataList.length; i++) {
+                  titlesJoined += dataList[i]['title'];
+                  if (i != dataList.length - 1) {
+                    titlesJoined += ", ";
+                  }
+                }
+
+                updateObs(titlesJoined, attendanceData.createdAt, attendanceData.id);
+                print("lista");
+              } else if (dataList.length == 0) {
+                updateObs("null", attendanceData.createdAt, attendanceData.id);
+                print("No");
+              }
+            }
+          }
+        }
+      }
+    } else {
+      print("Datos no disponibles");
+    }
+  } catch (error) {
+    print("Error al obtener el historial de asistencias: $error");
+  }
+}
+
+ */
+ Future<List<Employee>> getEmployeeDataFromSupabase() async {
     try {
       final response = await _supabase
           .from(Constants.attendancetable)
@@ -420,20 +528,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         child: MaterialButton(
                             color: Colors.blue,
                             onPressed: () async {
-                              /*  selectedName = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .name
-                              .toString();
-                          selectedpas = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .department;
-
-                          selectedProyecto = dbService.allDepartments
-                              .firstWhere(
-                                  (element) => element.id == selectedpas)
-                              .title; */
                               await _exportDataGridToExcel(
                                   attendanceService.attendanceHistoryMonth,
                                   selectedName,
@@ -452,20 +546,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                         child: MaterialButton(
                             color: Colors.blue,
                             onPressed: () async {
-                              /* selectedName = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .name
-                              .toString();
-                          selectedpas = dbService.allempleados
-                              .firstWhere(
-                                  (element) => element.id == globalEmpleado)
-                              .department;
-
-                          selectedProyecto = dbService.allDepartments
-                              .firstWhere(
-                                  (element) => element.id == selectedpas)
-                              .title; */
                               await _exportDataGridToPdf(
                                   fecha, selectedName, selectedProyecto);
                             },
@@ -713,6 +793,107 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
             )),
 
             ///observaciones
+
+/*             Container(
+                width: 100,
+                child: FutureBuilder(
+                    future: attendanceService.getAttendanceHistory(),
+                    builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data.length > 0) {
+                          return ListView.builder(
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, index) {
+                                AttendanceModel attendanceData =
+                                    snapshot.data[index];
+                                return Container(
+                                    height: 20,
+                                    width: widthObs,
+                                    child: StreamBuilder(
+                                        stream: _readStream,
+                                        builder: (BuildContext context,
+                                            AsyncSnapshot snapshot) {
+                                          if (snapshot.hasError) {
+                                            return Center(
+                                              child: Text(
+                                                  'Error:' +
+                                                      snapshot.error
+                                                          .toString() +
+                                                      '\nRecargue la pagina, por favor.',
+                                                  textAlign: TextAlign.center),
+                                            );
+                                          }
+
+                                          if (snapshot.hasData) {
+                                            if (snapshot.data.length == 0) {
+                                              return const Center(
+                                                child: const Text(
+                                                    "No se han agregado observaciones"),
+                                              );
+                                            }
+
+                                            final dataList = _filterpormes(
+                                                snapshot.data,
+                                                attendanceData.createdAt);
+
+                                            if (dataList.isNotEmpty) {
+                                              if (dataList.length == 0) {
+                                                return const Center(
+                                                  child: const Text(
+                                                      "Aun no ha subido observaciones adentro."),
+                                                );
+                                              }
+
+                                              var titlesJoined = "";
+                                              for (int i = 0;
+                                                  i < dataList.length;
+                                                  i++) {
+                                                titlesJoined +=
+                                                    dataList[i]['title'];
+                                                if (i != dataList.length - 1) {
+                                                  titlesJoined += ", ";
+                                                }
+                                              }
+
+                                              updateObs(
+                                                  titlesJoined,
+                                                  attendanceData.createdAt,
+                                                  attendanceData.id);
+                                              return Text("lista");
+                                            } else if (dataList.length == 0) {
+                                              updateObs(
+                                                  "null",
+                                                  attendanceData.createdAt,
+                                                  attendanceData.id);
+
+                                              return const Center(
+                                                child: const Text("No "),
+                                              );
+                                            }
+                                            return const Center(
+                                              child:
+                                                  CircularProgressIndicator(),
+                                            );
+                                          }
+                                          return const Center(
+                                            child: CircularProgressIndicator(),
+                                          );
+                                        }));
+                              });
+                        } else {
+                          return const Center(
+                            child: Text(
+                              "Datos no disponibles",
+                              style: TextStyle(fontSize: fontsize25),
+                            ),
+                          );
+                        }
+                      }
+                      return const LinearProgressIndicator(
+                        backgroundColor: Colors.white,
+                        color: Colors.grey,
+                      );
+                    })), */
           ],
         ),
         floatingActionButton: SpeedDial(
@@ -870,12 +1051,6 @@ class EmployeeDataSource extends DataGridSource {
     RowColumnIndex rowColumnIndex,
     String summaryValue,
   ) {
-    // String resultados= Minutosahoras(summaryValue).obtenerhoras().toString();
-    // int i = int.parse(summaryValue);
-    // Duration duracion = Duration(minutes: i);
-    // String horasf = '${duracion.inHours}';
-    // String minuf= '${duracion.inMinutes.remainder(60).toString().padLeft(2, '0')}';
-    // String resultados =  horasf+":"+minuf;
     return Container(
       padding: EdgeInsets.all(15.0),
       child: Text(summaryValue),

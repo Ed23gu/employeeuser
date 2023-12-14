@@ -1,3 +1,4 @@
+import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -24,14 +25,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    super.initState();
+    super.initState();  
     _esoculto = true;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+          title: WarningWidgetValueNotifier(),
+          titleTextStyle: TextStyle(fontSize: 12)),
+      // resizeToAvoidBottomInset: false
       body: Center(
           child: SingleChildScrollView(
         child: Form(

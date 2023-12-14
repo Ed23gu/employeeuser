@@ -75,7 +75,7 @@ class AttendanceService extends ChangeNotifier {
     } on SocketException {
       throw FetchDataException('mensaje enviado');
     } on PostgrestException {
-      return Future.error("No se pudo conectar al servidor, ine");
+      return Future.error("No se pudo conectar al servidor");
     } catch (e) {
       return Future.error("Error inesperado");
     }
@@ -103,7 +103,6 @@ class AttendanceService extends ChangeNotifier {
           .select()
           .eq('id', _supabase.auth.currentUser!.id)
           .single();
-
       userModel = UserModel.fromJson(userData);
       employeeDepartment == null
           ? employeeDepartment = userModel?.department
@@ -115,20 +114,11 @@ class AttendanceService extends ChangeNotifier {
           .select()
           .eq("id", employeeDepartment);
       depModel2 = DepartmentModel.fromJson(result2.first);
-    } on PostgrestException {
-      Utils.showSnackBar("utils ", context);
-    } catch (e) {
-      Utils.showSnackBar("makr1 ", context);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Algo ha salido mal, mark1"),
-        backgroundColor: Colors.red,
-      ));
-    }
-    Position? getLocation = await _determinePosition();
-    String ubicacion = await obtenerNombreUbicacion(getLocation);
 
-    if (attendanceModel?.checkIn == null) {
-      try {
+      Position? getLocation = await _determinePosition();
+      String ubicacion = await obtenerNombreUbicacion(getLocation);
+
+      if (attendanceModel?.checkIn == null) {
         await _supabase
             .from(Constants.attendancetable)
             .update({
@@ -142,19 +132,7 @@ class AttendanceService extends ChangeNotifier {
             })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
-      } on PostgrestException {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal, intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
-      }
-    } else if (attendanceModel?.checkOut == null) {
-      try {
+      } else if (attendanceModel?.checkOut == null) {
         await _supabase
             .from(Constants.attendancetable)
             .update({
@@ -164,21 +142,25 @@ class AttendanceService extends ChangeNotifier {
             })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
-      } on PostgrestException {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
+      } else {
+        Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
       }
-    } else {
-      Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
+
+      getTodayAttendance();
+    } on SocketException {
+      Utils.showSnackBar(
+          "Hubo un problema de conexión, Por favor intentelo nuevamente.",
+          context,
+          color: Colors.red);
+    } on PostgrestException {
+      Utils.showSnackBar(
+          "Algo ha salido mal, Por favor intentelo nuevamente.", context,
+          color: Colors.red);
+    } catch (e) {
+      Utils.showSnackBar(
+          "Algo ha salido mal, Por favor intentelo nuevamente.", context,
+          color: Colors.red);
     }
-    getTodayAttendance();
   }
 
   Future markAttendance3(BuildContext context) async {
@@ -197,29 +179,16 @@ class AttendanceService extends ChangeNotifier {
           ? employeeDepartment2 = userModel2?.department
           : null;
       employeename2 == null ? employeename2 = userModel2?.name : null;
-
       final List result32 = await _supabase
           .from(Constants.departmentTable)
           .select()
           .eq("id", employeeDepartment2);
       depModel22 = DepartmentModel.fromJson(result32.first);
-    } on PostgrestException {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
-        backgroundColor: Colors.red,
-      ));
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Algo ha salido mal, Por favor intentelo nuevamente"),
-        backgroundColor: Colors.red,
-      ));
-    }
 
-    Position? getLocation = await _determinePosition();
+      Position? getLocation = await _determinePosition();
 
-    String ubicacion = await obtenerNombreUbicacion(getLocation);
-    if (attendanceModel?.checkIn2 == null) {
-      try {
+      String ubicacion = await obtenerNombreUbicacion(getLocation);
+      if (attendanceModel?.checkIn2 == null) {
         await _supabase
             .from(Constants.attendancetable)
             .update({
@@ -230,19 +199,7 @@ class AttendanceService extends ChangeNotifier {
             })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
-      } on PostgrestException {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal, intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
-      }
-    } else if (attendanceModel?.checkOut2 == null) {
-      try {
+      } else if (attendanceModel?.checkOut2 == null) {
         await _supabase
             .from(Constants.attendancetable)
             .update({
@@ -252,21 +209,24 @@ class AttendanceService extends ChangeNotifier {
             })
             .eq('employee_id', _supabase.auth.currentUser!.id)
             .eq('date', todayDate);
-      } on PostgrestException {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
-      } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text("Algo ha salido mal, intentelo nuevamente"),
-          backgroundColor: Colors.red,
-        ));
+      } else {
+        Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
       }
-    } else {
-      Utils.showSnackBar("Hora de Salida ya Resgistrada !", context);
+      getTodayAttendance();
+    } on SocketException {
+      Utils.showSnackBar(
+          "Hubo un problema de conexión, Por favor intentelo nuevamente.",
+          context,
+          color: Colors.red);
+    } on PostgrestException {
+      Utils.showSnackBar(
+          "Algo ha salido mal, Por favor intentelo nuevamente.", context,
+          color: Colors.red);
+    } catch (e) {
+      Utils.showSnackBar(
+          "Algo ha salido mal, Por favor intentelo nuevamente.", context,
+          color: Colors.red);
     }
-    getTodayAttendance();
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {
