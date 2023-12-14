@@ -37,9 +37,6 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
   final SupabaseClient supabase = Supabase.instance.client;
   late Stream<List<Map<String, dynamic>>> _readStream;
 
-  final observacionesdiarias = [];
-  final tablaasistencias = [];
-
   final controller = ScrollController();
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   var sizeicono = 20.0;
@@ -47,7 +44,6 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
   String idSelected = 'abb73b57-f573-44b7-81cb-bf952365688b';
   UserModel? userModel;
   int? employeeDepartment;
-  List getObsDiarias = [];
 
   @override
   void initState() {
@@ -68,17 +64,72 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
   Future fetch() async {
     setState(() {});
   }
+////////////////////////
 
-  Future processLogic() async {
-    List<AttendanceModel> attendanceHistory =
-        await obtenerObs.getAttendanceHistory();
+  Future<List<AttendanceModel>> getAttendanceHistory(
+      String fechaAsistencia) async {
+    final List data = await supabase
+        .from(Constants.attendancetable)
+        .select()
+        // .eq('employee_id', _supabase.auth.currentUser!.id)
+        .eq('employee_id', "$idSelected")
+        .textSearch('date', "'$fechaAsistencia'")
+        .order('created_at', ascending: false);
+    return data
+        .map((attendance) => AttendanceModel.fromJson(attendance))
+        .toList();
+  }
+
+  Future<List<ObsModel>> getObsHistory(String fecha) async {
+    final List obsdata = await supabase
+        .from(Constants.obstable)
+        .select()
+        .eq('user_id', "$idSelected")
+        //.textSearch('date', '23 October 2023', config: 'english')
+        .textSearch('date', "'$fecha'", config: 'english')
+        .order('created_at', ascending: false);
+
+    //getTodayAttendance();
+    return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
+  }
+
+////////////////////////////
+  ///
+  Future obtenerHistorialAsistencia(String fecha) async {
+    List<AttendanceModel> historialAsistencia =
+        await getAttendanceHistory(fecha);
+    for (AttendanceModel attendance in historialAsistencia) {
+      print(attendance.createdAt);
+      List<ObsModel> obsHistory = await getObsHistory(fecha);
+
+      for (List<ObsModel> obs in obsHistory) {
+        var dataList = _filterpormes2(obs, attendance.createdAt);
+      }
+    }
+
+    // También podrías asignarla a una variable de estado para usarla en tu interfaz gráfica
+    // this.setState(() {
+    //   _miVariableDeEstado = historialAsistencia;
+    // });
+  }
+
+  /*  Future processLogic() async {
+    fetch();
+    final attendanceService2 =
+        prove.Provider.of<AttendanceServiceadmin>(context);
+
+    List attendanceHistory = attendanceService2.getAttendanceHistory as List;
 
     for (AttendanceModel attendance in attendanceHistory) {
-      List<ObsModel> obsHistory =
-          await obtenerObs.getObsHistory(attendance.createdAt.toString());
+      print('dddddddddddddddddddddddddddddddddddd');
+      List<ObsModel> obsHistory = await attendanceService2
+          .getObsHistory(attendance.createdAt.toString());
+      print('dddddddddddddddddddddddddddddddddddd');
 
       for (ObsModel obs in obsHistory) {
-        /*   var  dataList =
+        print('dddddddddddddddddddddddddddddddddddd');
+        print(
+            obs); /*   var  dataList =
                     _filterpormes2 ( obs , attendance.createdAt); */
       }
     }
@@ -98,6 +149,7 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
                     print("lista"); */
   }
 
+   */
   List<dynamic> _filterpormes(List<dynamic> datalist, DateTime fecha) {
     final filteredList = datalist.where((element) {
       final createdAt = DateTime.parse(element['created_at']);
@@ -247,7 +299,10 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
                 },
                 child: const Text("Seleccionar mes")),
             ElevatedButton(
-              onPressed: processLogic,
+              onPressed: () {
+                obtenerHistorialAsistencia(
+                    attendanceService.attendanceHistoryMonth);
+              },
               child: Text(
                 'Generar',
                 style: TextStyle(

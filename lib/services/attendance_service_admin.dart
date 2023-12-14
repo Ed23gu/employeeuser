@@ -142,6 +142,10 @@ class AttendanceServiceadmin extends ChangeNotifier {
     }
   }
 
+  Future markAttendance3(BuildContext context) async {
+    getTodayAttendance();
+  }
+
   Future markAttendance2(BuildContext context) async {
     final userData2 = await _supabase
         .from(Constants.employeeTable)
@@ -198,6 +202,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {
+    
     final List data = await _supabase
         .from(Constants.attendancetable)
         .select()
