@@ -94,62 +94,60 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
   }
 
 ////////////////////////////
+//
+  Future<List<Map<String, dynamic>>> getObsHistory2(String fecha) async {
+    final List obsdata = await supabase
+        .from(Constants.obstable)
+        .select()
+        .eq('user_id', "$idSelected")
+        .textSearch('date', "'$fecha'", config: 'english')
+        .order('created_at', ascending: false);
+
+    List<Map<String, dynamic>> obsHistory =
+        obsdata.cast<Map<String, dynamic>>();
+    return obsHistory;
+  }
+
   ///
   Future obtenerHistorialAsistencia(String fecha) async {
     List<AttendanceModel> historialAsistencia =
         await getAttendanceHistory(fecha);
     for (AttendanceModel attendance in historialAsistencia) {
       print(attendance.createdAt);
+
       List<ObsModel> obsHistory = await getObsHistory(fecha);
 
-      for (List<ObsModel> obs in obsHistory) {
+      for (int i = 0; i < obsHistory.length; i++) {
+        var dataList = _filterpormes2(obsHistory, attendance.createdAt);
+        print(dataList);
+        var titlesJoined = "";
+        for (int i = 0; i < dataList.length; i++) {
+          titlesJoined += dataList[i].title;
+          if (i != dataList.length - 1) {
+            titlesJoined += ", ";
+          }
+
+          updateObs(titlesJoined, attendance.createdAt, attendance.id);
+          print(attendance.createdAt);
+        }
+      }
+
+      /*  for (ObsModel obs in obsHistory) {
         var dataList = _filterpormes2(obs, attendance.createdAt);
-      }
-    }
+        var titlesJoined = "";
+        for (int i = 0; i < dataList.length; i++) {
+          titlesJoined += dataList[i]['title'];
+          if (i != dataList.length - 1) {
+            titlesJoined += ", ";
+          }
+        }
 
-    // También podrías asignarla a una variable de estado para usarla en tu interfaz gráfica
-    // this.setState(() {
-    //   _miVariableDeEstado = historialAsistencia;
-    // });
+        updateObs(titlesJoined, attendance.createdAt, attendance.id);
+        print(attendance.createdAt);
+      } */
+    }
   }
 
-  /*  Future processLogic() async {
-    fetch();
-    final attendanceService2 =
-        prove.Provider.of<AttendanceServiceadmin>(context);
-
-    List attendanceHistory = attendanceService2.getAttendanceHistory as List;
-
-    for (AttendanceModel attendance in attendanceHistory) {
-      print('dddddddddddddddddddddddddddddddddddd');
-      List<ObsModel> obsHistory = await attendanceService2
-          .getObsHistory(attendance.createdAt.toString());
-      print('dddddddddddddddddddddddddddddddddddd');
-
-      for (ObsModel obs in obsHistory) {
-        print('dddddddddddddddddddddddddddddddddddd');
-        print(
-            obs); /*   var  dataList =
-                    _filterpormes2 ( obs , attendance.createdAt); */
-      }
-    }
-
-/* 
-
-                    var titlesJoined = "";
-                    for (int i = 0; i < dataList.length; i++) {
-                      titlesJoined += dataList[i]['title'];
-                      if (i != dataList.length - 1) {
-                        titlesJoined += ", ";
-                      }
-                    }
-
-                    updateObs(titlesJoined, attendanceData.createdAt,
-                        attendanceData.id);
-                    print("lista"); */
-  }
-
-   */
   List<dynamic> _filterpormes(List<dynamic> datalist, DateTime fecha) {
     final filteredList = datalist.where((element) {
       final createdAt = DateTime.parse(element['created_at']);
@@ -158,11 +156,12 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
       final fechaAsistencia = format.format(fecha);
       return fechaObs == fechaAsistencia;
     }).toList();
-
+    print('{---------------------------------}');
+    print(filteredList);
     return filteredList;
   }
 
-  List<dynamic> _filterpormes2(List<ObsModel> datalist, DateTime fecha) {
+  List<dynamic> _filterpormes2(var datalist, DateTime fecha) {
     final filteredList = datalist.where((element) {
       final createdAt = DateTime.parse(element.create_at.toString());
       final format = DateFormat('dd MMMM yyyy', "ES_es");
