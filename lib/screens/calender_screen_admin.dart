@@ -108,43 +108,42 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
     return obsHistory;
   }
 
-  ///
+
   Future obtenerHistorialAsistencia(String fecha) async {
     List<AttendanceModel> historialAsistencia =
         await getAttendanceHistory(fecha);
     for (AttendanceModel attendance in historialAsistencia) {
-      print(attendance.createdAt);
-
+      print('VUELTA1');
+      print(attendance.date);
       List<ObsModel> obsHistory = await getObsHistory(fecha);
-
       for (int i = 0; i < obsHistory.length; i++) {
+        print('VUELTA2');
+        print(i);
+        print(obsHistory[i].date);
         var dataList = _filterpormes2(obsHistory, attendance.createdAt);
-        print(dataList);
-        var titlesJoined = "";
-        for (int i = 0; i < dataList.length; i++) {
-          titlesJoined += dataList[i].title;
-          if (i != dataList.length - 1) {
-            titlesJoined += ", ";
-          }
+        print(dataList[i].title);
 
+        if (dataList.isNotEmpty) {
+          if (dataList.length == 0) {
+            print('no hay datos');
+          }
+          var titlesJoined = "";
+          for (int j = 0; j < dataList.length; j++) {
+            titlesJoined += dataList[j].title;
+            if (j != dataList.length - 1) {
+              titlesJoined += ", ";
+            }
+            print(j);
+            print('titlesJoined:');
+            print(titlesJoined);
+          }
           updateObs(titlesJoined, attendance.createdAt, attendance.id);
-          print(attendance.createdAt);
+          print('fin vuelta dos');
         }
+        print('no hay datos mismo');
       }
 
-      /*  for (ObsModel obs in obsHistory) {
-        var dataList = _filterpormes2(obs, attendance.createdAt);
-        var titlesJoined = "";
-        for (int i = 0; i < dataList.length; i++) {
-          titlesJoined += dataList[i]['title'];
-          if (i != dataList.length - 1) {
-            titlesJoined += ", ";
-          }
-        }
-
-        updateObs(titlesJoined, attendance.createdAt, attendance.id);
-        print(attendance.createdAt);
-      } */
+      print('fin vuelta 2');
     }
   }
 
