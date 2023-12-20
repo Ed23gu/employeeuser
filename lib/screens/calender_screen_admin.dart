@@ -71,7 +71,6 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
     final List data = await supabase
         .from(Constants.attendancetable)
         .select()
-        // .eq('employee_id', _supabase.auth.currentUser!.id)
         .eq('employee_id', "$idSelected")
         .textSearch('date', "'$fechaAsistencia'")
         .order('created_at', ascending: false);
@@ -85,65 +84,33 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
         .from(Constants.obstable)
         .select()
         .eq('user_id', "$idSelected")
-        //.textSearch('date', '23 October 2023', config: 'english')
-        .textSearch('date', "'$fecha'", config: 'english')
+        .textSearch('date', "'$fecha'")
         .order('created_at', ascending: false);
-
-    //getTodayAttendance();
+    ;
     return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
   }
-
-////////////////////////////
-//
-  Future<List<Map<String, dynamic>>> getObsHistory2(String fecha) async {
-    final List obsdata = await supabase
-        .from(Constants.obstable)
-        .select()
-        .eq('user_id', "$idSelected")
-        .textSearch('date', "'$fecha'", config: 'english')
-        .order('created_at', ascending: false);
-
-    List<Map<String, dynamic>> obsHistory =
-        obsdata.cast<Map<String, dynamic>>();
-    return obsHistory;
-  }
-
 
   Future obtenerHistorialAsistencia(String fecha) async {
     List<AttendanceModel> historialAsistencia =
         await getAttendanceHistory(fecha);
     for (AttendanceModel attendance in historialAsistencia) {
-      print('VUELTA1');
-      print(attendance.date);
       List<ObsModel> obsHistory = await getObsHistory(fecha);
-      for (int i = 0; i < obsHistory.length; i++) {
-        print('VUELTA2');
-        print(i);
-        print(obsHistory[i].date);
-        var dataList = _filterpormes2(obsHistory, attendance.createdAt);
-        print(dataList[i].title);
-
-        if (dataList.isNotEmpty) {
-          if (dataList.length == 0) {
-            print('no hay datos');
-          }
-          var titlesJoined = "";
-          for (int j = 0; j < dataList.length; j++) {
-            titlesJoined += dataList[j].title;
-            if (j != dataList.length - 1) {
-              titlesJoined += ", ";
-            }
-            print(j);
-            print('titlesJoined:');
-            print(titlesJoined);
-          }
-          updateObs(titlesJoined, attendance.createdAt, attendance.id);
-          print('fin vuelta dos');
+      var dataList = _filterpormes2(obsHistory, attendance.createdAt);
+      if (dataList.isNotEmpty) {
+        if (dataList.length == 0) {
+          print('no hay datos');
         }
-        print('no hay datos mismo');
+        var titlesJoined = "";
+        for (int j = 0; j < dataList.length; j++) {
+          titlesJoined += dataList[j].title.toString();
+          if (j != dataList.length - 1) {
+            titlesJoined += ", ";
+          }
+        }
+        updateObs(titlesJoined, attendance.createdAt, attendance.id);
+      } else if (dataList.length == 0) {
+        updateObs("null", attendance.createdAt, attendance.id);
       }
-
-      print('fin vuelta 2');
     }
   }
 
@@ -160,8 +127,8 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
     return filteredList;
   }
 
-  List<dynamic> _filterpormes2(var datalist, DateTime fecha) {
-    final filteredList = datalist.where((element) {
+  List<ObsModel> _filterpormes2(List<ObsModel> datalistEn, DateTime fecha) {
+    final filteredList = datalistEn.where((element) {
       final createdAt = DateTime.parse(element.create_at.toString());
       final format = DateFormat('dd MMMM yyyy', "ES_es");
       final fechaObs = format.format(createdAt);
@@ -193,26 +160,7 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
     }
   }
 
-  Future updateObsNull(DateTime fechaDeAsis, String id) async {
-    final format = DateFormat('dd MMMM yyyy', "ES_es");
-    final fechaAsistenciaO = format.format(fechaDeAsis);
-    try {
-      await supabase
-          .from(Constants.attendancetable)
-          .update({
-            'obs': null,
-          })
-          .eq("employee_id", id)
-          .eq('date', fechaAsistenciaO)
-          .select();
-      if (mounted) {}
-    } catch (error) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(error.toString()),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }
+
 
   @override
   void dispose() {

@@ -7,6 +7,7 @@ import 'package:employee_attendance/helper/save_file_mobile.dart'
     if (dart.library.html) 'package:employee_attendance/helper/save_file_web.dart'
     as helper;
 import 'package:employee_attendance/models/attendance_model.dart';
+import 'package:employee_attendance/models/obs_model.dart';
 import 'package:employee_attendance/models/user_model.dart';
 import 'package:employee_attendance/screens/observaciones/observaciones_page.dart';
 import 'package:employee_attendance/services/attendance_service_admin.dart';
@@ -85,9 +86,57 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     });
   }
 
-  List<dynamic> _filterpormes(List<dynamic> datalist, DateTime fecha) {
-    final filteredList = datalist.where((element) {
-      final createdAt = DateTime.parse(element['created_at']);
+  Future<List<AttendanceModel>> getAttendanceHistory(
+      String fechaAsistencia) async {
+    final List data = await _supabase
+        .from(Constants.attendancetable)
+        .select()
+        .eq('employee_id', "$idSelected")
+        .textSearch('date', "'$fechaAsistencia'")
+        .order('created_at', ascending: false);
+    return data
+        .map((attendance) => AttendanceModel.fromJson(attendance))
+        .toList();
+  }
+
+  Future<List<ObsModel>> getObsHistory(String fecha) async {
+    final List obsdata = await _supabase
+        .from(Constants.obstable)
+        .select()
+        .eq('user_id', "$idSelected")
+        .textSearch('date', "'$fecha'")
+        .order('created_at', ascending: false);
+    ;
+    return obsdata.map((obs) => ObsModel.fromJson(obs)).toList();
+  }
+
+  Future obtenerHistorialAsistencia(String fecha) async {
+    List<AttendanceModel> historialAsistencia =
+        await getAttendanceHistory(fecha);
+    for (AttendanceModel attendance in historialAsistencia) {
+      List<ObsModel> obsHistory = await getObsHistory(fecha);
+      var dataList = _filterpormes2(obsHistory, attendance.createdAt);
+      if (dataList.isNotEmpty) {
+        if (dataList.length == 0) {
+          print('no hay datos');
+        }
+        var titlesJoined = "";
+        for (int j = 0; j < dataList.length; j++) {
+          titlesJoined += dataList[j].title.toString();
+          if (j != dataList.length - 1) {
+            titlesJoined += ", ";
+          }
+        }
+        updateObs(titlesJoined, attendance.createdAt, attendance.id);
+      } else if (dataList.length == 0) {
+        updateObs("null", attendance.createdAt, attendance.id);
+      }
+    }
+  }
+
+  List<ObsModel> _filterpormes2(List<ObsModel> datalistEn, DateTime fecha) {
+    final filteredList = datalistEn.where((element) {
+      final createdAt = DateTime.parse(element.create_at.toString());
       final format = DateFormat('dd MMMM yyyy', "ES_es");
       final fechaObs = format.format(createdAt);
       final fechaAsistencia = format.format(fecha);
@@ -288,63 +337,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         bytes, 'Asis' + '_' + '$nombre' + '_' + '$periodo.xlsx');
   }
 
-  //////////////////////////////
-
-// Función para obtener el historial de asistencias
-
-/* Future<void> processLogic(snapshot) async {
-  try {
-
-    if (snapshot.isNotEmpty) {
-      for (int i = 0; i < snapshot.length; i++) {
-        AttendanceModel attendanceData = snapshot[i];
-        // Accede a un Stream aquí, y no a un AsyncSnapshot
-        await for (var streamSnapshot in _readStream) {
-          if (streamSnapshot is AsyncSnapshot) {
-            if (streamSnapshot.hasError) {
-              print('Error: ${streamSnapshot.error.toString()}\nRecargue la página, por favor.');
-            }
-
-            if (streamSnapshot.hasData) {
-              if (streamSnapshot.data.length == 0) {
-                print("No se han agregado observaciones");
-              }
-
-              final dataList = _filterpormes(streamSnapshot.data, attendanceData.createdAt);
-
-              if (dataList.isNotEmpty) {
-                if (dataList.length == 0) {
-                  print("Aun no ha subido observaciones adentro.");
-                }
-
-                var titlesJoined = "";
-                for (int i = 0; i < dataList.length; i++) {
-                  titlesJoined += dataList[i]['title'];
-                  if (i != dataList.length - 1) {
-                    titlesJoined += ", ";
-                  }
-                }
-
-                updateObs(titlesJoined, attendanceData.createdAt, attendanceData.id);
-                print("lista");
-              } else if (dataList.length == 0) {
-                updateObs("null", attendanceData.createdAt, attendanceData.id);
-                print("No");
-              }
-            }
-          }
-        }
-      }
-    } else {
-      print("Datos no disponibles");
-    }
-  } catch (error) {
-    print("Error al obtener el historial de asistencias: $error");
-  }
-}
-
- */
- Future<List<Employee>> getEmployeeDataFromSupabase() async {
+  Future<List<Employee>> getEmployeeDataFromSupabase() async {
     try {
       final response = await _supabase
           .from(Constants.attendancetable)
@@ -441,6 +434,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                               });
                               dbService.empleadolista =
                                   selectedValue.toString();
+                              idSelected = selectedValue.toString();
                               _employeeDataSource.clearFilters();
                               _employeeDataSource.addFilter(
                                   'id',
@@ -461,6 +455,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                   .firstWhere(
                                       (element) => element.id == selectedpas)
                                   .title;
+
+                              obtenerHistorialAsistencia(fecha);
                             });
                           },
                         ),
@@ -477,21 +473,24 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                 ),
                 OutlinedButton(
                     onPressed: () async {
-                      final selectedDate =
-                          await SimpleMonthYearPicker.showMonthYearPickerDialog(
-                              backgroundColor: AdaptiveTheme.of(context).mode ==
-                                      AdaptiveThemeMode.light
-                                  ? Colors.white
-                                  : Colors.black,
-                              selectionColor: AdaptiveTheme.of(context).mode ==
-                                      AdaptiveThemeMode.light
-                                  ? Colors.blue
-                                  : Colors.white,
-                              context: context,
-                              disableFuture: true);
-                      String pickedMonth =
-                          DateFormat('MMMM yyyy', "es_ES").format(selectedDate);
-                      setState(() {
+                      setState(() async {
+                        final selectedDate = await SimpleMonthYearPicker
+                            .showMonthYearPickerDialog(
+                                backgroundColor:
+                                    AdaptiveTheme.of(context).mode ==
+                                            AdaptiveThemeMode.light
+                                        ? Colors.white
+                                        : Colors.black,
+                                selectionColor:
+                                    AdaptiveTheme.of(context).mode ==
+                                            AdaptiveThemeMode.light
+                                        ? Colors.blue
+                                        : Colors.white,
+                                context: context,
+                                disableFuture: true);
+                        String pickedMonth = DateFormat('MMMM yyyy', "es_ES")
+                            .format(selectedDate);
+
                         fecha = pickedMonth;
                         //attendanceService.attendanceHistoryMonth= fecha;
                         _employeeDataSource.clearFilters();
@@ -511,6 +510,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             type: FilterType.equals,
                           ),
                         );
+
+                        obtenerHistorialAsistencia(fecha);
                       });
                     },
                     child: const Text("Mes",

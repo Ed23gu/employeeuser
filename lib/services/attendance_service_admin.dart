@@ -202,7 +202,6 @@ class AttendanceServiceadmin extends ChangeNotifier {
   }
 
   Future<List<AttendanceModel>> getAttendanceHistory() async {
-    
     final List data = await _supabase
         .from(Constants.attendancetable)
         .select()
@@ -220,8 +219,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
         .from(Constants.obstable)
         .select()
         .eq('user_id', "$attendanceusuario")
-        //.textSearch('date', '23 October 2023', config: 'english')
-        .textSearch('date', "'$fecha'", config: 'english')
+        .textSearch('date', "'$fecha'")
         .order('created_at', ascending: false);
 
     //getTodayAttendance();
@@ -234,7 +232,7 @@ class AttendanceServiceadmin extends ChangeNotifier {
         .select()
         .eq('user_id', "$attendanceusuario")
         //.textSearch('date', '23 October 2023', config: 'english')
-        .textSearch('date', "'$fecha'", config: 'english')
+        .textSearch('date', "'$fecha'")
         .order('created_at', ascending: false);
 
     //getTodayAttendance();
