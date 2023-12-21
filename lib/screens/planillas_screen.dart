@@ -33,7 +33,6 @@ class PlanillaScreen extends StatefulWidget {
 }
 
 class _PlanillaScreenState extends State<PlanillaScreen> {
-  final AttendanceServiceadmin obtenerObs = AttendanceServiceadmin();
   final SupabaseClient _supabase = Supabase.instance.client;
   late final bool allowFiltering;
   String selectedName = '';
@@ -41,7 +40,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   String selectedProyecto = '';
   late var fecha = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   int selectedOption = 246; // Opción seleccionada inicialmente
-  late Stream<List<Map<String, dynamic>>> _readStream;
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   late EmployeeDataSource _employeeDataSource =
       EmployeeDataSource(employeeData: []);
@@ -58,11 +56,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   @override
   void initState() {
     super.initState();
-    _readStream = _supabase
-        .from('todos')
-        .stream(primaryKey: ['id'])
-        .eq('user_id', "$idSelected")
-        .order('id', ascending: false);
     todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
     controller.addListener(() {
       if (controller.position.maxScrollExtent == controller.offset) {
@@ -127,9 +120,9 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
             titlesJoined += ", ";
           }
         }
-        updateObs(titlesJoined, attendance.createdAt, attendance.id);
+        await updateObs(titlesJoined, attendance.createdAt, attendance.id);
       } else if (dataList.length == 0) {
-        updateObs("null", attendance.createdAt, attendance.id);
+        await updateObs("null", attendance.createdAt, attendance.id);
       }
     }
   }
@@ -285,7 +278,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     pdfGrid.columns[8].width = 45;
     pdfGrid.columns[9].width = 45;
     pdfGrid.columns[10].width = 45;
-    // pdfGrid.columns[11].width = 150;
+
     pdfGrid.draw(
       page: pdfpage,
       bounds: Rect.fromLTWH(0, 0, 0, 0),
@@ -329,7 +322,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
     sheet.getRangeByName('E2').text = '$proyecto';
     sheet.getRangeByName('G2').text = 'Periodo';
     sheet.getRangeByName('H2').text = '$periodo';
-    // sheet.insertColumn(2  , 1, ExcelInsertOptions.formatAsBefore);
 
     final List<int> bytes = workbook.saveAsStream();
     workbook.dispose();
@@ -368,7 +360,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
         throw Exception('Error al obtener los datos de empleados');
       }
     } catch (error) {
-      // print('Error al obtener los datos de empleados: $error');
       return [];
     }
   }
@@ -455,9 +446,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                   .firstWhere(
                                       (element) => element.id == selectedpas)
                                   .title;
-
-                              obtenerHistorialAsistencia(fecha);
                             });
+                            obtenerHistorialAsistencia(fecha);
                           },
                         ),
                       ),
@@ -492,7 +482,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             .format(selectedDate);
 
                         fecha = pickedMonth;
-                        //attendanceService.attendanceHistoryMonth= fecha;
+
                         _employeeDataSource.clearFilters();
                         _employeeDataSource.addFilter(
                           'id',
@@ -510,9 +500,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             type: FilterType.equals,
                           ),
                         );
-
-                        obtenerHistorialAsistencia(fecha);
                       });
+                      obtenerHistorialAsistencia(fecha);
                     },
                     child: const Text("Mes",
                         style: const TextStyle(fontSize: 15))),
@@ -792,109 +781,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                 selectionMode: SelectionMode.multiple,
               ),
             )),
-
-            ///observaciones
-
-/*             Container(
-                width: 100,
-                child: FutureBuilder(
-                    future: attendanceService.getAttendanceHistory(),
-                    builder: (BuildContext context, AsyncSnapshot snapshot) {
-                      if (snapshot.hasData) {
-                        if (snapshot.data.length > 0) {
-                          return ListView.builder(
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, index) {
-                                AttendanceModel attendanceData =
-                                    snapshot.data[index];
-                                return Container(
-                                    height: 20,
-                                    width: widthObs,
-                                    child: StreamBuilder(
-                                        stream: _readStream,
-                                        builder: (BuildContext context,
-                                            AsyncSnapshot snapshot) {
-                                          if (snapshot.hasError) {
-                                            return Center(
-                                              child: Text(
-                                                  'Error:' +
-                                                      snapshot.error
-                                                          .toString() +
-                                                      '\nRecargue la pagina, por favor.',
-                                                  textAlign: TextAlign.center),
-                                            );
-                                          }
-
-                                          if (snapshot.hasData) {
-                                            if (snapshot.data.length == 0) {
-                                              return const Center(
-                                                child: const Text(
-                                                    "No se han agregado observaciones"),
-                                              );
-                                            }
-
-                                            final dataList = _filterpormes(
-                                                snapshot.data,
-                                                attendanceData.createdAt);
-
-                                            if (dataList.isNotEmpty) {
-                                              if (dataList.length == 0) {
-                                                return const Center(
-                                                  child: const Text(
-                                                      "Aun no ha subido observaciones adentro."),
-                                                );
-                                              }
-
-                                              var titlesJoined = "";
-                                              for (int i = 0;
-                                                  i < dataList.length;
-                                                  i++) {
-                                                titlesJoined +=
-                                                    dataList[i]['title'];
-                                                if (i != dataList.length - 1) {
-                                                  titlesJoined += ", ";
-                                                }
-                                              }
-
-                                              updateObs(
-                                                  titlesJoined,
-                                                  attendanceData.createdAt,
-                                                  attendanceData.id);
-                                              return Text("lista");
-                                            } else if (dataList.length == 0) {
-                                              updateObs(
-                                                  "null",
-                                                  attendanceData.createdAt,
-                                                  attendanceData.id);
-
-                                              return const Center(
-                                                child: const Text("No "),
-                                              );
-                                            }
-                                            return const Center(
-                                              child:
-                                                  CircularProgressIndicator(),
-                                            );
-                                          }
-                                          return const Center(
-                                            child: CircularProgressIndicator(),
-                                          );
-                                        }));
-                              });
-                        } else {
-                          return const Center(
-                            child: Text(
-                              "Datos no disponibles",
-                              style: TextStyle(fontSize: fontsize25),
-                            ),
-                          );
-                        }
-                      }
-                      return const LinearProgressIndicator(
-                        backgroundColor: Colors.white,
-                        color: Colors.grey,
-                      );
-                    })), */
           ],
         ),
         floatingActionButton: SpeedDial(
