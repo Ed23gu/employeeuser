@@ -406,23 +406,23 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             );
                           }).toList(),
                           onChanged: (selectedValue) {
-                            setState(() {
-                              getEmployeeDataFromSupabase()
-                                  .then((employeeList) {
-                                setState(() {
-                                  _employees = employeeList;
-                                  _employeeDataSource = EmployeeDataSource(
-                                      employeeData: _employees);
-                                  _employeeDataSource.addFilter(
-                                    'Dia2',
-                                    FilterCondition(
-                                      value: fecha,
-                                      filterOperator: FilterOperator.and,
-                                      type: FilterType.equals,
-                                    ),
-                                  );
-                                });
+                            getEmployeeDataFromSupabase().then((employeeList) {
+                              setState(() {
+                                _employees = employeeList;
+                                _employeeDataSource = EmployeeDataSource(
+                                    employeeData: _employees);
+                                _employeeDataSource.addFilter(
+                                  'Dia2',
+                                  FilterCondition(
+                                    value: fecha,
+                                    filterOperator: FilterOperator.and,
+                                    type: FilterType.equals,
+                                  ),
+                                );
                               });
+                            });
+
+                            setState(() {
                               dbService.empleadolista =
                                   selectedValue.toString();
                               idSelected = selectedValue.toString();
@@ -447,6 +447,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                       (element) => element.id == selectedpas)
                                   .title;
                             });
+
                             obtenerHistorialAsistencia(fecha);
                           },
                         ),
@@ -463,26 +464,22 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                 ),
                 OutlinedButton(
                     onPressed: () async {
-                      setState(() async {
-                        final selectedDate = await SimpleMonthYearPicker
-                            .showMonthYearPickerDialog(
-                                backgroundColor:
-                                    AdaptiveTheme.of(context).mode ==
-                                            AdaptiveThemeMode.light
-                                        ? Colors.white
-                                        : Colors.black,
-                                selectionColor:
-                                    AdaptiveTheme.of(context).mode ==
-                                            AdaptiveThemeMode.light
-                                        ? Colors.blue
-                                        : Colors.white,
-                                context: context,
-                                disableFuture: true);
-                        String pickedMonth = DateFormat('MMMM yyyy', "es_ES")
-                            .format(selectedDate);
-
+                      final selectedDate =
+                          await SimpleMonthYearPicker.showMonthYearPickerDialog(
+                              backgroundColor: AdaptiveTheme.of(context).mode ==
+                                      AdaptiveThemeMode.light
+                                  ? Colors.white
+                                  : Colors.black,
+                              selectionColor: AdaptiveTheme.of(context).mode ==
+                                      AdaptiveThemeMode.light
+                                  ? Colors.blue
+                                  : Colors.white,
+                              context: context,
+                              disableFuture: true);
+                      String pickedMonth =
+                          DateFormat('MMMM yyyy', "es_ES").format(selectedDate);
+                      setState(() {
                         fecha = pickedMonth;
-
                         _employeeDataSource.clearFilters();
                         _employeeDataSource.addFilter(
                           'id',
