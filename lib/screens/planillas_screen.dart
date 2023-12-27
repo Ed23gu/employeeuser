@@ -38,7 +38,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   String selectedName = '';
   int? selectedpas;
   String selectedProyecto = '';
-  late var fecha = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
+  String fecha = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   int selectedOption = 246; // Opción seleccionada inicialmente
   String todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
   late EmployeeDataSource _employeeDataSource =
@@ -46,7 +46,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   List<Employee> _employees = <Employee>[];
   String idSelected = 'abb73b57-f573-44b7-81cb-bf952365688b';
   final controller = ScrollController();
-
   final GlobalKey<SfDataGridState> _key = GlobalKey<SfDataGridState>();
 
   Future fetch() async {
@@ -57,12 +56,12 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
   void initState() {
     super.initState();
     todayDate = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
+    fecha = DateFormat("MMMM yyyy", "es_ES").format(DateTime.now());
     controller.addListener(() {
       if (controller.position.maxScrollExtent == controller.offset) {
         fetch();
       }
     });
-
     getEmployeeDataFromSupabase().then((employeeList) {
       setState(() {
         _employees = employeeList;
@@ -406,6 +405,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                             );
                           }).toList(),
                           onChanged: (selectedValue) {
+                            fetch();
                             getEmployeeDataFromSupabase().then((employeeList) {
                               setState(() {
                                 _employees = employeeList;
@@ -419,6 +419,11 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                     type: FilterType.equals,
                                   ),
                                 );
+                                _employeeDataSource.addFilter(
+                                    'id',
+                                    FilterCondition(
+                                        type: FilterType.equals,
+                                        value: dbService.empleadolista));
                               });
                             });
 
@@ -447,8 +452,8 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                                       (element) => element.id == selectedpas)
                                   .title;
                             });
-
                             obtenerHistorialAsistencia(fecha);
+                            fetch();
                           },
                         ),
                       ),
@@ -498,7 +503,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                           ),
                         );
                       });
-                      obtenerHistorialAsistencia(fecha);
                     },
                     child: const Text("Mes",
                         style: const TextStyle(fontSize: 15))),
@@ -814,12 +818,6 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
                     MaterialPageRoute(
                         builder: (context) => const ComentariosPage()));
               },
-              /*  onLongPress: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ComentariosPage()));
-              }, */
             ),
 
             //add more menu item childs here
