@@ -25,7 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    super.initState();  
+    super.initState();
     _esoculto = true;
   }
 
@@ -110,6 +110,14 @@ class _LoginScreenState extends State<LoginScreen> {
                 const SizedBox(
                   height: 20,
                 ),
+                /*TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const RegisterScreen()));
+                    },
+                    child: const Text("Eres Nuevo? Registrate aquí")) */
               ],
             ),
           ),
