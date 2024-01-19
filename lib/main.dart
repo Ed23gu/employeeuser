@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
+import 'package:employee_attendance/screens/update.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
-import 'package:employee_attendance/services/attendance_service_admin.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
-import 'package:employee_attendance/services/db_service_admin.dart';
 import 'package:employee_attendance/services/obs_service.dart';
 import 'package:employee_attendance/utils/check_internet_connection.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +14,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 final internetChecker = CheckInternetConnection();
 
 Future<void> main() async {
@@ -60,14 +60,12 @@ class _ArtAsisState extends State<ArtAsis> {
         return MultiProvider(
           providers: [
             ChangeNotifierProvider(create: (context) => AuthService()),
-            ChangeNotifierProvider(create: (context) => DbServiceadmin()),
-            ChangeNotifierProvider(create: (context) => AttendanceService()),
             ChangeNotifierProvider(create: (context) => DbService()),
-            ChangeNotifierProvider(
-                create: (context) => AttendanceServiceadmin()),
+            ChangeNotifierProvider(create: (context) => AttendanceService()),
             ChangeNotifierProvider(
               create: (context) => ObsService(),
-            )
+            ),
+            ChangeNotifierProvider(create: (context) => PageNotifier()),
           ],
           child: MaterialApp(
             localizationsDelegates: const [

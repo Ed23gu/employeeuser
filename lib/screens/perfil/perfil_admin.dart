@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart' as route;
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
+class AccountPageAdmin extends StatefulWidget {
+  const AccountPageAdmin({super.key});
 
   @override
-  State<AccountPage> createState() => _AccountPageState();
+  State<AccountPageAdmin> createState() => _AccountPageStateAdmin();
 }
 
-class _AccountPageState extends State<AccountPage> {
+class _AccountPageStateAdmin extends State<AccountPageAdmin> {
   final SupabaseClient _supabase = Supabase.instance.client;
   final _websiteController = TextEditingController();
   TextEditingController nameController = TextEditingController();

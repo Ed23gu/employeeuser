@@ -352,6 +352,8 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     super.initState();
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     final attendanceService = route.Provider.of<AttendanceService>(context);
