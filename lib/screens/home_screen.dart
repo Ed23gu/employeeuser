@@ -64,7 +64,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           );
         }),
         title: const Text(
-          "ArtconsGroup.",
+          "ArtconsGroup. Cia. Ltda.",
           style: TextStyle(
             fontSize: fontsize28,
           ),
