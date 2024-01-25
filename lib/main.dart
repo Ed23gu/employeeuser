@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
