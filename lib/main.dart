@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:adaptive_theme/adaptive_theme.dart';
 import 'package:employee_attendance/color_schemes.g.dart';
 import 'package:employee_attendance/screens/splash_screen.dart';
-import 'package:employee_attendance/screens/update.dart';
 import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:employee_attendance/services/auth_service.dart';
 import 'package:employee_attendance/services/db_service.dart';
@@ -65,7 +64,6 @@ class _ArtAsisState extends State<ArtAsis> {
             ChangeNotifierProvider(
               create: (context) => ObsService(),
             ),
-            ChangeNotifierProvider(create: (context) => PageNotifier()),
           ],
           child: MaterialApp(
             localizationsDelegates: const [
