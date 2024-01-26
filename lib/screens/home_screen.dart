@@ -1,14 +1,13 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:employee_attendance/constants/gaps.dart';
 import 'package:employee_attendance/examples/value_notifier/warning_widget_value_notifier.dart';
-import 'package:employee_attendance/main.dart';
 import 'package:employee_attendance/screens/attendance_screen.dart';
 import 'package:employee_attendance/screens/calender_screen.dart';
 import 'package:employee_attendance/screens/perfil/perfil_foto_page.dart';
-import 'package:employee_attendance/screens/update.dart';
+import 'package:employee_attendance/services/attendance_service.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart' as route;
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class BottomNavBar extends StatefulWidget {
   @override
@@ -16,14 +15,6 @@ class BottomNavBar extends StatefulWidget {
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  Future _restartApp() async {
-    String supabaseUrl = 'https://ikuxicurbjxyvfdaqevm.supabase.co';
-    String supabaseKey =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlrdXhpY3VyYmp4eXZmZGFxZXZtIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODU1NzA3MjIsImV4cCI6MjAwMTE0NjcyMn0.M6gVfdPDTup6h-ritEoLXL37tLg_XSuVhnzqlRIcJ2w';
-    await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-    ArtAsis();
-  }
-
   int _page = 1;
   var pad16 = 16.0;
   var pad8 = 8.0;
@@ -33,14 +24,17 @@ class _BottomNavBarState extends State<BottomNavBar> {
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
-    final pageNotifier = route.Provider.of<PageNotifier>(context);
+    final attendanceService = Provider.of<AttendanceService>(context);
     return Scaffold(
       appBar: AppBar(
         actions: [
           IconButton(
             onPressed: () {
               setState(() {
-                pageNotifier.updatePage();
+                String pickedMonth =
+                    DateFormat("MMMM yyyy", "ES_es").format(DateTime.now());
+                attendanceService.attendanceHistoryMonth = pickedMonth;
+                print('ed');
               });
             },
             icon: Icon(Icons.refresh), // Puedes usar cualquier icono que desees
