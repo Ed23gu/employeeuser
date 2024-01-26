@@ -98,7 +98,7 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
       var dataList = _filterpormes2(obsHistory, attendance.createdAt);
       if (dataList.isNotEmpty) {
         if (dataList.length == 0) {
-          print('no hay datos');
+         
         }
         var titlesJoined = "";
         for (int j = 0; j < dataList.length; j++) {
@@ -122,8 +122,7 @@ class _CalenderScreenStateAdmin extends State<CalenderScreenAdmin> {
       final fechaAsistencia = format.format(fecha);
       return fechaObs == fechaAsistencia;
     }).toList();
-    print('{---------------------------------}');
-    print(filteredList);
+    
     return filteredList;
   }
 

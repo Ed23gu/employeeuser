@@ -109,9 +109,7 @@ class _PlanillaScreenState extends State<PlanillaScreen> {
       List<ObsModel> obsHistory = await getObsHistory(fecha);
       var dataList = _filterpormes2(obsHistory, attendance.createdAt);
       if (dataList.isNotEmpty) {
-        if (dataList.length == 0) {
-          print('no hay datos');
-        }
+        if (dataList.length == 0) {}
         var titlesJoined = "";
         for (int j = 0; j < dataList.length; j++) {
           titlesJoined += dataList[j].title.toString();
