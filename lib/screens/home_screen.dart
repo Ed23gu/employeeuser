@@ -33,8 +33,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
               setState(() {
                 String pickedMonth =
                     DateFormat("MMMM yyyy", "ES_es").format(DateTime.now());
-                attendanceService.attendanceHistoryMonth = pickedMonth;
-                print('ed');
+                attendanceService.attendanceHistoryMonth = pickedMonth;print('ed');
               });
             },
             icon: Icon(Icons.refresh), // Puedes usar cualquier icono que desees
